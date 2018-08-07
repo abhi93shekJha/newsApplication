@@ -31,7 +31,7 @@
             android:name=".SelectLanguageAndCities"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".view.DashboardActivity"
+            android:name=".view.dashboard.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme"></activity>
     </application>

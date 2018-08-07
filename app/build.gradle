@@ -9,6 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //Enable Use Of SVG Icon'shadow_gradient
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -27,7 +29,11 @@ dependencies {
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     //for expandable recycler view
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.github.rubensousa:gravitysnaphelper:1.3'
     implementation 'com.bignerdranch.android:expandablerecyclerview:1.0.3'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.github.aakira:expandable-layout:1.6.0@aar'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

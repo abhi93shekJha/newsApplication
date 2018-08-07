@@ -23,7 +23,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.gsatechworld.gugrify.view.DashboardActivity;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.adapters.CitiesGridViewAdapter;
 import com.gsatechworld.gugrify.view.adapters.LanguageExpandableListAdapter;
 import com.gsatechworld.gugrify.view.adapters.LanguageRecyclerAdapter;
