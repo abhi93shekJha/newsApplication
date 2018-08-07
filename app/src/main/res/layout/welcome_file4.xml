@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite">
+    <TextView android:id="@+id/welcome_file1_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="20dp"
+        android:textColor="@color/logoColor"
+        android:text="Lorem ipsum"/>
+    <TextView
+        android:id="@+id/welcome_file1_text2"
+        android:layout_below="@+id/welcome_file1_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:paddingLeft="38dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/logoColor"
+        android:text="Lorem ipsum"/>
+    <FrameLayout
+        android:id="@+id/welcome_file1_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/welcome_file1_text3"
+        android:layout_below="@id/welcome_file1_text2">
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="390dp"
+            android:layout_height="400dp"
+            android:src="@mipmap/mobile"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="33dp"
+            android:paddingLeft="1.8dp"
+            android:paddingRight="7dp">
+            <ImageView
+            android:layout_gravity="center"
+            android:layout_width="228dp"
+            android:background="@drawable/shape"
+            android:layout_height="315dp"
+            />
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="228dp"
+                android:src="@mipmap/logo"
+                android:layout_height="315dp"
+                />
+        </FrameLayout>
+    </FrameLayout>
+    <TextView android:id="@+id/welcome_file1_text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/lightBlack"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="50dp"
+        android:textSize="18dp"
+        android:text="UNDEOMNIS ISTE"/>
+</RelativeLayout>
