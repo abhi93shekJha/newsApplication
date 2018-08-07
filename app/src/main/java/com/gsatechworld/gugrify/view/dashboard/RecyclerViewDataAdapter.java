@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,7 +75,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         protected TextView itemTitle;
         protected RecyclerView recyclerView;
-        protected ImageButton btnMore;
+        protected ImageView btnMore;
 
         public ItemRowHolder(View itemView) {
             super(itemView);
