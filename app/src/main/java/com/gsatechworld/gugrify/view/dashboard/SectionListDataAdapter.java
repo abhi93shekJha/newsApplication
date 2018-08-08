@@ -20,17 +20,33 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
     private ArrayList<?> itemModels;
     private Context mContext;
     private int layoutAllignment;
+    private int outerAdapterPosition;
 
-    public SectionListDataAdapter(ArrayList<?> itemModels, Context mContext, int layoutAllignment) {
+    public SectionListDataAdapter(ArrayList<?> itemModels, Context mContext, int layoutAllignment, int outerAdapterPosition) {
         this.itemModels = itemModels;
         this.mContext = mContext;
         this.layoutAllignment = layoutAllignment;
+        this.outerAdapterPosition = outerAdapterPosition;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        int viewType = 1; //Default is 1
+        if (position >= 2) viewType = 0; //if zero, it will be a header view
+        return viewType;
     }
 
     @Override
     public SingleItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_single_card, null);
-        SingleItemRowHolder singleItemRowHolder = new SingleItemRowHolder(v);
+        SingleItemRowHolder singleItemRowHolder = null;
+        if(outerAdapterPosition == 0){
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_single_card, null);
+            singleItemRowHolder = new SingleItemRowHolder(v);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_single_card_paly_list, null);
+            singleItemRowHolder = new SingleItemRowHolder(v);
+        }
+
         return singleItemRowHolder;
     }
 
@@ -59,8 +75,6 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
                     .into(holder.itemImage);
             //holder.itemImage.setImageResource(otherNewsItemModel.getImage());
         }
-
-
     }
 
     @Override

@@ -123,21 +123,21 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     private ArrayList<PlayListItemModel> createPlaylistData(){
         ArrayList<PlayListItemModel> playListItemModelArrayList = new ArrayList<>();
-        playListItemModelArrayList.add(new PlayListItemModel("A", "", "aaaaa", R.drawable.food1));
-        playListItemModelArrayList.add(new PlayListItemModel("B", "", "bbbbb", R.drawable.food2));
-        playListItemModelArrayList.add(new PlayListItemModel("C", "", "ccccc", R.drawable.food3));
-        playListItemModelArrayList.add(new PlayListItemModel("D", "", "ddddd", R.drawable.food4));
+        playListItemModelArrayList.add(new PlayListItemModel("99 +", "", "aaaaa", R.drawable.food6));
+        playListItemModelArrayList.add(new PlayListItemModel("25", "", "bbbbb", R.drawable.food2));
+        playListItemModelArrayList.add(new PlayListItemModel("10", "", "ccccc", R.drawable.food7));
+        playListItemModelArrayList.add(new PlayListItemModel("70", "", "ddddd", R.drawable.food4));
 
         return playListItemModelArrayList;
     }
 
     private ArrayList<LatestNewItemModel> createLatestNews(){
         ArrayList<LatestNewItemModel> latestNewItemModelArrayList = new ArrayList<>();
-        latestNewItemModelArrayList.add(new LatestNewItemModel("1", "", "aaaaa", R.drawable.fruit1));
-        latestNewItemModelArrayList.add(new LatestNewItemModel("2", "", "bbbbb", R.drawable.fruit2));
-        latestNewItemModelArrayList.add(new LatestNewItemModel("3", "", "ccccc", R.drawable.fruit3));
-        latestNewItemModelArrayList.add(new LatestNewItemModel("4", "", "ddddd", R.drawable.fruit4));
-        latestNewItemModelArrayList.add(new LatestNewItemModel("5", "", "eeeee", R.drawable.fruit5));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("Usa", "", "aaaaa", R.drawable.country1));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("India", "", "bbbbb", R.drawable.country6));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("Canada", "", "ccccc", R.drawable.country7));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("Japan", "", "ddddd", R.drawable.country4));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("China", "", "eeeee", R.drawable.contry8));
 
         return latestNewItemModelArrayList;
     }

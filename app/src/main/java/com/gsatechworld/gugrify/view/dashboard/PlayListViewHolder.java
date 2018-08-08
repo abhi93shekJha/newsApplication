@@ -67,7 +67,7 @@ public class PlayListViewHolder extends BaseViewHolder<SectionDataModel, OnRecyc
         //final String sectionName = latestNewItems.get(position).getName();
         if(position == 0){
             latestNewItems =  item.getLatestNewItemModelArrayList();
-           adapter = new SectionListDataAdapter(latestNewItems, itemView.getContext(), 1);
+           adapter = new SectionListDataAdapter(latestNewItems, itemView.getContext(), 1, 1);
         }
 
         recyclerView.setHasFixedSize(true);

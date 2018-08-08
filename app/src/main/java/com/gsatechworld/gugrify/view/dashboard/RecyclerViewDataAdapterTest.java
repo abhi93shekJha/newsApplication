@@ -71,10 +71,10 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         final String sectionName = dataList.get(position).getHeaderTitle();
         if(position == 0){
             latestNewItems = dataList.get(position).getLatestNewItemModelArrayList();
-            adapter = new SectionListDataAdapter(latestNewItems, mContext, 1);
+            adapter = new SectionListDataAdapter(latestNewItems, mContext, 1, position);
         } else if(position == 1){
             playListItems = dataList.get(position).getPlayListItemModelArrayList();
-            adapter = new SectionListDataAdapter(playListItems, mContext, 2);
+            adapter = new SectionListDataAdapter(playListItems, mContext, 2, position);
         }
 //        else if(position == 2){
 //            otherNewsItems = dataList.get(position).getOtherNewsItemModelArrayList();

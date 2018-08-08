@@ -74,11 +74,11 @@ public class UserAccentViewHolder extends BaseViewHolder<SectionDataModel, OnRec
         if(position <= 1){
             latestNewItems =  item.getLatestNewItemModelArrayList();
             recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
-            adapter = new SectionListDataAdapter(latestNewItems, itemView.getContext(), 1);
+            adapter = new SectionListDataAdapter(latestNewItems, itemView.getContext(), 1, 1);
         } if(position > 1){
             playListItems =  item.getPlayListItemModelArrayList();
             recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false));
-            adapter = new SectionListDataAdapter(playListItems, itemView.getContext(), 1);
+            adapter = new SectionListDataAdapter(playListItems, itemView.getContext(), 1, 1);
         }
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
