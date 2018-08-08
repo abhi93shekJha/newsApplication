@@ -3,7 +3,6 @@
     android:background="?android:selectableItemBackground"
     android:orientation="vertical"
     android:padding="5dp"
-    android:layout_margin="5dp"
     app:cardCornerRadius="5dp"
     app:cardUseCompatPadding="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -31,6 +30,7 @@
                 android:text="Sample Title"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
+
             <ImageView
                 android:id="@+id/btnMore"
                 android:layout_width="wrap_content"
@@ -42,13 +42,10 @@
 
         </RelativeLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_list"
-            android:layout_margin="2dp"
+        <ImageView
+            android:id="@+id/img"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical" />
+            android:layout_height="260dp" />
 
     </LinearLayout>
 

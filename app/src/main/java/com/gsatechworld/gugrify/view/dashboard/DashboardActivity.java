@@ -21,12 +21,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements OnRecyclerItemClickListener {
 
     private AutoScrollViewPager viewPager;
     private ViewPagerAdapter mAdapter;
@@ -38,6 +39,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
     private LinearLayout pager_indicator;
     private ArrayList<SectionDataModel> allSampleData;
+    private SectionDataModel sectionModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,24 +114,66 @@ public class DashboardActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
-        RecyclerViewDataAdapter adapter = new RecyclerViewDataAdapter(allSampleData, this);
+        RecyclerViewDataAdapterTest adapter = new RecyclerViewDataAdapterTest(allSampleData, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
+        //adapter.setItems(allSampleData);
+    }
+
+    private ArrayList<PlayListItemModel> createPlaylistData(){
+        ArrayList<PlayListItemModel> playListItemModelArrayList = new ArrayList<>();
+        playListItemModelArrayList.add(new PlayListItemModel("A", "", "aaaaa", R.drawable.food1));
+        playListItemModelArrayList.add(new PlayListItemModel("B", "", "bbbbb", R.drawable.food2));
+        playListItemModelArrayList.add(new PlayListItemModel("C", "", "ccccc", R.drawable.food3));
+        playListItemModelArrayList.add(new PlayListItemModel("D", "", "ddddd", R.drawable.food4));
+
+        return playListItemModelArrayList;
+    }
+
+    private ArrayList<LatestNewItemModel> createLatestNews(){
+        ArrayList<LatestNewItemModel> latestNewItemModelArrayList = new ArrayList<>();
+        latestNewItemModelArrayList.add(new LatestNewItemModel("1", "", "aaaaa", R.drawable.fruit1));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("2", "", "bbbbb", R.drawable.fruit2));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("3", "", "ccccc", R.drawable.fruit3));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("4", "", "ddddd", R.drawable.fruit4));
+        latestNewItemModelArrayList.add(new LatestNewItemModel("5", "", "eeeee", R.drawable.fruit5));
+
+        return latestNewItemModelArrayList;
+    }
+
+    private ArrayList<OtherNewsItemModel> createOtherNews(){
+        ArrayList<OtherNewsItemModel> otherNewsItemModelArrayList = new ArrayList<>();
+        otherNewsItemModelArrayList.add(new OtherNewsItemModel("AA", "", "AAAA", R.drawable.road1));
+        otherNewsItemModelArrayList.add(new OtherNewsItemModel("BB", "", "BBBB", R.drawable.road2));
+        otherNewsItemModelArrayList.add(new OtherNewsItemModel("CC", "", "CCCC", R.drawable.road3));
+        otherNewsItemModelArrayList.add(new OtherNewsItemModel("DD", "", "DDDD", R.drawable.road4));
+        otherNewsItemModelArrayList.add(new OtherNewsItemModel("EE", "", "EEEE", R.drawable.road5));
+
+        return otherNewsItemModelArrayList;
     }
 
     private void createDummyData() {
-        for (int i = 1; i <= 5; i++) {
-            SectionDataModel dm = new SectionDataModel();
-            dm.setHeaderTitle("Section " + i);
-            ArrayList<SingleItemModel> singleItemModels = new ArrayList<>();
-            for (int j = 1; j <= 10; j++) {
-                singleItemModels.add(new SingleItemModel("Item " + j, "URL " + j));
-            }
-            dm.setAllItemInSection(singleItemModels);
-            allSampleData.add(dm);
-        }
-
+//            SectionDataModel dmSingle = new SectionDataModel();
+//            ArrayList<SingleItemModel> singleItemModels = new ArrayList<>();
+//            dmSingle.setAllItemInSection(singleItemModels);
+//            allSampleData.add(dmSingle);
+            sectionModel = new SectionDataModel("LATEST NEWS");
+            sectionModel.setLatestNewItemModelArrayList(createLatestNews());
+            allSampleData.add(sectionModel);
+            sectionModel = new SectionDataModel("Play List");
+            sectionModel.setPlayListItemModelArrayList(createPlaylistData());
+            allSampleData.add(sectionModel);
+            sectionModel = new SectionDataModel("AA", R.drawable.road1);
+            allSampleData.add(sectionModel);
+            sectionModel = new SectionDataModel("BB", R.drawable.road2);
+            allSampleData.add(sectionModel);
+            sectionModel = new SectionDataModel("CC", R.drawable.road3);
+            allSampleData.add(sectionModel);
+            sectionModel = new SectionDataModel("DD", R.drawable.road4);
+            allSampleData.add(sectionModel);
+            sectionModel = new SectionDataModel("EE", R.drawable.road5);
+            allSampleData.add(sectionModel);
     }
 
     @Override
@@ -151,5 +195,15 @@ public class DashboardActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }

@@ -10,18 +10,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
 
 import java.util.ArrayList;
 
 public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListDataAdapter.SingleItemRowHolder>{
 
-    private ArrayList<SingleItemModel> itemModels;
+    private ArrayList<?> itemModels;
     private Context mContext;
+    private int layoutAllignment;
 
-    public SectionListDataAdapter(ArrayList<SingleItemModel> itemModels, Context mContext) {
+    public SectionListDataAdapter(ArrayList<?> itemModels, Context mContext, int layoutAllignment) {
         this.itemModels = itemModels;
         this.mContext = mContext;
+        this.layoutAllignment = layoutAllignment;
     }
 
     @Override
@@ -33,8 +36,31 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
 
     @Override
     public void onBindViewHolder(SingleItemRowHolder holder, int position) {
-        SingleItemModel itemModel = itemModels.get(position);
-        holder.tvTitle.setText(itemModel.getName());
+        if(layoutAllignment == 1){
+            LatestNewItemModel latestNewItemModel = (LatestNewItemModel) itemModels.get(position);
+            holder.tvTitle.setText(latestNewItemModel.getName());
+            Glide.with(mContext)
+                    .load(latestNewItemModel.getImage())
+                    .into(holder.itemImage);
+            //holder.itemImage.setImageResource(latestNewItemModel.getImage());
+        } else if(layoutAllignment == 2) {
+            PlayListItemModel playListItemModel = (PlayListItemModel) itemModels.get(position);
+            holder.tvTitle.setText(playListItemModel.getName());
+            Glide.with(mContext)
+                    .load(playListItemModel.getImage())
+                    .into(holder.itemImage);
+            //holder.itemImage.setImageResource(playListItemModel.getImage());
+        }
+        else if(layoutAllignment == 3){
+            OtherNewsItemModel otherNewsItemModel = (OtherNewsItemModel) itemModels.get(position);
+            holder.tvTitle.setText(otherNewsItemModel.getName());
+            Glide.with(mContext)
+                    .load(otherNewsItemModel.getImage())
+                    .into(holder.itemImage);
+            //holder.itemImage.setImageResource(otherNewsItemModel.getImage());
+        }
+
+
     }
 
     @Override
