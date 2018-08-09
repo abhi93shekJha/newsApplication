@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.gsatechworld.gugrify.R;
 
 public class Main2Activity extends AppCompatActivity {
-    TextView tv1;
+    TextView tv2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
