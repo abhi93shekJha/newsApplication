@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -7,6 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
+        <!-- other styles -->
+        <!--<item name="android:actionButtonStyle">@style/ActionButton</item>-->
+        <!--<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>-->
         <!-- other styles -->
         <item name="android:actionButtonStyle">@style/ActionButton</item>
     </style>
@@ -45,9 +48,13 @@
     </style>
 
     <style name="ActionButton" parent="@android:style/Widget.ActionButton">
-        <item name="android:minWidth">0dip</item>
-        <item name="android:paddingLeft">50dip</item>
-        <item name="android:paddingRight">20dip</item>
+        <item name="android:drawablePadding">@dimen/action_button_padding</item>
     </style>
+
+    <style name="Widget.Styled.ActionBar" parent="@android:style/Widget.ActionButton">
+        <item name="android:displayOptions">showHome|useLogo</item>
+        <item name="displayOptions">showHome|useLogo</item>
+    </style>
+
 
 </resources>

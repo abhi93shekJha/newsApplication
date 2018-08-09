@@ -17,6 +17,12 @@
     <color name="global_color_green_accent">#ffc107</color>
     <color name="global_color_green_control_activated">#ffc107</color>
 
+    // dashboard screen status bar color
+    <color name="ststusbar_color">#ED90A4AE</color>
+
+    // select language
+    <color name="lang_ststusbar_color">#99AFB42B</color>
+
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>

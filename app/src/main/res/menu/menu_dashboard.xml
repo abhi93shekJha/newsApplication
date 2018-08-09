@@ -4,23 +4,26 @@
     tools:context="com.gsatechworld.gugrify.view.dashboard.DashboardActivity">
     <group
         android:id="@+id/main_menu_group">
-    <item
-        android:id="@+id/action_printTaxFile"
-        android:enabled="true"
-        android:icon="@drawable/logo"
-        android:title="logo"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_esarch"
-        android:enabled="true"
-        android:icon="@drawable/ic_search"
-        android:title="search"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_avatar"
-        android:enabled="true"
-        android:icon="@drawable/ic_avatar"
-        android:title="profile"
-        app:showAsAction="ifRoom" />
+        <!--<item-->
+            <!--android:id="@+id/action_create"-->
+            <!--android:enabled="true"-->
+            <!--android:actionLayout="@layout/action_layout"-->
+            <!--android:orderInCategory="1"-->
+            <!--app:showAsAction="ifRoom"-->
+            <!--tools:ignore="MenuTitle" />-->
+        <item
+            android:id="@+id/action_esarch"
+            android:enabled="true"
+            android:icon="@drawable/ic_search"
+            android:title="search"
+            android:orderInCategory="2"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/action_avatar"
+            android:enabled="true"
+            android:orderInCategory="3"
+            android:icon="@drawable/ic_avatar"
+            android:title="profile"
+            app:showAsAction="ifRoom" />
     </group>
 </menu>

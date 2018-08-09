@@ -75,6 +75,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         } else if(position == 1){
             playListItems = dataList.get(position).getPlayListItemModelArrayList();
             adapter = new SectionListDataAdapter(playListItems, mContext, 2, position);
+            holder.btnMore.setVisibility(View.INVISIBLE);
         }
 //        else if(position == 2){
 //            otherNewsItems = dataList.get(position).getOtherNewsItemModelArrayList();

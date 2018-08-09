@@ -21,8 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/global_color_green_accent"
-            android:backgroundTint="#80000000"
+            android:background="#DEffc107"
             android:gravity="bottom|center">
 
             <TextView
