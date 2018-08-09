@@ -93,6 +93,7 @@
                             android:text="Bangalore"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:drawablePadding="-15dp"
                             android:textColor="@android:color/black"
                             android:textSize="8sp" />
                         <TextView
@@ -103,6 +104,7 @@
                             android:text="15 minutes ago"
                             android:gravity="center"
                             android:drawableLeft="@drawable/ic_clock"
+                            android:drawablePadding="-18dp"
                             android:textColor="@android:color/black"
                             android:textSize="8sp" />
                         <TextView
@@ -112,6 +114,7 @@
                             android:layout_gravity="end"
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/ic_star"
+                            android:drawablePadding="-12dp"
                             android:text="100 k views"
                             android:gravity="center"
                             android:textColor="@android:color/black"

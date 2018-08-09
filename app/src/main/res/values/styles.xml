@@ -7,7 +7,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
-
+        <!-- other styles -->
+        <item name="android:actionButtonStyle">@style/ActionButton</item>
     </style>
 
     <style name="TextViewAppearance.Headline2" parent="@style/TextViewAppearance">
@@ -41,6 +42,12 @@
 
     <style name="MyActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="ActionButton" parent="@android:style/Widget.ActionButton">
+        <item name="android:minWidth">0dip</item>
+        <item name="android:paddingLeft">50dip</item>
+        <item name="android:paddingRight">20dip</item>
     </style>
 
 </resources>
