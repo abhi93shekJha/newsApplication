@@ -64,7 +64,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
             @Override
             public void run() {
-                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
                 startActivity(i);
 
                 finish();

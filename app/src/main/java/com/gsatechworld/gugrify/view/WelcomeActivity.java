@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.SelectLanguageAndCities;
+import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -154,7 +155,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     public void launchHomeScreen(){
         prefManager.setIsFirstTime(false);
-        startActivity(new Intent(WelcomeActivity.this, SelectLanguageAndCities.class));
+        startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
         finish();
     }
 

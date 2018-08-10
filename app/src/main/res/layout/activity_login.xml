@@ -7,7 +7,8 @@
     android:background="@drawable/road3"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     tools:context=".view.authentication.LoginActivity">
 
     <!-- Login progress -->
@@ -89,20 +90,21 @@
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
-                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
+
                 <Button
                     android:id="@+id/btn_loginOrSignup"
-                    android:layout_width="wrap_content"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:background="@drawable/button_radius"
                     android:padding="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
                     android:text="@string/action_sign_in"
                     android:textColor="@color/colorWhite" />
 
@@ -112,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:gravity="center_horizontal"
-                    android:text="No account yet?Create one"
+                    android:text="No account yet? Create one"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp" />
 
@@ -121,52 +123,96 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:gravity="center_horizontal"
                     android:text="OR"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tvSigninUsing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="20dp"
                     android:gravity="center_horizontal"
                     android:text="Sign in using"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp" />
             </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:weightSum="1"
-            android:layout_marginTop="20dp"
-            android:layout_height="wrap_content">
-            <Button
-            android:id="@+id/btn_fb"
-            android:text="Facebook"
-                android:layout_weight="0.5"
-            android:drawableLeft="@drawable/ic_setting"
-            android:layout_width="0dp"
-            android:drawablePadding="5dp"
-                android:paddingRight="5dp"
-            android:background="@color/logoColor"
-            android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/btn_googlePlus"
-                android:text="Google"
-                android:layout_weight="0.5"
-                android:drawableLeft="@drawable/ic_setting"
-                android:layout_width="0dp"
-                android:paddingLeft="5dp"
-                android:drawablePadding="10dp"
-                android:background="@color/dot_dark_screen1"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:weightSum="1">
 
+                <Button
+                    android:id="@+id/btn_fb"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.5"
+                    android:background="@color/logoColor"
+                    android:drawableLeft="@drawable/ic_fb"
+                    android:drawablePadding="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingLeft="25dp"
+                    android:text="Facebook"
+                    android:textSize="17sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
+
+                <Button
+                    android:id="@+id/btn_googlePlus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="0.5"
+                    android:background="@color/red_color"
+                    android:drawableLeft="@drawable/ic_google"
+                    android:paddingLeft="30dp"
+                    android:textSize="17sp"
+                    android:text="Google"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/tvSigninUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="start"
+                    android:text="Sign up"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvTerms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="0.5"
+                    android:gravity="end"
+                    android:text="Terms"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

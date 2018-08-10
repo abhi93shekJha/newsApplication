@@ -20,8 +20,13 @@
     // dashboard screen status bar color
     <color name="ststusbar_color">#ED90A4AE</color>
 
+    // login screen status bar color
+    <color name="ststusbar_login_color">#ED030303</color>
+
     // select language
     <color name="lang_ststusbar_color">#99AFB42B</color>
+
+    <color name="red_color">#F93F2D</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>

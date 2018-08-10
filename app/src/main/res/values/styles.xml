@@ -77,14 +77,15 @@
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">13sp</item>
         <item name="colorControlNormal">@color/colorWhite</item>
-
+        <item name="android:textColorHighlight">@color/colorWhite</item>
+        <item name="android:textColorLink">@color/colorWhite</item>
         //added attributes
         <item name="colorControlActivated">@color/colorWhite</item>
         <item name="colorControlHighlight">@color/colorWhite</item>
 
     </style>
 
-    <style name="TextLabel" parent="TextAppearance.AppCompat">
+    <style name="TextLabel" parent="Theme.AppCompat">
 
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">#fff</item>
