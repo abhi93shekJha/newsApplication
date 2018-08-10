@@ -82,7 +82,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
 //            adapter = new SectionListDataAdapter(otherNewsItems, mContext, 3);
 //        }
 
-        holder.itemTitle.setText(sectionName);
+       // holder.itemTitle.setText(sectionName);
 
         if(position <= 1){
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));

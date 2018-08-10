@@ -11,7 +11,7 @@
         <!--<item name="android:actionButtonStyle">@style/ActionButton</item>-->
         <!--<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>-->
         <!-- other styles -->
-        <item name="android:actionButtonStyle">@style/ActionButton</item>
+        <item name="android:actionButtonStyle">@style/MyActionButtonStyle</item>
     </style>
 
     <style name="TextViewAppearance.Headline2" parent="@style/TextViewAppearance">
@@ -56,5 +56,14 @@
         <item name="displayOptions">showHome|useLogo</item>
     </style>
 
+    <style name="MyActionButtonStyle" parent="AppTheme">
+        <item name="android:minWidth">20dip</item>
+        <item name="android:padding">5dip</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
 </resources>

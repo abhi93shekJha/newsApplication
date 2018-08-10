@@ -75,17 +75,17 @@
         android:layout_height="55dp">
         <FrameLayout
             android:layout_width="match_parent"
-            android:paddingRight="15dp"
+            android:paddingRight="7dp"
             android:layout_height="match_parent">
         <ImageButton
             android:id="@+id/selectOnceButton"
             android:layout_gravity="right|center_vertical"
             android:textColor="@color/colorWhite"
             android:textAllCaps="false"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:textSize="18sp"
             app:srcCompat="@drawable/ic_next_arrow"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="0dp"
             android:background="@drawable/round_button"
             android:layout_width="45dp"
             android:layout_height="45dp" />

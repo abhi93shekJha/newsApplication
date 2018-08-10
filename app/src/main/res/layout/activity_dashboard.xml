@@ -1,44 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.dashboard.DashboardActivity">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main3"
+        app:menu="@menu/activity_main3_drawer" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-     <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-         <LinearLayout
-             android:orientation="horizontal"
-             android:weightSum="1"
-             android:layout_width="270dp"
-             android:layout_height="wrap_content">
-             <ImageView
-                 android:layout_weight="0.1"
-                 android:layout_width="40dp"
-                 android:id="@+id/icon"
-                 android:src="@drawable/logo"
-                 android:layout_marginRight="15dp"
-                 android:layout_height="40dp" />
-             <TextView
-                 android:layout_weight="0.8"
-                 android:id="@+id/tvTitle"
-                 android:text="Gugrify"
-                 android:layout_gravity="center|start"
-                 android:textSize="25sp"
-                 android:layout_width="wrap_content"
-                 android:layout_marginLeft="1dp"
-                 android:textStyle="bold"
-                 android:textColor="@color/ststusbar_color"
-                 android:layout_height="wrap_content" />
-         </LinearLayout>
-     </android.support.v7.widget.Toolbar>
-    <include layout="@layout/content_dashboard" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_width="270dp"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_weight="0.1"
+                    android:layout_width="35dp"
+                    android:id="@+id/icon"
+                    android:src="@drawable/logo"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="35dp" />
+                <TextView
+                    android:layout_weight="0.8"
+                    android:id="@+id/tvTitle"
+                    android:text="Gugrify"
+                    android:layout_gravity="center|start"
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ststusbar_color"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+        <include layout="@layout/content_dashboard" />
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.DrawerLayout>
+
