@@ -13,7 +13,7 @@
         android:paddingRight="5dp"
         android:gravity="center"
         android:layout_gravity="center"
-        android:src="@drawable/logo" />
+        android:src="@mipmap/logo" />
     <TextView
         android:layout_weight="0.7"
         android:layout_width="0dp"
