@@ -18,6 +18,7 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.TransitionGenerator;
 import com.gsatechworld.gugrify.MyTransitionGenerator;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 
 public class SplashActivity extends Activity implements Animation.AnimationListener{
 
@@ -63,7 +64,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
             @Override
             public void run() {
-                Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
+                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(i);
 
                 finish();

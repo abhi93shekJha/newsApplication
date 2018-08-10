@@ -11,7 +11,7 @@
         <!--<item name="android:actionButtonStyle">@style/ActionButton</item>-->
         <!--<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>-->
         <!-- other styles -->
-        <item name="android:actionButtonStyle">@style/MyActionButtonStyle</item>
+        <item name="android:actionButtonStyle">@style/ActionButton</item>
     </style>
 
     <style name="TextViewAppearance.Headline2" parent="@style/TextViewAppearance">
@@ -56,14 +56,45 @@
         <item name="displayOptions">showHome|useLogo</item>
     </style>
 
-    <style name="MyActionButtonStyle" parent="AppTheme">
-        <item name="android:minWidth">20dip</item>
-        <item name="android:padding">5dip</item>
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">13sp</item>
+        <item name="colorControlNormal">@color/colorWhite</item>
+
+        //added attributes
+        <item name="colorControlActivated">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+
+    </style>
+
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">#fff</item>
+        <item name="android:textSize">20sp</item>
+
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+
+        <item name="colorAccent">@color/colorWhite</item>
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="colorControlActivated">@color/colorWhite</item>
     </style>
 
 </resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+        <item
+            android:id="@+id/nav_break_1"
+            android:icon="@drawable/ic_menu_orange"
+
+            tools:ignore="MenuTitle" />
+        <item
+            android:id="@+id/nav_break_2"
+            android:icon="@drawable/ic_menu_orange"
+            tools:ignore="MenuTitle" />
+        <item
+            android:id="@+id/nav_break_3"
+            android:icon="@drawable/ic_menu_orange"
+            android:title="Breaking News" />
+        <item
+            android:id="@+id/nav_break_4"
+            android:icon="@drawable/ic_menu_orange"
+            android:title="Breaking News" />
+        <item
+            android:id="@+id/nav_break_5"
+            android:actionLayout="@layout/action_layout"
+            android:icon="@drawable/ic_menu_orange"
+            android:title="Breaking News" />
+        <item
+            android:id="@+id/nav_break_6"
+            android:icon="@drawable/ic_menu_orange"
+            android:title="Breaking News" />
+        <item
+            android:id="@+id/nav_break_7"
+            android:icon="@drawable/ic_menu_orange"
+            android:title="Breaking News" />
+        <item
+            android:id="@+id/nav_break_8"
+            android:icon="@drawable/ic_menu_orange"
+            android:title="Breaking News" />
+
+    <!--<item android:title="Communicate">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/nav_share"-->
+                <!--android:icon="@drawable/ic_menu_share"-->
+                <!--android:title="Share" />-->
+            <!--<item-->
+                <!--android:id="@+id/nav_send"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="Send" />-->
+        <!--</menu>-->
+    <!--</item>-->
+
+</menu>
