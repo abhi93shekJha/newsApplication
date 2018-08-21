@@ -21,8 +21,7 @@
             <com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:layout_marginBottom="4dp" />
+                android:layout_height="170dp" />
 
             <LinearLayout
                 android:id="@+id/viewPagerCountDots"

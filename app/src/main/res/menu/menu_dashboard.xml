@@ -16,12 +16,9 @@
             android:enabled="true"
             android:icon="@drawable/ic_search"
             android:title="search"
-            android:orderInCategory="2"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/action_avatar"
-            android:enabled="true"
-            android:orderInCategory="3"
             android:icon="@drawable/ic_avatar"
             android:title="profile"
             app:showAsAction="ifRoom" />

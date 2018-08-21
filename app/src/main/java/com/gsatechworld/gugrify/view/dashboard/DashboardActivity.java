@@ -22,9 +22,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.TransitionGenerator;
+import com.gsatechworld.gugrify.MyTransitionGenerator;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
@@ -104,7 +110,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         viewPager.setInterval(3000);
         viewPager.setCycle(true);
         viewPager.setStopScrollWhenTouch(true);
-
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
 

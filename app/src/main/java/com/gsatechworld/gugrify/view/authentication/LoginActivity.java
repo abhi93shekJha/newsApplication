@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -352,7 +353,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                startActivity(new Intent(LoginActivity.this, SelectLanguageAndCities.class));
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

@@ -9,15 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.gsatechworld.gugrify.R;
-import com.gsatechworld.gugrify.view.genericadapter.BaseViewHolder;
-import com.gsatechworld.gugrify.view.genericadapter.GenericRecyclerViewAdapter;
-import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -125,6 +123,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
             this.itemTitle = itemView.findViewById(R.id.itemTitle);
             this.recyclerView = itemView.findViewById(R.id.recycler_view_list);
             this.btnMore = itemView.findViewById(R.id.btnMore);
+//            this.img = itemView.findViewById(R.id.img);
             this.img = itemView.findViewById(R.id.img);
         }
     }

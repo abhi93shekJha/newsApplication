@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,7 +40,7 @@ public class SelectLanguageAndCities extends AppCompatActivity {
     boolean runOnce;
     public static List<String> list;
     Button  invisibleButton;
-    ImageButton selectCityButton;
+    ImageView selectCityButton;
     public static String selectedLanguage = "Kannada";
     LanguageExpandableListAdapter adapter;
     LanguageRecyclerAdapter lAdapter;
@@ -110,7 +111,7 @@ public class SelectLanguageAndCities extends AppCompatActivity {
 //        list.add(p);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         list = new ArrayList<>();
-        list.add("Language");
+        list.add("Select");
         lAdapter = new LanguageRecyclerAdapter(SelectLanguageAndCities.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
