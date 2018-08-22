@@ -48,7 +48,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         switch (viewType) {
             case 0: //This would be the header view in my Recycler
                 v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_verti, parent, false);
+                        .inflate(R.layout.list_item_verti_test, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 snapHelper = new GravitySnapHelper(Gravity.START);
                 return  rowHolder;
@@ -74,11 +74,13 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
             playListItems = dataList.get(position).getPlayListItemModelArrayList();
             adapter = new SectionListDataAdapter(playListItems, mContext, 2, position);
             holder.btnMore.setVisibility(View.INVISIBLE);
+            holder.line.setVisibility(View.GONE);
         }
 //        else if(position == 2){
 //            otherNewsItems = dataList.get(position).getOtherNewsItemModelArrayList();
 //            adapter = new SectionListDataAdapter(otherNewsItems, mContext, 3);
 //        }
+        if(holder.itemTitle != null)
         holder.itemTitle.setText(sectionName);
 
         if(position <= 1){
@@ -116,6 +118,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         protected RecyclerView recyclerView;
         protected ImageView btnMore;
         protected ImageView img;
+        protected View line;
 
         public ItemRowHolder(View itemView) {
             super(itemView);
@@ -124,6 +127,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
             this.btnMore = itemView.findViewById(R.id.btnMore);
 //            this.img = itemView.findViewById(R.id.img);
             this.img = itemView.findViewById(R.id.img);
+            this.line = itemView.findViewById(R.id.viewItemLine);
         }
     }
 }

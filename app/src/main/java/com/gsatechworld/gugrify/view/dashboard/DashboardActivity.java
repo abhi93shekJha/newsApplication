@@ -107,7 +107,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         pager_indicator = (LinearLayout) findViewById(R.id.viewPagerCountDots);
         viewPager = (AutoScrollViewPager) findViewById(R.id.viewPager);
         viewPager.startAutoScroll();
-        viewPager.setInterval(3000);
+//        viewPager.setAnimation();
+        viewPager.setInterval(5000);
         viewPager.setCycle(true);
         viewPager.setStopScrollWhenTouch(true);
 
@@ -227,7 +228,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     private ArrayList<OtherNewsItemModel> createOtherNews() {
         ArrayList<OtherNewsItemModel> otherNewsItemModelArrayList = new ArrayList<>();
-        otherNewsItemModelArrayList.add(new OtherNewsItemModel("AA", "", "AAAA", R.drawable.road1));
+        otherNewsItemModelArrayList.add(new OtherNewsItemModel("AAAA", "", "AAAA", R.drawable.road1));
         otherNewsItemModelArrayList.add(new OtherNewsItemModel("BB", "", "BBBB", R.drawable.road2));
         otherNewsItemModelArrayList.add(new OtherNewsItemModel("CC", "", "CCCC", R.drawable.road3));
         otherNewsItemModelArrayList.add(new OtherNewsItemModel("DD", "", "DDDD", R.drawable.road4));
@@ -247,9 +248,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         sectionModel = new SectionDataModel("Play List");
         sectionModel.setPlayListItemModelArrayList(createPlaylistData());
         allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("AA", R.drawable.road1);
+        sectionModel = new SectionDataModel("AAP leader Ashish Khetan leaves active politics citing plans to pursue law; sources say LS seat could have triggered move", R.drawable.road1);
         allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("BB", R.drawable.road2);
+        sectionModel = new SectionDataModel("India unlikely to accept foreign donations for flood relief efforts in Kerala, will rely on domestic assistance", R.drawable.road2);
         allSampleData.add(sectionModel);
         sectionModel = new SectionDataModel("CC", R.drawable.road3);
         allSampleData.add(sectionModel);

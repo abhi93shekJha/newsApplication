@@ -3,7 +3,8 @@
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
@@ -18,7 +19,7 @@
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:src="@mipmap/ic_launcher" />
             <LinearLayout
                 android:orientation="horizontal"
@@ -51,7 +52,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@+id/btnMore"
-                            android:text="Sample Titlegvghghjghjyjhkjhkjhkjhkjhkhjkhjkhjkkkkkkghkhkhjkghjghjhgjhgjgh"
+                            android:text="Sample Title"
                             android:textColor="@android:color/black"
                             android:textSize="16sp" />
 
@@ -110,6 +111,7 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="70dp"
