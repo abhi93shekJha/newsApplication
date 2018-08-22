@@ -30,8 +30,7 @@
             android:paddingLeft="20dp"
             android:text="Breaking News"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/navItemCount"
