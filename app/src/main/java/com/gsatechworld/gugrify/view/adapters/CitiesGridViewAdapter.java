@@ -58,56 +58,6 @@ public class CitiesGridViewAdapter extends BaseAdapter{
         holder.tv1.setTypeface(fontMedium);
         holder.tv2.setTypeface(fontMedium);
 
-//        holder.image.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("Poistion of image is:", String.valueOf(i));
-//                if(!b) {
-//                    Log.d("In : ", "False");
-//                    TextView tv = views[i].findViewById(R.id.citiesGridView_text2);
-//                    RelativeLayout r = views[i].findViewById(R.id.grid_view_items_relativeLayout);
-//                    r.setBackgroundColor(context.getResources().getColor(R.color.brown));
-//                    tv.setVisibility(View.VISIBLE);
-//                    b = true;
-//                    notifyDataSetChanged();
-//                }
-//                else{
-//                    Log.d("In : ", "True");
-//                    TextView tv = views[i].findViewById(R.id.citiesGridView_text2);
-//                    RelativeLayout r = views[i].findViewById(R.id.grid_view_items_relativeLayout);
-//                    r.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
-//                    tv.setVisibility(View.GONE);
-//                    b = false;
-//                    notifyDataSetChanged();
-//                }
-//            }
-//        });
-//
-//        holder.tv1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("Poistion of text is:", String.valueOf(i));
-//                if(!b) {
-//                    Log.d("In : ", "False");
-//                    TextView tv = views[i].findViewById(R.id.citiesGridView_text2);
-//                    RelativeLayout r = views[i].findViewById(R.id.grid_view_items_relativeLayout);
-//                    r.setBackgroundColor(context.getResources().getColor(R.color.brown));
-//                    tv.setVisibility(View.VISIBLE);
-//                    b = true;
-//                    notifyDataSetChanged();
-//                }
-//                else{
-//                    Log.d("In : ", "True");
-//                    TextView tv = views[i].findViewById(R.id.citiesGridView_text2);
-//                    RelativeLayout r = views[i].findViewById(R.id.grid_view_items_relativeLayout);
-//                    r.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
-//                    tv.setVisibility(View.GONE);
-//                    b = false;
-//                    notifyDataSetChanged();
-//                }
-//            }
-//        });
-        views[i] = convertView;
         return convertView;
     }
 

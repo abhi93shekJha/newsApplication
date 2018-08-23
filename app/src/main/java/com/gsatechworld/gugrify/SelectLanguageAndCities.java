@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -16,13 +17,16 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.adapters.CitiesGridViewAdapter;
@@ -34,17 +38,15 @@ import java.util.List;
 
 //import LanguageRecyclerAdapter;
 
-public class SelectLanguageAndCities extends AppCompatActivity {
+public class SelectLanguageAndCities extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     ExpandableListView expListView;
     boolean runOnce;
     public static List<String> list;
-    Button  invisibleButton;
-    ImageView selectCityButton;
+    FloatingActionButton selectCityButton;
     public static String selectedLanguage = "Kannada";
     LanguageExpandableListAdapter adapter;
     LanguageRecyclerAdapter lAdapter;
-    boolean runOnceForLanguage;
     public static String pickedLanguage = "";
     TextView textView;
     View[] views = new View[9];
@@ -60,9 +62,28 @@ public class SelectLanguageAndCities extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_language_cities);
 
+        Spinner spinner = (Spinner) findViewById(R.id.citiesSpinner);
+        spinner.setOnItemSelectedListener(SelectLanguageAndCities.this);
+
+        List<String> categories = new ArrayList<String>();
+        categories.add("Kannada");
+        categories.add("English");
+        categories.add("Hindi");
+        categories.add("Malayalam");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+
         TextView tv1 = findViewById(R.id.select_language_textView);
-        selectCityButton = findViewById(R.id.selectOnceButton);
-        invisibleButton = findViewById(R.id.button_above_recycler);
+        selectCityButton = findViewById(R.id.languageAndCityFloating);
+        selectCityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SelectLanguageAndCities.this, DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
         Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         tv1.setTypeface(fontRegular);
         //selectCityButton.setTypeface(fontRegular);
@@ -75,54 +96,9 @@ public class SelectLanguageAndCities extends AppCompatActivity {
 
         // finally change the color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.lang_ststusbar_color));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lang_ststusbar_color));
         }
 
-//        expListView = findViewById(R.id.select_language_expandable_list);
-//        list = new ArrayList<>();
-//        list.add("Kannada");
-//        list.add("Hindi");
-//        list.add("English");
-//        list.add("Tamil");
-//        adapter = new LanguageExpandableListAdapter(SelectLanguageAndCities.this, list);
-//        expListView.setAdapter(adapter);
-//        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//            @Override
-//            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-//                Log.d("Child clicked"," True");
-//                expListView.collapseGroup(i);
-//                selectedLanguage = list.get(i1);
-//                adapter.notifyDataSetChanged();
-//                return false;
-//            }
-//        });
-//
-//        ParentItems p = new ParentItems("Kannada");
-//
-//        //These are the list of languages to be added dynamically
-//        List<Object> languages = new ArrayList<>();
-//        languages.add("Kannada");
-//        languages.add("English");
-//        languages.add("Hindi");
-//        languages.add("Malayalam");
-//        p.setChildObjectList(languages);
-
-//        List<ParentObject> list = new ArrayList<>();
-//        list.add(p);
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        list = new ArrayList<>();
-        list.add("Select");
-        lAdapter = new LanguageRecyclerAdapter(SelectLanguageAndCities.this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(lAdapter);
-
-//        adapter.setCustomParentAnimationViewId(R.id.activity_header_down_image);
-//        adapter.setParentClickableViewAnimationDefaultDuration();
-//        adapter.setParentAndIconExpandOnClick(true);
-        //recyclerView.setAdapter(adapter);
 
         GridView gridView = findViewById(R.id.select_language_grid_view);
         final CitiesGridViewAdapter c = new CitiesGridViewAdapter(SelectLanguageAndCities.this);
@@ -132,7 +108,7 @@ public class SelectLanguageAndCities extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 //This logic has to be changed later
-                if(!runOnce) {
+                if (!runOnce) {
                     selectCityButton.setVisibility(View.VISIBLE);
                     Animation animation2 = AnimationUtils.loadAnimation(SelectLanguageAndCities.this, R.anim.slide_left);
                     selectCityButton.startAnimation(animation2);
@@ -147,100 +123,46 @@ public class SelectLanguageAndCities extends AppCompatActivity {
 //                else{
 //                    runOnce = false;
 //                }
-                    if(previous == view){
-                        if(!b) {
-                            RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
-                            r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.colorWhite));
-                            TextView tv = previous.findViewById(R.id.citiesGridView_text2);
-                            tv.setVisibility(View.GONE);
-                            b = true;
-                        }
-                        else{
-                            RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
-                            r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
-                            TextView tv = previous.findViewById(R.id.citiesGridView_text2);
-                            tv.setVisibility(View.VISIBLE);
-                            b = false;
-                        }
-                    }
-                    else{
+                if (previous == view) {
+                    if (!b) {
                         RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
                         r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.colorWhite));
                         TextView tv = previous.findViewById(R.id.citiesGridView_text2);
                         tv.setVisibility(View.GONE);
-
-                        RelativeLayout r1 = view.findViewById(R.id.grid_view_items_relativeLayout);
-                        r1.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
-                        TextView tv1 = view.findViewById(R.id.citiesGridView_text2);
-                        tv1.setVisibility(View.VISIBLE);
-
-                        previous = view;
+                        b = true;
+                    } else {
+                        RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
+                        r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
+                        TextView tv = previous.findViewById(R.id.citiesGridView_text2);
+                        tv.setVisibility(View.VISIBLE);
+                        b = false;
                     }
+                } else {
+                    RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
+                    r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.colorWhite));
+                    TextView tv = previous.findViewById(R.id.citiesGridView_text2);
+                    tv.setVisibility(View.GONE);
 
-//                    RelativeLayout r = view.findViewById(R.id.grid_view_items_relativeLayout);
-//                    r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.colorWhite));
-//                    TextView tv = view.findViewById(R.id.citiesGridView_text2);
-//                    tv.setVisibility(View.GONE);
+                    RelativeLayout r1 = view.findViewById(R.id.grid_view_items_relativeLayout);
+                    r1.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
+                    TextView tv1 = view.findViewById(R.id.citiesGridView_text2);
+                    tv1.setVisibility(View.VISIBLE);
 
-            }
-        });
-
-        invisibleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(list.size() > 1){
-                    String temp = list.get(0);
-                    list.clear();
-                    pickedLanguage = "Kannada";
-                    list.add(temp);
-                    lAdapter.notifyDataSetChanged();
-                    return;
+                    previous = view;
                 }
-                fillLanguageList();
-                runOnceForLanguage = true;
-                lAdapter.notifyItemRangeInserted(0, list.size() - 1);
-            }
-        });
-
-        selectCityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SelectLanguageAndCities.this, DashboardActivity.class));
             }
         });
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        Log.d("Inside: ", "onClick");
-//        ArrayList<String> temp = new ArrayList<>();
-//        temp.add("Kannada");
-//        temp.add("Hindi");
-//        temp.add("Malayalam");
-//        temp.add("English");
-//        list.addAll(1, temp);
-//        //lAdapter.notifyDataSetChanged();
-//    }
-
-    public void fillLanguageList() {
-        if (!runOnceForLanguage) {
-            getLanguageFromServer();
-        } else {
-            if (pickedLanguage.equals("Kannada") == false) {
-                list.remove(pickedLanguage);
-                list.add("Kannada");
-                getLanguageFromServer();
-            } else {
-                getLanguageFromServer();
-            }
-        }
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        // On selecting a spinner item
+        String item = adapterView.getItemAtPosition(i).toString();
+        Toast.makeText(this, "Selected: " + item, Toast.LENGTH_LONG).show();
     }
 
-        // Ignore the logic and just use this method to fill the language list got from server.
-        public void getLanguageFromServer () {
-            list.add("English");
-            list.add("Hindi");
-            list.add("Malayalam");
-            list.add("Tamil");
-        }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
+}
