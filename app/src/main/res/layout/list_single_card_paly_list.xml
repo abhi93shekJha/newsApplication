@@ -9,8 +9,8 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp">
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="0dp">
 
         <ImageView
             android:id="@+id/itemImage"
