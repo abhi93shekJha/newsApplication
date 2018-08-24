@@ -1,5 +1,7 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,8 +27,12 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.support.v7.widget.SearchView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.TransitionGenerator;
@@ -77,6 +83,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         toggle.setDrawerIndicatorEnabled(false);
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo, getTheme());
         toggle.setHomeAsUpIndicator(drawable);
+
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,6 +271,14 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+
+        /*SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.menu.menu_dashboard).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));*/
+
         return true;
     }
 
@@ -274,10 +289,23 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_esarch){
+
+           /* TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
+            tvTitle.setVisibility(View.GONE);
+            EditText et_search = (EditText)findViewById(R.id.et_search);
+            et_search.setVisibility(View.VISIBLE);*/
+
+            TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
+            tvTitle.setVisibility(View.GONE);
+            Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
+            return true;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

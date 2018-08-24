@@ -16,7 +16,7 @@
             android:id="@+id/navImageItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="0dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_menu_orange" />
 
@@ -30,7 +30,7 @@
             android:paddingLeft="20dp"
             android:text="Breaking News"
             android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/navItemCount"
@@ -42,10 +42,10 @@
             android:gravity="center"
             android:layout_gravity="center_horizontal"
             android:text="8"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/color_black" />
     </LinearLayout>
     <View
         android:background="@color/colorWhite"
         android:layout_width="match_parent"
-        android:layout_height="1dp"></View>
+        android:layout_height="1dp"/>
 </LinearLayout>

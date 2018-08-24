@@ -31,6 +31,8 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
     private SectionListDataAdapter adapter;
     Animation slide;
 
+    private int lastPosition = -1;
+
     public RecyclerViewDataAdapterTest(ArrayList<SectionDataModel> dataList, Context mContext) {
         this.dataList = dataList;
         this.mContext = mContext;
@@ -74,16 +76,26 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         if(position == 0){
             latestNewItems = dataList.get(position).getLatestNewItemModelArrayList();
             adapter = new SectionListDataAdapter(latestNewItems, mContext, 1, position);
+
+
         } else if(position == 1){
             playListItems = dataList.get(position).getPlayListItemModelArrayList();
             adapter = new SectionListDataAdapter(playListItems, mContext, 2, position);
             holder.btnMore.setVisibility(View.INVISIBLE);
             holder.line.setVisibility(View.GONE);
         }
-//        else if(position == 2){
-//            otherNewsItems = dataList.get(position).getOtherNewsItemModelArrayList();
-//            adapter = new SectionListDataAdapter(otherNewsItems, mContext, 3);
-//        }
+
+
+       /* else if(position == 2){
+           *//* otherNewsItems = dataList.get(position).getOtherNewsItemModelArrayList();
+            adapter = new SectionListDataAdapter(otherNewsItems, mContext, 3,position);
+*//*
+            Animation animation = AnimationUtils.loadAnimation(mContext, (position
+                    > lastPosition) ? R.anim.push_left_to_right :
+                    R.anim.push_left_to_right);
+            holder.itemView.startAnimation(animation);
+            lastPosition = position;
+        }*/
         if(holder.itemTitle != null)
         holder.itemTitle.setText(sectionName);
 
@@ -93,11 +105,21 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
             holder.recyclerView.setHasFixedSize(true);
             holder.recyclerView.setRecycledViewPool(recycledViewPool);
             snapHelper.attachToRecyclerView(holder.recyclerView);
+
         } else {
             Glide.with(mContext)
                     .load(dataList.get(position).getImg())
                     .into(holder.img);
+
+            for (int i = 0; i < getItemCount(); i++) {
+
+            Animation animation = AnimationUtils.loadAnimation(mContext, (position
+                    > lastPosition) ? R.anim.push_left_to_right :
+                    R.anim.push_left_to_right);
+            holder.itemView.startAnimation(animation);
+            lastPosition = position;
             //holder.img.setImageResource(dataList.get(position).getImg());
+            }
         }
         slide = AnimationUtils.loadAnimation(mContext, R.anim.slide_left);
 //        else {

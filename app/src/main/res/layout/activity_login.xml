@@ -7,8 +7,8 @@
     android:background="@drawable/road3"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     tools:context=".view.authentication.LoginActivity">
 
     <!-- Login progress -->
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
-                android:text="Hello Again!"
+                android:text="Welcome"
                 android:textColor="@color/colorWhite"
                 android:textSize="40sp"
                 android:textStyle="bold" />
@@ -116,7 +116,7 @@
                     android:gravity="center_horizontal"
                     android:text="No account yet? Create one"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/tvOr"
@@ -127,7 +127,7 @@
                     android:gravity="center_horizontal"
                     android:text="OR"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -139,7 +139,7 @@
                     android:gravity="center_horizontal"
                     android:text="Sign in using"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -152,7 +152,7 @@
 
                 <Button
                     android:id="@+id/btn_fb"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_weight="0.5"
@@ -161,6 +161,8 @@
                     android:drawablePadding="5dp"
                     android:paddingRight="5dp"
                     android:paddingLeft="25dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="Facebook"
                     android:textSize="17sp"
                     android:textAllCaps="false"
@@ -168,15 +170,17 @@
 
                 <Button
                     android:id="@+id/btn_googlePlus"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="0.5"
                     android:background="@color/red_color"
                     android:drawableLeft="@drawable/ic_google"
-                    android:paddingLeft="30dp"
+                    android:paddingLeft="25dp"
                     android:textSize="17sp"
                     android:text="Google"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite" />
             </LinearLayout>
