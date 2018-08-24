@@ -1,19 +1,25 @@
 package com.gsatechworld.gugrify.view.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,16 +33,26 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     private LayoutInflater layoutInflater;
     private HashSet<Integer> expandedPositionSet;
     private Context context;
-    RelativeLayout main;
+    FloatingActionButton actionButton;
+    Animation animation;
     boolean once;
     View temp;
     ArrayList<Integer> selectedItem = new ArrayList<>();
 
-    public LanguageRecyclerAdapter(Context context, ArrayList<City> citie) {
+    public LanguageRecyclerAdapter(final Context context, ArrayList<City> citie, FloatingActionButton action) {
+        this.actionButton = action;
         this.layoutInflater = LayoutInflater.from(context);
         expandedPositionSet = new HashSet<>();
         this.context = context;
         this.cities = citie;
+
+        action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DashboardActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
 
@@ -54,32 +70,22 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.brown));
             holder.tvBrown.setVisibility(View.GONE);
             holder.tvWhite.setVisibility(View.VISIBLE);
-//             Snackbar snackbar = Snackbar
-//                     .make(selectCityMain, "", Snackbar.LENGTH_LONG);
-//
-//             Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-//// Hide the text
-//             TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
-//             textView.setVisibility(View.INVISIBLE);
-//
-//// Inflate our custom view
-//             View snackView = mInflater.inflate(R.layout.my_snackbar, null);
-//// Configure the view
-//             ImageView imageView = (ImageView) snackView.findViewById(R.id.image);
-//             imageView.setImageBitmap(image);
-//             TextView textViewTop = (TextView) snackView.findViewById(R.id.text);
-//             textViewTop.setText(text);
-//             textViewTop.setTextColor(Color.WHITE);
-//
-//             layout.setPadding(0,0,0,0);
-//
-//             layout.addView(snackView, 0);
-//
-//             snackbar.show();
+            actionButton.setVisibility(View.VISIBLE);
+            if(!once) {
+                animation = AnimationUtils.loadAnimation(context,
+                        R.anim.slide_left);
+                actionButton.setAnimation(animation);
+                once=true;
+            }
+             actionButton.invalidate();
         } else {
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
             holder.tvBrown.setVisibility(View.VISIBLE);
             holder.tvWhite.setVisibility(View.GONE);
+            if(selectedItem.size() == 0) {
+                actionButton.setVisibility(View.GONE);
+                once = false;
+            }
         }
          holder.tvBrown.setText(cities.get(position).cityName);
     }
@@ -88,6 +94,8 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     public int getItemCount() {
         return cities.size();
     }
+
+
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder{
         public TextView tvBrown;

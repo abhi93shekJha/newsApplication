@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -71,15 +72,33 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         Spinner spinner = (Spinner) findViewById(R.id.citiesSpinner);
         spinner.setOnItemSelectedListener(SelectLanguageAndCities.this);
 
-        List<String> categories = new ArrayList<String>();
-        categories.add("Kannada");
-        categories.add("English");
-        categories.add("Hindi");
-        categories.add("Malayalam");
+        final List<String> categories = new ArrayList<String>();
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item){
+
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View v = super.getView(position, convertView, parent);
+                if (position == getCount()) {
+                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
+                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                }
+                return v;
+            }
+
+            @Override
+            public int getCount() {
+                return super.getCount() - 1; // you dont display last item. It is used as hint.
+            }
+        };
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.add("Kannada");
+        dataAdapter.add("English");
+        dataAdapter.add("Hindi");
+        dataAdapter.add("Malayalam");
+        dataAdapter.add("Select");
         spinner.setAdapter(dataAdapter);
+        spinner.setSelection(dataAdapter.getCount());
 
         TextView tv1 = findViewById(R.id.select_language_textView);
         selectCityButton = findViewById(R.id.languageAndCityFloating);
@@ -106,7 +125,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         }
 
         RecyclerView grid = findViewById(R.id.select_language_grid_view);
-        LanguageRecyclerAdapter l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, getCities());
+        LanguageRecyclerAdapter l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, getCities(), (FloatingActionButton) findViewById(R.id.languageAndCityFloating));
         grid.setLayoutManager(new GridLayoutManager(this, 3));
         grid.setAdapter(l);
 //        l.setClickListener(this);
@@ -117,7 +136,8 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         // On selecting a spinner item
         String item = adapterView.getItemAtPosition(i).toString();
-        Toast.makeText(this, "Selected: " + item, Toast.LENGTH_LONG).show();
+        if(!item.equals("Select"))
+            Toast.makeText(this, "Selected: " + item, Toast.LENGTH_LONG).show();
     }
 
     @Override
