@@ -59,12 +59,13 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private LinearLayout pager_indicator;
     private ArrayList<SectionDataModel> allSampleData;
     private SectionDataModel sectionModel;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -296,7 +297,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             EditText et_search = (EditText)findViewById(R.id.et_search);
             et_search.setVisibility(View.VISIBLE);*/
 
-            TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
+            TextView tvTitle = (TextView)toolbar.findViewById(R.id.tvTitle);
             tvTitle.setVisibility(View.GONE);
             Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
             return true;

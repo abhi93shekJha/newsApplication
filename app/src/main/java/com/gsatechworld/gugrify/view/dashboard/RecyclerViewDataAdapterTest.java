@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.gsatechworld.gugrify.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerViewDataAdapterTest.ItemRowHolder> {
 
@@ -73,6 +76,8 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         ArrayList<PlayListItemModel> playListItems;
         ArrayList<OtherNewsItemModel> otherNewsItems;
         final String sectionName = dataList.get(position).getHeaderTitle();
+
+
         if(position == 0){
             latestNewItems = dataList.get(position).getLatestNewItemModelArrayList();
             adapter = new SectionListDataAdapter(latestNewItems, mContext, 1, position);
@@ -111,17 +116,20 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
                     .load(dataList.get(position).getImg())
                     .into(holder.img);
 
-            for (int i = 0; i < getItemCount(); i++) {
+            setAnimation(holder.itemView, position);
 
-            Animation animation = AnimationUtils.loadAnimation(mContext, (position
+         /*   Animation animation = AnimationUtils.loadAnimation(mContext, (position
                     > lastPosition) ? R.anim.push_left_to_right :
                     R.anim.push_left_to_right);
             holder.itemView.startAnimation(animation);
-            lastPosition = position;
+            lastPosition = position;*/
             //holder.img.setImageResource(dataList.get(position).getImg());
-            }
+
+           /* int resId = R.anim.layout_animation_fall_down;
+            LayoutAnimationController animationg = AnimationUtils.loadLayoutAnimation(mContext, resId);
+            holder.listItemCard.setLayoutAnimation(animationg);*/
         }
-        slide = AnimationUtils.loadAnimation(mContext, R.anim.slide_left);
+        //slide = AnimationUtils.loadAnimation(mContext, R.anim.slide_left);
 //        else {
 //            holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
 //            holder.recyclerView.setAdapter(adapter);
@@ -135,6 +143,17 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         });
     }
 
+
+    private void setAnimation(View viewToAnimate, int position) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            anim.setDuration(new Random().nextInt(5001));//to make duration random number between [0,501)
+            viewToAnimate.startAnimation(anim);
+            lastPosition = position;
+        }
+    }
+
     @Override
     public int getItemCount() {
         return (null != dataList ? dataList.size() : 0);
@@ -146,6 +165,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         protected ImageView btnMore;
         protected ImageView img;
         protected View line;
+        protected CardView listItemCard;
 
         public ItemRowHolder(View itemView) {
             super(itemView);
@@ -155,6 +175,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
 //            this.img = itemView.findViewById(R.id.img);
             this.img = itemView.findViewById(R.id.img);
             this.line = itemView.findViewById(R.id.viewItemLine);
+            this.listItemCard = itemView.findViewById(R.id.listItemCard);
         }
     }
 }
