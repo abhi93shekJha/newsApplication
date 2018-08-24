@@ -2,12 +2,15 @@ package com.gsatechworld.gugrify.view.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import static com.gsatechworld.gugrify.SelectLanguageAndCities.*;
 
 import com.gsatechworld.gugrify.R;
 
@@ -15,9 +18,11 @@ public class CitiesGridViewAdapter extends BaseAdapter{
     Context context;
     TextView tv1, tv2;
     View convertView;
-    ViewHolder holder;
-    boolean b;
-    View[] views = new View[9];
+    View prev;
+    ImageView image;
+    RelativeLayout relativeLayout;
+    boolean once=false;
+    boolean[] views = new boolean[9];
     public CitiesGridViewAdapter(Context context){
         this.context = context;
     }
@@ -39,32 +44,49 @@ public class CitiesGridViewAdapter extends BaseAdapter{
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         convertView = view;
-        if (convertView == null){
-            //Log.d("Times: ", "Hi");
-        holder = new ViewHolder();
         convertView = LayoutInflater.from(context).inflate(R.layout.grid_view_items, null);
-        holder.image = convertView.findViewById(R.id.gridViewImage);
-        holder.tv1 = convertView.findViewById(R.id.citiesGridView_text);
-        holder.tv2 = convertView.findViewById(R.id.citiesGridView_text2);
-        convertView.setTag(holder);
-    }
-
-        else {
-            holder = (ViewHolder) convertView.getTag();
-        }
 
         Typeface fontMedium = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
 
-        holder.tv1.setTypeface(fontMedium);
-        holder.tv2.setTypeface(fontMedium);
+        image = convertView.findViewById(R.id.gridViewImage);
+        tv1 = convertView.findViewById(R.id.citiesGridView_text);
+        tv2 = convertView.findViewById(R.id.citiesGridView_text2);
+        relativeLayout = convertView.findViewById(R.id.grid_view_items_relativeLayout);
+
+
+        tv1.setTypeface(fontMedium);
+        tv2.setTypeface(fontMedium);
+
+        if(!views[i]){
+            Log.d("Ran for", String.valueOf(i));
+            relativeLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+            tv1.setVisibility(View.VISIBLE);
+            tv2.setVisibility(View.GONE);
+        }
+       image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!views[i]) {
+                    Log.d("Ran", "inside true");
+                    relativeLayout.setBackgroundColor(context.getResources().getColor(R.color.brown));
+                    tv1.setVisibility(View.GONE);
+                    tv2.setVisibility(View.VISIBLE);
+                    views[i] = true;
+                    notifyDataSetChanged();
+                }
+                else{
+                    Log.d("Ran", "inside false");
+                    relativeLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+                    tv1.setVisibility(View.VISIBLE);
+                    tv2.setVisibility(View.GONE);
+                    views[i] = false;
+                    notifyDataSetChanged();
+                }
+            }
+        });
 
         return convertView;
     }
 
-    public class ViewHolder{
-        private ImageView image;
-        private TextView tv1;
-        private TextView tv2;
-    }
 
 }

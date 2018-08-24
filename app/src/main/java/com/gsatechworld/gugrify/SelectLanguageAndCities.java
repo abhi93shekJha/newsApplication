@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -28,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gsatechworld.gugrify.view.adapters.City;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.adapters.CitiesGridViewAdapter;
 import com.gsatechworld.gugrify.view.adapters.LanguageExpandableListAdapter;
@@ -49,8 +52,9 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     LanguageRecyclerAdapter lAdapter;
     public static String pickedLanguage = "";
     TextView textView;
-    View[] views = new View[9];
+    static int SelecedCity = -1;
     boolean b = false;
+    boolean[] selectedGrid;
     View previous=null;
 
     static {
@@ -61,6 +65,8 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_language_cities);
+
+        runOnce=false;
 
         Spinner spinner = (Spinner) findViewById(R.id.citiesSpinner);
         spinner.setOnItemSelectedListener(SelectLanguageAndCities.this);
@@ -99,59 +105,12 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lang_ststusbar_color));
         }
 
+        RecyclerView grid = findViewById(R.id.select_language_grid_view);
+        LanguageRecyclerAdapter l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, getCities());
+        grid.setLayoutManager(new GridLayoutManager(this, 3));
+        grid.setAdapter(l);
+//        l.setClickListener(this);
 
-        GridView gridView = findViewById(R.id.select_language_grid_view);
-        final CitiesGridViewAdapter c = new CitiesGridViewAdapter(SelectLanguageAndCities.this);
-        gridView.setAdapter(c);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                //This logic has to be changed later
-                if (!runOnce) {
-                    selectCityButton.setVisibility(View.VISIBLE);
-                    Animation animation2 = AnimationUtils.loadAnimation(SelectLanguageAndCities.this, R.anim.slide_left);
-                    selectCityButton.startAnimation(animation2);
-                    previous = view;
-                    RelativeLayout r = view.findViewById(R.id.grid_view_items_relativeLayout);
-                    r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
-                    TextView tv = view.findViewById(R.id.citiesGridView_text2);
-                    tv.setVisibility(View.VISIBLE);
-                    runOnce = true;
-                    return;
-                }
-//                else{
-//                    runOnce = false;
-//                }
-                if (previous == view) {
-                    if (!b) {
-                        RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
-                        r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.colorWhite));
-                        TextView tv = previous.findViewById(R.id.citiesGridView_text2);
-                        tv.setVisibility(View.GONE);
-                        b = true;
-                    } else {
-                        RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
-                        r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
-                        TextView tv = previous.findViewById(R.id.citiesGridView_text2);
-                        tv.setVisibility(View.VISIBLE);
-                        b = false;
-                    }
-                } else {
-                    RelativeLayout r = previous.findViewById(R.id.grid_view_items_relativeLayout);
-                    r.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.colorWhite));
-                    TextView tv = previous.findViewById(R.id.citiesGridView_text2);
-                    tv.setVisibility(View.GONE);
-
-                    RelativeLayout r1 = view.findViewById(R.id.grid_view_items_relativeLayout);
-                    r1.setBackgroundColor(SelectLanguageAndCities.this.getResources().getColor(R.color.brown));
-                    TextView tv1 = view.findViewById(R.id.citiesGridView_text2);
-                    tv1.setVisibility(View.VISIBLE);
-
-                    previous = view;
-                }
-            }
-        });
     }
 
     @Override
@@ -164,5 +123,31 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    public ArrayList<City> getCities(){
+        ArrayList<City> cities = new ArrayList<>();
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));
+
+        return cities;
     }
 }

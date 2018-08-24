@@ -1,6 +1,7 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -8,6 +9,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
     private RecyclerView.RecycledViewPool recycledViewPool;
     private SnapHelper snapHelper;
     private SectionListDataAdapter adapter;
+    Animation slide;
 
     public RecyclerViewDataAdapterTest(ArrayList<SectionDataModel> dataList, Context mContext) {
         this.dataList = dataList;
@@ -95,6 +99,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
                     .into(holder.img);
             //holder.img.setImageResource(dataList.get(position).getImg());
         }
+        slide = AnimationUtils.loadAnimation(mContext, R.anim.slide_left);
 //        else {
 //            holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
 //            holder.recyclerView.setAdapter(adapter);
