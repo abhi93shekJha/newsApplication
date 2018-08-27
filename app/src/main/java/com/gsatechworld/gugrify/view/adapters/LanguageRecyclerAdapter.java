@@ -35,12 +35,14 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     private Context context;
     FloatingActionButton actionButton;
     Animation animation;
+    RelativeLayout relativeLayout;
     boolean once;
     View temp;
     ArrayList<Integer> selectedItem = new ArrayList<>();
 
-    public LanguageRecyclerAdapter(final Context context, ArrayList<City> citie, FloatingActionButton action) {
+    public LanguageRecyclerAdapter(final Context context, ArrayList<City> citie, FloatingActionButton action, RelativeLayout rLayout) {
         this.actionButton = action;
+        this.relativeLayout = rLayout;
         this.layoutInflater = LayoutInflater.from(context);
         expandedPositionSet = new HashSet<>();
         this.context = context;
@@ -71,13 +73,13 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
             holder.tvBrown.setVisibility(View.GONE);
             holder.tvWhite.setVisibility(View.VISIBLE);
             actionButton.setVisibility(View.VISIBLE);
+             relativeLayout.invalidate();
             if(!once) {
                 animation = AnimationUtils.loadAnimation(context,
                         R.anim.slide_left);
-                actionButton.setAnimation(animation);
+                actionButton.startAnimation(animation);
                 once=true;
             }
-             actionButton.invalidate();
         } else {
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
             holder.tvBrown.setVisibility(View.VISIBLE);

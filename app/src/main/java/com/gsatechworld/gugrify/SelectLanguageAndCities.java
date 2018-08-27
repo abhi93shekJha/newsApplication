@@ -44,19 +44,13 @@ import java.util.List;
 
 public class SelectLanguageAndCities extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
-    ExpandableListView expListView;
     boolean runOnce;
     public static List<String> list;
     FloatingActionButton selectCityButton;
     public static String selectedLanguage = "Kannada";
-    LanguageExpandableListAdapter adapter;
-    LanguageRecyclerAdapter lAdapter;
-    public static String pickedLanguage = "";
+    RelativeLayout rLayout;
     TextView textView;
-    static int SelecedCity = -1;
     boolean b = false;
-    boolean[] selectedGrid;
-    View previous=null;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -67,6 +61,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_language_cities);
 
+        rLayout = findViewById(R.id.selectCityMain);
         runOnce=false;
 
         Spinner spinner = (Spinner) findViewById(R.id.citiesSpinner);
@@ -125,7 +120,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         }
 
         RecyclerView grid = findViewById(R.id.select_language_grid_view);
-        LanguageRecyclerAdapter l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, getCities(), (FloatingActionButton) findViewById(R.id.languageAndCityFloating));
+        LanguageRecyclerAdapter l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, getCities(), (FloatingActionButton) findViewById(R.id.languageAndCityFloating), rLayout);
         grid.setLayoutManager(new GridLayoutManager(this, 3));
         grid.setAdapter(l);
 //        l.setClickListener(this);
