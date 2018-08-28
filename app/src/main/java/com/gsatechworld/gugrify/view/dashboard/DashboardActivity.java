@@ -1,7 +1,6 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,19 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.SearchView;
 
-import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.flaviofaria.kenburnsview.TransitionGenerator;
-import com.gsatechworld.gugrify.MyTransitionGenerator;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
@@ -51,6 +41,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private ViewPagerAdapter mAdapter;
     private int dotscount;
     private ImageView[] dots;
+    private ImageView iv_place;
+
+  /*  ArrayAdapter<String> mAdapterSearch;
+    ListView mListView;*/
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -82,8 +76,16 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         toggle.syncState();
         //After instantiating your ActionBarDrawerToggle
         toggle.setDrawerIndicatorEnabled(false);
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo, getTheme());
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo1, getTheme());
         toggle.setHomeAsUpIndicator(drawable);
+
+        iv_place = (ImageView)findViewById(R.id.iv_place);
+        iv_place.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(DashboardActivity.this, "Place", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +180,13 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         //adapter.setItems(allSampleData);
 
+        /*Ashish*/
+    /*    mAdapterSearch = new ArrayAdapter<String>(DashboardActivity.this,
+                android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.months_array));*/
+        //mListView.setAdapter(mAdapterSearch);
+
+
         // create nav item list
         ArrayList<NavItemModel> navItemModelArrayList = getNavItemList();
 
@@ -253,9 +262,11 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         sectionModel = new SectionDataModel("LATEST NEWS");
         sectionModel.setLatestNewItemModelArrayList(createLatestNews());
         allSampleData.add(sectionModel);
+
         sectionModel = new SectionDataModel("Play List");
         sectionModel.setPlayListItemModelArrayList(createPlaylistData());
         allSampleData.add(sectionModel);
+
         sectionModel = new SectionDataModel("AAP leader Ashish Khetan leaves active politics citing plans to pursue law; sources say LS seat could have triggered move", R.drawable.road1);
         allSampleData.add(sectionModel);
         sectionModel = new SectionDataModel("India unlikely to accept foreign donations for flood relief efforts in Kerala, will rely on domestic assistance", R.drawable.road2);
@@ -273,6 +284,27 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
 
+     /*   MenuItem mSearch = menu.findItem(R.id.action_search);
+
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setQueryHint("Search");
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapterSearch.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+*/
         /*SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
@@ -290,16 +322,18 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_esarch){
+        if (id == R.id.action_search){
 
            /* TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
             tvTitle.setVisibility(View.GONE);
             EditText et_search = (EditText)findViewById(R.id.et_search);
             et_search.setVisibility(View.VISIBLE);*/
 
-            TextView tvTitle = (TextView)toolbar.findViewById(R.id.tvTitle);
-            tvTitle.setVisibility(View.GONE);
+           /* TextView tvTitle = (TextView)toolbar.findViewById(R.id.tvTitle);
+            tvTitle.setVisibility(View.GONE);*/
+
             Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(DashboardActivity.this,SearchActivity.class));
             return true;
         }
         //noinspection SimplifiableIfStatement

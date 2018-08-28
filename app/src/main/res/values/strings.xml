@@ -118,4 +118,24 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!--Ashish-->
+    <string-array name="months_array">
+        <item>RSS likely to invite Congress chief Rahul Gandhi, other politicians to three-day conclave in Delhi in September: Reports</item>
+        <item>GATE 2019: Registration to begin from 1 Sep for online test, national exam for admission to IITs, IISCs will be held in Feb</item>
+        <item>Calcutta University postpones undergraduate examinations; revised exam dates to be announced soon</item>
+        <item>JEE Main 2019 final schedule released: Registrations to begin from 1 September, exams to take place in January, April 2019</item>
+        <item>Supreme Court hearing demanding scrapping Article 35A to resume today: Only BJP lawyer to present case, main hearing on 31 Aug</item>
+        <item>
+Kerala floods: Rahul Gandhi to begin two-day visit to Chengannur, Alappuzha in deluge-affected areas from tomorrow</item>
+        <item>Do not wipe out Jawaharlal Nehru's role, he belonged to India: Manmohan tells Narendra Modi over Teen Murti Complex</item>
+        <item>
+Meghalaya chief minister Conrad Sangma wins South-Tura Assembly bypoll by over 8,400 votes; NPP levels tally with Congress
+</item>
+        <item>Rahul on 1984 Sikh riots, RSS-Islamic State comparison, joblessness in India: Congress in damage-control mode as BJP mounts attack</item>
+        <item>UGC directs 21 Delhi University colleges to appoint regular principals, warns of withholding grants if institutes do not comply</item>
+        <item>Vijay Mallya fugitive economic offender declaration case: Mumbai court fixes 3 September as next date of hearing</item>
+        <item>Jaaved Jaaferi praises Salman Khan for donating 12 cr to Kerala flood victims, deletes tweet later</item>
+    </string-array>
+
 </resources>
