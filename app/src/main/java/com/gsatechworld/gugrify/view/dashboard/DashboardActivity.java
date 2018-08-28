@@ -91,9 +91,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         //After instantiating your ActionBarDrawerToggle
-        toggle.setDrawerIndicatorEnabled(false);
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo1, getTheme());
-        toggle.setHomeAsUpIndicator(drawable);
+        toggle.setDrawerIndicatorEnabled(true);
+        //Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo1, getTheme());
+        //toggle.setHomeAsUpIndicator(drawable);
 
         iv_place = (ImageView)findViewById(R.id.iv_place);
         iv_place.setOnClickListener(new View.OnClickListener() {
