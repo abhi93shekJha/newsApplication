@@ -20,6 +20,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,9 +49,13 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         NavigationView.OnNavigationItemSelectedListener {
 
     private AutoScrollViewPager viewPager;
+    private EndlessScrollListener scrollListener;
     private ViewPagerAdapter mAdapter;
+    private LinearLayoutManager l;
+    RecyclerView recyclerView;
     private int dotscount;
     private ImageView[] dots;
+    private RecyclerViewDataAdapterTest adapter;
     private ImageView iv_place;
 
   /*  ArrayAdapter<String> mAdapterSearch;
@@ -183,10 +188,25 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         createDummyData();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
-        RecyclerViewDataAdapterTest adapter = new RecyclerViewDataAdapterTest(allSampleData, this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        adapter = new RecyclerViewDataAdapterTest(allSampleData, this);
+//        adapter.addMoreContacts(allSampleData);
+        l = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(l);
+
+        scrollListener = new EndlessScrollListener(l) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                    Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+                    if(page<3)
+                    loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        recyclerView.addOnScrollListener(scrollListener);
         recyclerView.setAdapter(adapter);
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         //adapter.setItems(allSampleData);
@@ -398,5 +418,24 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+    public void  loadNextDataFromApi(int page){
+        sectionModel = new SectionDataModel("AAP leader Ashish Khetan leaves active politics citing plans to pursue law; sources say LS seat could have triggered move", R.drawable.road1);
+        allSampleData.add(sectionModel);
+        sectionModel = new SectionDataModel("India unlikely to accept foreign donations for flood relief efforts in Kerala, will rely on domestic assistance", R.drawable.road2);
+        allSampleData.add(sectionModel);
+        sectionModel = new SectionDataModel("CC", R.drawable.road3);
+        allSampleData.add(sectionModel);
+
+
+        Log.d("Inside", "loadNextData");
+
+        recyclerView.post(new Runnable() {
+            public void run() {
+                // There is no need to use notifyDataSetChanged()
+                adapter.notifyDataSetChanged();
+            }
+        });
+        l.scrollToPosition(3);
     }
 }

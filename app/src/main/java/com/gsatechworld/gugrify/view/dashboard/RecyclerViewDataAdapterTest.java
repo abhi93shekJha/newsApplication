@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RecyclerViewDataAdapterTest extends ListAdapter<SectionDataModel, RecyclerViewDataAdapterTest.ItemRowHolder> {
+public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerViewDataAdapterTest.ItemRowHolder> {
 
     private ArrayList<SectionDataModel> dataList;
     private Context mContext;
@@ -38,18 +38,6 @@ public class RecyclerViewDataAdapterTest extends ListAdapter<SectionDataModel, R
     Animation animation;
 
     private int lastPosition = -1;
-
-    public static final DiffUtil.ItemCallback<SectionDataModel> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<SectionDataModel>() {
-                @Override
-                public boolean areItemsTheSame(SectionDataModel oldItem, SectionDataModel newItem) {
-                    return oldItem.getHeaderTitle() == newItem.getHeaderTitle();
-                }
-                @Override
-                public boolean areContentsTheSame(SectionDataModel oldItem, SectionDataModel newItem) {
-                    return (oldItem.getHeaderTitle() == newItem.getHeaderTitle() /*&& oldItem.isOnline() == newItem.isOnline()*/ );
-                }
-            };
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         protected TextView itemTitle;
@@ -80,11 +68,9 @@ public class RecyclerViewDataAdapterTest extends ListAdapter<SectionDataModel, R
     }
 
     public RecyclerViewDataAdapterTest(ArrayList<SectionDataModel> dataList, Context mContext) {
-        super(DIFF_CALLBACK);
         this.dataList = dataList;
         this.mContext = mContext;
         recycledViewPool = new RecyclerView.RecycledViewPool();
-        submitList(dataList);
     }
 
     //Overriden so that I can display custom rows in the recyclerview
@@ -120,13 +106,13 @@ public class RecyclerViewDataAdapterTest extends ListAdapter<SectionDataModel, R
         ArrayList<LatestNewItemModel> latestNewItems;
         ArrayList<PlayListItemModel> playListItems;
         ArrayList<OtherNewsItemModel> otherNewsItems;
-        final String sectionName = getItem(position).getHeaderTitle();
+        final String sectionName = dataList.get(position).getHeaderTitle();
 
         if (position == 0) {
-            latestNewItems = getItem(position).getLatestNewItemModelArrayList();
+            latestNewItems = dataList.get(position).getLatestNewItemModelArrayList();
             adapter = new SectionListDataAdapter(latestNewItems, mContext, 1, position);
         } else if (position == 1) {
-            playListItems = getItem(position).getPlayListItemModelArrayList();
+            playListItems = dataList.get(position).getPlayListItemModelArrayList();
             adapter = new SectionListDataAdapter(playListItems, mContext, 2, position);
             holder.btnMore.setVisibility(View.INVISIBLE);
             holder.line.setVisibility(View.GONE);
@@ -144,12 +130,12 @@ public class RecyclerViewDataAdapterTest extends ListAdapter<SectionDataModel, R
 
         } else {
             Glide.with(mContext)
-                    .load(getItem(position).getImg())
+                    .load(dataList.get(position).getImg())
                     .into(holder.img);
 
 
 //            animation = AnimationUtils.loadAnimation(mContext,
-//                    R.anim.item_animation_fall_down);
+//                    R.anim.slide_right);
 //            holder.card.startAnimation(animation);
 
             holder.btnMore.setOnClickListener(new View.OnClickListener() {
@@ -161,14 +147,10 @@ public class RecyclerViewDataAdapterTest extends ListAdapter<SectionDataModel, R
         }
     }
 
-    public void addMoreContacts(List<SectionDataModel> sectionDataModels) {
-        dataList.addAll(sectionDataModels);
-        submitList(dataList); // DiffUtil takes care of the check
+    @Override
+    public int getItemCount() {
+        return (null != dataList ? dataList.size() : 0);
     }
-//    @Override
-//    public int getItemCount() {
-//        return (null != dataList ? dataList.size() : 0);
-//    }
 
 }
 

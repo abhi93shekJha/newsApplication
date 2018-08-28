@@ -36,7 +36,8 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     FloatingActionButton actionButton;
     Animation animation;
     RelativeLayout relativeLayout;
-    boolean once;
+    boolean b=false;
+    boolean once=false;
     View temp;
     ArrayList<Integer> selectedItem = new ArrayList<>();
 
@@ -117,6 +118,14 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                        if(!b){
+                            actionButton.setVisibility(View.VISIBLE);
+                            animation = AnimationUtils.loadAnimation(context,
+                                    R.anim.slide_left);
+                            actionButton.startAnimation(animation);
+                            b=true;
+                        }
 
                         if(!cities.get(getAdapterPosition()).isSelected){
                         cities.get(getAdapterPosition()).setSelected(true);
