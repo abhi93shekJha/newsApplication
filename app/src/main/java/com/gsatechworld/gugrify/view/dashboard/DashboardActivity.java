@@ -332,7 +332,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
            /* TextView tvTitle = (TextView)toolbar.findViewById(R.id.tvTitle);
             tvTitle.setVisibility(View.GONE);*/
 
-            Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(DashboardActivity.this,SearchActivity.class));
             return true;
         }
