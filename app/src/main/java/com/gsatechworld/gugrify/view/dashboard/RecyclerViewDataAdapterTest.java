@@ -1,6 +1,8 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.content.Context;
+import android.support.v7.recyclerview.extensions.ListAdapter;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +25,7 @@ import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.gsatechworld.gugrify.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerViewDataAdapterTest.ItemRowHolder> {
@@ -32,9 +35,37 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
     private RecyclerView.RecycledViewPool recycledViewPool;
     private SnapHelper snapHelper;
     private SectionListDataAdapter adapter;
-    Animation slide;
+    Animation animation;
 
     private int lastPosition = -1;
+
+    public class ItemRowHolder extends RecyclerView.ViewHolder {
+        protected TextView itemTitle;
+        protected RecyclerView recyclerView;
+        protected ImageView btnMore;
+        protected ImageView img;
+        protected View line;
+
+        protected CardView listItemCard;
+
+        protected CardView card;
+
+
+        public ItemRowHolder(View itemView) {
+            super(itemView);
+            this.itemTitle = itemView.findViewById(R.id.itemTitle);
+            this.recyclerView = itemView.findViewById(R.id.recycler_view_list);
+            this.btnMore = itemView.findViewById(R.id.btnMore);
+//            this.img = itemView.findViewById(R.id.img);
+            this.img = itemView.findViewById(R.id.img);
+            this.line = itemView.findViewById(R.id.viewItemLine);
+
+            this.listItemCard = itemView.findViewById(R.id.listItemCard);
+
+            this.card = itemView.findViewById(R.id.listItemCard);
+
+        }
+    }
 
     public RecyclerViewDataAdapterTest(ArrayList<SectionDataModel> dataList, Context mContext) {
         this.dataList = dataList;
@@ -55,7 +86,7 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         View v;
         ItemRowHolder rowHolder;
         switch (viewType) {
-            case 0: //This would be the header view in my Recycler
+            case 0 : //This would be the header view in my Recycler
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_verti_test, parent, false);
                 rowHolder = new ItemRowHolder(v);
@@ -77,34 +108,20 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         ArrayList<OtherNewsItemModel> otherNewsItems;
         final String sectionName = dataList.get(position).getHeaderTitle();
 
-
-        if(position == 0){
+        if (position == 0) {
             latestNewItems = dataList.get(position).getLatestNewItemModelArrayList();
             adapter = new SectionListDataAdapter(latestNewItems, mContext, 1, position);
-
-
-        } else if(position == 1){
+        } else if (position == 1) {
             playListItems = dataList.get(position).getPlayListItemModelArrayList();
             adapter = new SectionListDataAdapter(playListItems, mContext, 2, position);
             holder.btnMore.setVisibility(View.INVISIBLE);
             holder.line.setVisibility(View.GONE);
         }
 
+        if (holder.itemTitle != null)
+            holder.itemTitle.setText(sectionName);
 
-       /* else if(position == 2){
-           *//* otherNewsItems = dataList.get(position).getOtherNewsItemModelArrayList();
-            adapter = new SectionListDataAdapter(otherNewsItems, mContext, 3,position);
-*//*
-            Animation animation = AnimationUtils.loadAnimation(mContext, (position
-                    > lastPosition) ? R.anim.push_left_to_right :
-                    R.anim.push_left_to_right);
-            holder.itemView.startAnimation(animation);
-            lastPosition = position;
-        }*/
-        if(holder.itemTitle != null)
-        holder.itemTitle.setText(sectionName);
-
-        if(position <= 1){
+        if (position <= 1) {
             holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
             holder.recyclerView.setHasFixedSize(true);
@@ -116,41 +133,17 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
                     .load(dataList.get(position).getImg())
                     .into(holder.img);
 
-            setAnimation(holder.itemView, position);
 
-         /*   Animation animation = AnimationUtils.loadAnimation(mContext, (position
-                    > lastPosition) ? R.anim.push_left_to_right :
-                    R.anim.push_left_to_right);
-            holder.itemView.startAnimation(animation);
-            lastPosition = position;*/
-            //holder.img.setImageResource(dataList.get(position).getImg());
+//            animation = AnimationUtils.loadAnimation(mContext,
+//                    R.anim.slide_right);
+//            holder.card.startAnimation(animation);
 
-           /* int resId = R.anim.layout_animation_fall_down;
-            LayoutAnimationController animationg = AnimationUtils.loadLayoutAnimation(mContext, resId);
-            holder.listItemCard.setLayoutAnimation(animationg);*/
-        }
-        //slide = AnimationUtils.loadAnimation(mContext, R.anim.slide_left);
-//        else {
-//            holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-//            holder.recyclerView.setAdapter(adapter);
-//        }
-
-        holder.btnMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Button More Clicked!" + sectionName, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-    private void setAnimation(View viewToAnimate, int position) {
-        // If the bound view wasn't previously displayed on screen, it's animated
-        if (position > lastPosition) {
-            ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            anim.setDuration(new Random().nextInt(5001));//to make duration random number between [0,501)
-            viewToAnimate.startAnimation(anim);
-            lastPosition = position;
+            holder.btnMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), "Button More Clicked!" + sectionName, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -159,23 +152,6 @@ public class RecyclerViewDataAdapterTest extends RecyclerView.Adapter<RecyclerVi
         return (null != dataList ? dataList.size() : 0);
     }
 
-    public class ItemRowHolder extends RecyclerView.ViewHolder {
-        protected TextView itemTitle;
-        protected RecyclerView recyclerView;
-        protected ImageView btnMore;
-        protected ImageView img;
-        protected View line;
-        protected CardView listItemCard;
-
-        public ItemRowHolder(View itemView) {
-            super(itemView);
-            this.itemTitle = itemView.findViewById(R.id.itemTitle);
-            this.recyclerView = itemView.findViewById(R.id.recycler_view_list);
-            this.btnMore = itemView.findViewById(R.id.btnMore);
-//            this.img = itemView.findViewById(R.id.img);
-            this.img = itemView.findViewById(R.id.img);
-            this.line = itemView.findViewById(R.id.viewItemLine);
-            this.listItemCard = itemView.findViewById(R.id.listItemCard);
-        }
-    }
 }
+
+
