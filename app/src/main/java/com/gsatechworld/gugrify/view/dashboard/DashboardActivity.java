@@ -201,8 +201,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                     Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-                    if(page<3)
-                    loadNextDataFromApi(page);
+//                    if(page<3)
+//                    loadNextDataFromApi(page);
             }
         };
         // Adds the scroll listener to RecyclerView
