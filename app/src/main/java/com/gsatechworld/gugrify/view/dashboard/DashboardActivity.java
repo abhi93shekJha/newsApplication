@@ -62,8 +62,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private LinearLayoutManager l;
     RecyclerView recyclerView;
     private int dotscount;
+    int count=0;
     private ImageView[] dots;
-    private RecyclerViewDataAdapterTest adapter;
+    private RecyclerViewDataAdapter adapter;
     private ImageView iv_place;
 
   /*  ArrayAdapter<String> mAdapterSearch;
@@ -139,85 +140,33 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         ButterKnife.bind(this);
 
-        pager_indicator = (LinearLayout) findViewById(R.id.viewPagerCountDots);
-        viewPager = (AutoScrollViewPager) findViewById(R.id.viewPager);
-        viewPager.startAutoScroll();
-//        viewPager.setAnimation();
-        viewPager.setInterval(5000);
-        viewPager.setCycle(true);
-        viewPager.setStopScrollWhenTouch(true);
-
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
-
-        viewPager.setAdapter(viewPagerAdapter);
-
-        dotscount = viewPagerAdapter.getCount();
-        dots = new ImageView[dotscount];
-
-        for (int i = 0; i < dotscount; i++) {
-
-            dots[i] = new ImageView(this);
-            dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            params.setMargins(8, 0, 8, 0);
-
-            pager_indicator.addView(dots[i], params);
-
-        }
-
-        dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                for (int i = 0; i < dotscount; i++) {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.non_active_dot));
-                }
-
-                dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_dot));
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
         allSampleData = new ArrayList<>();
 
         createDummyData();
 
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
-        adapter = new RecyclerViewDataAdapterTest(allSampleData, this);
+        adapter = new RecyclerViewDataAdapter(allSampleData, this);
 //        adapter.addMoreContacts(allSampleData);
         l = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(l);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 
         scrollListener = new EndlessScrollListener(l) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                    Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-//                    if(page<3)
-//                    loadNextDataFromApi(page);
+                Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+                if(page<3)
+                    loadNextDataFromApi(page);
             }
         };
         // Adds the scroll listener to RecyclerView
         recyclerView.addOnScrollListener(scrollListener);
-        recyclerView.setAdapter(adapter);
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
+//        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         //adapter.setItems(allSampleData);
 
         /*Ashish*/
@@ -299,6 +248,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 //            ArrayList<SingleItemModel> singleItemModels = new ArrayList<>();
 //            dmSingle.setAllItemInSection(singleItemModels);
 //            allSampleData.add(dmSingle);
+        sectionModel = new SectionDataModel();
+        allSampleData.add(sectionModel);
+
         sectionModel = new SectionDataModel("LATEST NEWS");
         sectionModel.setLatestNewItemModelArrayList(createLatestNews());
         allSampleData.add(sectionModel);
@@ -424,27 +376,13 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     }
 
+    public void  loadNextDataFromApi(int page){
+        Log.d("Load number", String.valueOf(count++));
+        l.scrollToPosition(3);
+    }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-    public void  loadNextDataFromApi(int page){
-        sectionModel = new SectionDataModel("AAP leader Ashish Khetan leaves active politics citing plans to pursue law; sources say LS seat could have triggered move", R.drawable.road1);
-        allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("India unlikely to accept foreign donations for flood relief efforts in Kerala, will rely on domestic assistance", R.drawable.road2);
-        allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("CC", R.drawable.road3);
-        allSampleData.add(sectionModel);
-
-
-        Log.d("Inside", "loadNextData");
-
-        recyclerView.post(new Runnable() {
-            public void run() {
-                // There is no need to use notifyDataSetChanged()
-                adapter.notifyDataSetChanged();
-            }
-        });
-        l.scrollToPosition(3);
     }
 }

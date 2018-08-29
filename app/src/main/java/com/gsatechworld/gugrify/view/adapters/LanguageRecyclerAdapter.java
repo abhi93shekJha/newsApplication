@@ -58,7 +58,6 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
         });
     }
 
-
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Log.d("No. of times", "it ran"+String.valueOf(once));
@@ -97,7 +96,6 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     public int getItemCount() {
         return cities.size();
     }
-
 
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder{
