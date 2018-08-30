@@ -23,7 +23,7 @@ import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 public class SplashActivity extends Activity implements Animation.AnimationListener{
 
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 1000;
+    private static int SPLASH_TIME_OUT = 6000;
     private ImageView imageView;
     private TextView textView;
     Animation slide;
