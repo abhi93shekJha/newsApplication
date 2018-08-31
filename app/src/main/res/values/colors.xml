@@ -9,6 +9,8 @@
     <color name="slaty">#cfd8dd</color>
     <color name="brown">#312F08</color>
 
+    <color name="transparent">#95000000</color>
+
     <color name="color_black">#030303</color>
     <color name="color_light_gray">#F1F1F1</color>
     <color name="global_color_green_primary">#4caf50</color>

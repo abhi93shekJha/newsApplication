@@ -1,7 +1,10 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.app.Dialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -67,6 +70,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private RecyclerViewDataAdapter adapter;
     private ImageView iv_place;
 
+    private MediaPlayer mediaPlayer;
+
+    private MediaController mc;
+
   /*  ArrayAdapter<String> mAdapterSearch;
     ListView mListView;*/
     private  SwipeRefreshLayout mSwipeRefreshLayout;
@@ -85,7 +92,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        showVideoPopup();
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -143,6 +149,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         allSampleData = new ArrayList<>();
 
         createDummyData();
+
+        showVideoDialog();
+
+
 
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -243,6 +253,75 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         return otherNewsItemModelArrayList;
     }
 
+    /* For Video*/
+    public void showVideoDialog( ) {
+        final Dialog dialog = new Dialog(DashboardActivity.this,R.style.NewDialog);//android.R.style.Theme_Dialog //android.R.style.Theme_Black_NoTitleBar_Fullscreen
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.video_dialog);
+       // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+
+       // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
+        dialog.show();
+
+        if(dialog.isShowing()){
+            mediaPlayer = MediaPlayer.create(this, R.raw.prologue);
+            mediaPlayer.start();
+        }
+        if (mediaPlayer!= null){
+            mediaPlayer.start();
+        }
+
+            iv_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mediaPlayer.stop();
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    mediaPlayer.stop();
+                }
+            });
+
+
+        /*For video Related Work*/
+/*
+        final VideoView videoView =dialog.findViewById(R.id.videoview);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.samplevideo);
+        videoView.setVideoURI(uri);
+        videoView.requestFocus();
+
+       videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                // TODO Auto-generated method stub
+                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                    @Override
+                    public void onVideoSizeChanged(MediaPlayer mp,
+                                                   int width, int height) {
+                        mc = new MediaController(DashboardActivity.this);
+                        videoView.setMediaController(mc);
+                        mc.setAnchorView(videoView);
+                        ((ViewGroup) mc.getParent()).removeView(mc);
+                        FrameLayout frameLayout=dialog.findViewById(R.id.videoViewWrapper);
+                        frameLayout.addView(mc);
+                        mc.setVisibility(View.VISIBLE);
+                    }
+                });
+                videoView.start();
+            }
+        });*/
+
+    }
+
     private void createDummyData() {
 //            SectionDataModel dmSingle = new SectionDataModel();
 //            ArrayList<SingleItemModel> singleItemModels = new ArrayList<>();
@@ -337,8 +416,15 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mediaPlayer.stop();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

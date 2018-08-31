@@ -118,6 +118,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="hang_tight_we_ll_be_right_back">Hang tight, we\'ll be right back!</string>
+    <string name="tired_of_ads_remove_them_forever">Tired of Ads? Remove them forever!</string>
+    <string name="watch_video">Watch Video</string>
 
     <!--Ashish-->
     <string-array name="months_array">
