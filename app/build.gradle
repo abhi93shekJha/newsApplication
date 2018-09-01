@@ -50,6 +50,8 @@ dependencies {
     //for lazy loading
     implementation "android.arch.paging:runtime:1.0.0"
 
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
     /*Ashish*/
 
     //Youtube Android Player API Jar dependency

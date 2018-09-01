@@ -1,7 +1,10 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,13 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.model.NewsListHolder;
+import com.gsatechworld.gugrify.view.adapters.SearchRecyclerAdapter;
+
+import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
     Toolbar mToolbar;
-    ArrayAdapter<String> mAdapter;
-    ListView mListView;
-    TextView mEmptyView;
-    ImageView iv_back;
+    ArrayList<NewsListHolder> arrayList = new ArrayList<>();
+    SearchRecyclerAdapter adapter;
+    RecyclerView rView;
+//    ImageView iv_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,32 +39,21 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mListView = (ListView) findViewById(R.id.list);
-        mEmptyView = (TextView) findViewById(R.id.emptyView);
-        iv_back = (ImageView)findViewById(R.id.iv_back);
-        iv_back.setRotation(180);
-        iv_back.setColorFilter(getResources().getColor(R.color.color_black));
-
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        mAdapter = new ArrayAdapter<String>(SearchActivity.this,
-                android.R.layout.simple_list_item_1,
-                getResources().getStringArray(R.array.months_array));
-        mListView.setAdapter(mAdapter);
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(SearchActivity.this, adapterView.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mListView.setEmptyView(mEmptyView);
+        rView = (RecyclerView) findViewById(R.id.searchNewsList);
+        setData();
+        adapter = new SearchRecyclerAdapter(arrayList, SearchActivity.this);
+        LinearLayoutManager l = new LinearLayoutManager(this);
+        rView.setLayoutManager(l);
+        rView.setAdapter(adapter);
+//
+//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Toast.makeText(SearchActivity.this, adapterView.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        mListView.setEmptyView(mEmptyView);
     }
 
     @Override
@@ -72,8 +68,23 @@ public class SearchActivity extends AppCompatActivity {
 
         MenuItem mSearch = menu.findItem(R.id.action_search1);
 
+        menu.findItem(R.id.action_search1).expandActionView();
+
         SearchView mSearchView = (SearchView) mSearch.getActionView();
         mSearchView.setQueryHint("Search");
+
+        MenuItemCompat.setOnActionExpandListener(mSearch, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                finish();
+                return true;
+            }
+        });
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -83,7 +94,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mAdapter.getFilter().filter(newText);
+                adapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -101,5 +112,22 @@ public class SearchActivity extends AppCompatActivity {
             // You can also use something like:
             // menu.findItem(R.id.example_foobar).setEnabled(false);
         return true;
+    }
+
+    private  void setData(){
+        NewsListHolder holder = new NewsListHolder();
+        holder.setImage("https://i.ytimg.com/vi/icqDxNab3Do/maxresdefault.jpg");
+        holder.setPostHeading("News Post 1");
+        holder.setDescription("In broadcasting, News Reporters are filmed or recorded presenting the news. They may be recorded in a studio or in the field, depending on the story. They usually read off of a script, but also must be knowledgeable about the topic that they are reporting on.");
+        holder.setLikes("29");
+        holder.setViews("18");
+        arrayList.add(holder);
+        arrayList.add(holder);
+        arrayList.add(holder);
+        arrayList.add(holder);
+        arrayList.add(holder);
+        arrayList.add(holder);
+        arrayList.add(holder);
+        arrayList.add(holder);
     }
 }
