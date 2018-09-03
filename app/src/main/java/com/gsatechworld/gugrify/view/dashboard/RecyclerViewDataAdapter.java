@@ -11,12 +11,14 @@ import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -222,12 +224,33 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                     mContext.startActivity(new Intent(mContext,DisplayVideoActivity.class));
                 }
             });
+            holder.btnMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(mContext, view);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if(menuItem.getTitle().equals("Add to playlist")){
+                                showDialog();
+                            }
+                            return false;
+                        }
+                    });
+                    popup.inflate(R.menu.popup_menu);
+                    popup.show();
+                }
+            });
         }
     }
 
     @Override
     public int getItemCount() {
         return dataList.size();
+    }
+
+    public void showDialog(){
+
     }
 
 }
