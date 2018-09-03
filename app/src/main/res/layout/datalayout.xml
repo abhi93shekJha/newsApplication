@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+  <!--  <LinearLayout
+        android:id="@+id/linearhide"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="15dp"
+        android:weightSum="2"
+        android:layout_height="wrap_content">
+        &lt;!&ndash; android:onClick="expandableButton4"&ndash;&gt;
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="News Post Headling goes here"
+            android:gravity="center"
+            android:textSize="20dp"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:padding="4dp"
+            android:layout_weight="1"
+            android:src="@drawable/down_arrow"/>
+    </LinearLayout>-->
+
+    <com.gsatechworld.gugrify.view.dashboard.ExpandableView
+        android:id="@+id/expandableButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:text="News Post Headling goes here"
+        app:childView="@+id/hidelayout" />
+    <!--app:ael_interpolator="bounce"
+        app:ael_orientation="vertical"-->
+<!--
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="0dp">
+-->
+
+
+    <LinearLayout
+        android:id="@+id/hidelayout"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/childView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Click to complete the task"
+        android:onClick="childClicked"
+        android:textColor="#fff"
+        android:visibility="gone"/>
+    <!--android:background="@color/colorPrimary"-->
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5sp"
+        android:text="Publise on 22 Sep 2018 "/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="News  Brief one paragraph text Goest here  "
+        android:textColor="#b3b0b0"
+        android:textSize="20dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="U.K.-based web designer Purplefeather created the powerful Change Your Words, Change Your World video. In it, a four-word plea (I’m blind. Please help.) is changed into a nine-word sentence (It’s a beautiful day and I can’t see it). The text transformation generates far more compassion.">
+    </TextView>
+</LinearLayout>
+<!--</android.support.v7.widget.CardView>-->
+
+   <!-- <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
+        android:background="@color/colorAccent"/>-->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="3dp"
+                android:layout_gravity="center"
+                android:src="@drawable/profile" />
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="7dp"
+                android:text="Reporter name"
+                android:textSize="15dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:padding="3dp"
+                android:src="@drawable/location" />
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="7dp"
+                android:text="Bangalore"
+                android:textSize="15dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+   <!-- <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+        android:id="@+id/expandableLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/expandableButton4"
+        android:background="#90f1f4f5"
+        android:padding="16dp"
+        app:ael_duration="400"
+        app:ael_expanded="false"
+        app:ael_interpolator="bounce"
+        app:ael_orientation="vertical">
+    <LinearLayout
+        android:id="@+id/hidelayout"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp"
+            android:background="@color/colorAccent">
+        </View>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5sp"
+            android:text="Publise on 30 sep 2018 "/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="News  Brief one paragraph text Goest here  "
+            android:textColor="#b3b0b0"
+            android:textSize="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="U.K.-based web designer Purplefeather created the powerful Change Your Words, Change Your World video. In it, a four-word plea (I’m blind. Please help.) is changed into a nine-word sentence (It’s a beautiful day and I can’t see it). The text transformation generates far more compassion.">
+        </TextView>
+    </LinearLayout>
+    </com.github.aakira.expandablelayout.ExpandableRelativeLayout>-->
+</LinearLayout>
