@@ -29,4 +29,12 @@
         <attr name="metaButtonBarStyle" format="reference" />
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
+
+
+    <declare-styleable name="ExpandableView">
+        <attr name="text" format="string" />
+        <attr name="color" format="color" />
+        <attr name="childView" format="reference" />
+        <attr name="icon" format="reference" />
+    </declare-styleable>
 </resources>

@@ -1,6 +1,7 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
@@ -212,6 +213,15 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             holder.itemTitle.setText(dataList.get(position).getHeaderTitle());
             Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
             holder.itemView.startAnimation(animation);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    /*Open Posted Video With You Tube View*/
+                    mContext.startActivity(new Intent(mContext,DisplayVideoActivity.class));
+                }
+            });
         }
     }
 
