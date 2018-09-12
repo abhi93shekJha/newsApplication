@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 
 public class DisplayBreakingNewsActivity extends AppCompatActivity {
     ArrayList<PostsByCategory> posts = new ArrayList<>();
+    Animation zoomIn;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_breaking_news);
@@ -53,6 +56,16 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                 }
             });
         }*/
+        Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+        TextView textView = findViewById(R.id.breakingNewstext);
+
+        if(textView != null) {
+            textView.setTypeface(fontBold);
+
+            zoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
+            textView.startAnimation(zoomIn);
+        }
+
 
         if(recycler != null) {
             FragmentImage fragment1 = new FragmentImage();
