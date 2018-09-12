@@ -1,21 +1,15 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.app.Dialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -30,26 +24,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.SearchView;
-import android.widget.VideoView;
 
-import com.flaviofaria.kenburnsview.KenBurnsView;
-import com.flaviofaria.kenburnsview.TransitionGenerator;
-import com.gsatechworld.gugrify.MyTransitionGenerator;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.model.LatestNewItemModel;
+import com.gsatechworld.gugrify.model.NavItemModel;
+import com.gsatechworld.gugrify.model.OtherNewsItemModel;
+import com.gsatechworld.gugrify.model.PlayListItemModel;
+import com.gsatechworld.gugrify.model.SectionDataModel;
+import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
+import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
+import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
@@ -157,12 +147,13 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         adapter = new RecyclerViewDataAdapter(allSampleData, this);
+        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 //        adapter.addMoreContacts(allSampleData);
         l = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(l);
 
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+//        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 
         scrollListener = new EndlessScrollListener(l) {
             @Override
@@ -170,8 +161,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-                if(page<3)
-                    loadNextDataFromApi(page);
+//                if(page<3)
+//                    loadNextDataFromApi(page);
             }
         };
         // Adds the scroll listener to RecyclerView
@@ -265,7 +256,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
        // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
+//        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
         dialog.show();
 
         if(dialog.isShowing()){
@@ -276,13 +267,13 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             mediaPlayer.start();
         }
 
-            iv_close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.stop();
-                    dialog.dismiss();
-                }
-            });
+//            iv_close.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    mediaPlayer.stop();
+//                    dialog.dismiss();
+//                }
+//            });
 
             dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
@@ -311,7 +302,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                         videoView.setMediaController(mc);
                         mc.setAnchorView(videoView);
                         ((ViewGroup) mc.getParent()).removeView(mc);
-                        FrameLayout frameLayout=dialog.findViewById(R.id.videoViewWrapper);
+                        FragmentLayout frameLayout=dialog.findViewById(R.id.videoViewWrapper);
                         frameLayout.addView(mc);
                         mc.setVisibility(View.VISIBLE);
                     }
@@ -327,27 +318,27 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 //            ArrayList<SingleItemModel> singleItemModels = new ArrayList<>();
 //            dmSingle.setAllItemInSection(singleItemModels);
 //            allSampleData.add(dmSingle);
-        sectionModel = new SectionDataModel();
+        SectionDataModel sectionModel = new SectionDataModel();
         allSampleData.add(sectionModel);
 
-        sectionModel = new SectionDataModel("LATEST NEWS");
-        sectionModel.setLatestNewItemModelArrayList(createLatestNews());
-        allSampleData.add(sectionModel);
+        SectionDataModel sectionModel2 = new SectionDataModel("LATEST NEWS");
+        sectionModel2.setLatestNewItemModelArrayList(createLatestNews());
+        allSampleData.add(sectionModel2);
 
-        sectionModel = new SectionDataModel("Play List");
-        sectionModel.setPlayListItemModelArrayList(createPlaylistData());
-        allSampleData.add(sectionModel);
+        SectionDataModel sectionModel3 = new SectionDataModel("PLAY LIST");
+        sectionModel3.setPlayListItemModelArrayList(createPlaylistData());
+        allSampleData.add(sectionModel3);
 
-        sectionModel = new SectionDataModel("AAP leader Ashish Khetan leaves active politics citing plans to pursue law; sources say LS seat could have triggered move", R.drawable.road1);
-        allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("India unlikely to accept foreign donations for flood relief efforts in Kerala, will rely on domestic assistance", R.drawable.road2);
-        allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("CC", R.drawable.road3);
-        allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("DD", R.drawable.road4);
-        allSampleData.add(sectionModel);
-        sectionModel = new SectionDataModel("EE", R.drawable.road5);
-        allSampleData.add(sectionModel);
+        SectionDataModel sectionModel4 = new SectionDataModel("AAP leader Ashish Khetan leaves active politics citing plans to pursue law; sources say LS seat could have triggered move", R.drawable.road1);
+        allSampleData.add(sectionModel4);
+        SectionDataModel sectionModel5 = new SectionDataModel("India unlikely to accept foreign donations for flood relief efforts in Kerala, will rely on domestic assistance", R.drawable.road2);
+        allSampleData.add(sectionModel5);
+        SectionDataModel sectionModel6 = new SectionDataModel("CC", R.drawable.road3);
+        allSampleData.add(sectionModel6);
+        SectionDataModel sectionModel7 = new SectionDataModel("DD", R.drawable.road4);
+        allSampleData.add(sectionModel7);
+        SectionDataModel sectionModel8 = new SectionDataModel("EE", R.drawable.road5);
+        allSampleData.add(sectionModel8);
     }
 
     @Override

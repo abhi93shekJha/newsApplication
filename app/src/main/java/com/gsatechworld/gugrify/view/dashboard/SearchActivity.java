@@ -117,10 +117,10 @@ public class SearchActivity extends AppCompatActivity {
     private  void setData(){
         NewsListHolder holder = new NewsListHolder();
         holder.setImage("https://i.ytimg.com/vi/icqDxNab3Do/maxresdefault.jpg");
-        holder.setPostHeading("News Post 1");
+        holder.setPostHeading("News Post Headlines goes here");
         holder.setDescription("In broadcasting, News Reporters are filmed or recorded presenting the news. They may be recorded in a studio or in the field, depending on the story. They usually read off of a script, but also must be knowledgeable about the topic that they are reporting on.");
         holder.setLikes("29");
-        holder.setViews("18");
+        holder.setViews("18 views");
         arrayList.add(holder);
         arrayList.add(holder);
         arrayList.add(holder);

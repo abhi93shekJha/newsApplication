@@ -56,7 +56,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     @Override
     public void onScrolled(RecyclerView view, int dx, int dy) {
         int totalItemCount = mLayoutManager.getItemCount();
-        Log.d("Ran again","");
+//        Log.d("Ran again","");
 
         if (mLayoutManager instanceof StaggeredGridLayoutManager) {
             int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) mLayoutManager).findLastVisibleItemPositions(null);
@@ -66,13 +66,13 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
             lastVisibleItemPosition = ((GridLayoutManager) mLayoutManager).findLastVisibleItemPosition();
         } else if (mLayoutManager instanceof LinearLayoutManager) {
             lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
-            Log.d("LastVisibleItem", String.valueOf(lastVisibleItemPosition));
+//            Log.d("LastVisibleItem", String.valueOf(lastVisibleItemPosition));
         }
 
         // If the total item count is zero and the previous isn't, assume the
         // list is invalidated and should be reset back to initial state
         if (totalItemCount < previousTotalItemCount) {
-            Log.d("previousTotal", String.valueOf(previousTotalItemCount));
+//            Log.d("previousTotal", String.valueOf(previousTotalItemCount));
             this.currentPage = this.startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
             if (totalItemCount == 0) {
@@ -83,7 +83,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         // changed, if so we conclude it has finished loading and update the current page
         // number and total item count.
         if (loading && (totalItemCount > previousTotalItemCount)) {
-            Log.d("Total item", String.valueOf(totalItemCount));
+//            Log.d("Total item", String.valueOf(totalItemCount));
             loading = false;
             previousTotalItemCount = totalItemCount;
         }

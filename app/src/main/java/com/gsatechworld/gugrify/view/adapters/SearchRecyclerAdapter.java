@@ -2,6 +2,7 @@ package com.gsatechworld.gugrify.view.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.NewsListHolder;
+import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,14 +41,15 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
 
     @Override
     public void onBindViewHolder(final SearchRecyclerAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
-        Picasso.with(context)
-                .load(listFiltered.get(position)
-                        .getImage())
-                .into(holder.image);
-        holder.likes.setText(listFiltered.get(position).getLikes());
-        holder.views.setText(listFiltered.get(position).getViews());
-        holder.description.setText(listFiltered.get(position).getDescription());
+
         holder.heading.setText(listFiltered.get(position).getPostHeading());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DisplayVideoActivity.class);
+                context.startActivity(intent);
+            }
+        });
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -57,16 +60,10 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView heading, description, views, likes;
-        ImageView image;
-
+        TextView heading;
         MyViewHolder(View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.imageView);
             heading = itemView.findViewById(R.id.textViewname);
-            description = itemView.findViewById(R.id.textViewdescription);
-            views = itemView.findViewById(R.id.text1);
-            likes = itemView.findViewById(R.id.text2);
         }
     }
 

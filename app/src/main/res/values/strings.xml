@@ -37,6 +37,7 @@
     <string name="hang_tight_we_ll_be_right_back">Hang tight, we\'ll be right back!</string>
     <string name="tired_of_ads_remove_them_forever">Tired of Ads? Remove them forever!</string>
     <string name="watch_video">Watch Video</string>
+    <string name="news_description">Rahul on 1984 Sikh riots, RSS-Islamic State comparison, joblessness in India: Congress in damage-control mode as BJP mounts attack. RSS likely to invite Congress chief Rahul Gandhi, other politicians to three-day conclave in Delhi in September: Reports. Calcutta University postpones undergraduate examinations; revised exam dates to be announced soon</string>
 
     <!--Ashish-->
     <string-array name="months_array">
@@ -61,15 +62,15 @@ Meghalaya chief minister Conrad Sangma wins South-Tura Assembly bypoll by over 8
     <string name="thumbnail_image_view_desc">Youtube Video thumbnail image view</string>
     <!--  we need to use video ids instead of video link  -->
     <string-array name="video_id_array">
-        <item>CqhpNxI8qYw</item>
-        <item>sasCrpgHDy8</item>
-        <item>iJeh3x09Ya8</item>
-        <item>B5zRaD7B504</item>
+        <item>l0-91IRYWOM</item>
+        <item>ve5ZdLjh_0E</item>
+        <item>2W_G3xmSGfo</item>
+        <item>UDVtMYqUAyw</item>
         <item>9qWHzj8k-Uo</item>
-        <item>RjiK45wC924</item>
-        <item>RH3zaLO8H4E</item>
-        <item>o14pyzosjvk</item>
-        <item>5SQrpBQne7A</item>
-        <item>5WJ3r67ORxo</item>
+        <item>AkpxPBqY5-Q</item>
+        <item>HiAj7S6ko9Q</item>
+        <item>AWRGo62Na1s</item>
+        <item>Wl-Ap2yUjYQ</item>
+        <item>2_HgPXgJ16I</item>
     </string-array>
 </resources>

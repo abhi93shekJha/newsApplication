@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/mainLayout"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
@@ -14,7 +15,7 @@
             android:fitsSystemWindows="true"
             android:id="@+id/itemImage"
             android:layout_width="200dp"
-            android:layout_height="155dp"
+            android:layout_height="135dp"
             android:scaleType="fitXY"
             android:src="@drawable/country4" />
 

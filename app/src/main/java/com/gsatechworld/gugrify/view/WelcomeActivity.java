@@ -155,7 +155,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     public void launchHomeScreen(){
         prefManager.setIsFirstTime(false);
-        startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+        startActivity(new Intent(WelcomeActivity.this, SelectLanguageAndCities.class));
         finish();
     }
 

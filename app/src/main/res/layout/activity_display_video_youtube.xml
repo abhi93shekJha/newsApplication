@@ -20,7 +20,7 @@
     <!--  Youtube Player Fragment  -->
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight=".7"
+        android:layout_weight=".6"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!--android:layout_weight="0.35"-->
@@ -33,14 +33,13 @@
             android:layout_below="@+id/toolbar"
            />
         <!-- android:layout_weight="4"-->
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/tv_headline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight=".3"
+        android:layout_weight=".4"
         android:orientation="vertical">
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
@@ -48,28 +47,28 @@
             android:layout_height="match_parent"
             android:overScrollMode="never">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <include
                     layout="@layout/datalayout"
+                    android:id="@+id/include"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
 
-                <FrameLayout
+                <!--<FragmentLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent">-->
 
                     <android.support.v7.widget.RecyclerView
+                        android:layout_below="@+id/include"
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="5dp">
                     </android.support.v7.widget.RecyclerView>
-                </FrameLayout>
-            </LinearLayout>
+            </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
@@ -79,86 +78,6 @@
         android:layout_gravity="bottom"
         android:layout_height="wrap_content"
         android:layout_weight=".2"/>
-
     <!--Before Layout-->
-
-    <!--<LinearLayout
-        android:orientation="vertical"
-
-        android:layout_weight="0.1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="0.1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-
-        android:layout_weight="0.1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-        <TextView
-            android:id="@+id/tv_headline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/recycler_view"
-            android:text="New Post HeadLine Goes Here"
-            android:layout_marginLeft="10dp"
-            android:textSize="20dp"
-            android:layout_weight="2"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:orientation="vertical"
-
-        android:layout_weight="0.25"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-
-        &lt;!&ndash; RecyclerView to display list of Videos in Horizontal direction &ndash;&gt;
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:paddingEnd="10dp"
-            android:paddingRight="10dp"
-            android:layout_above="@id/bottom"
-            android:layout_weight="5"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="0.1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-
-        <include
-            android:id="@+id/bottom"
-            layout="@layout/bottomlayout"
-            android:layout_width="fill_parent"
-            android:layout_gravity="bottom"
-            android:layout_alignParentBottom="true"
-            android:layout_height="wrap_content" />
-    </LinearLayout>-->
-
-   <!-- <include
-        android:id="@+id/tv_headline"
-        layout="@layout/datalayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/recycler_view"/>-->
-
-
-
 
 </LinearLayout>

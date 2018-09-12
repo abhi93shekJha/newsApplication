@@ -20,7 +20,8 @@
     <color name="global_color_green_control_activated">#ffc107</color>
 
     // dashboard screen status bar color
-    <color name="ststusbar_color">#ED90A4AE</color>
+    <color name="ststusbar_color">#878e91</color>
+    <color name="ststusbar_color2">#000000</color>
 
     // login screen status bar color
     <color name="ststusbar_login_color">#ED030303</color>

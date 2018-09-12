@@ -1,12 +1,15 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -43,6 +46,17 @@ public class DisplayVideoActivity extends AppCompatActivity {
         setUpRecyclerView();
         populateRecyclerView();
 
+        // clear FLAG_TRANSLUCENT_STATUS flag:
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        // finally change the color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ststusbar_color2));
+        }
+
         /*For Expandable View*/
         expandableButton = findViewById(R.id.expandableButton);
         expandableButton.setCallbackListener(new ExpandableView.ExpandableButtonListener() {
@@ -60,6 +74,7 @@ public class DisplayVideoActivity extends AppCompatActivity {
 
 
     public void childClicked(View view) {
+
         //((TextView) view).setText("Task Completed (Expandable Button color changed)");
         Toast.makeText(DisplayVideoActivity.this, "Change The Text And Click On Child Data", Toast.LENGTH_SHORT).show();
        // expandableButton.setBarColor(Color.parseColor("#297e55"));

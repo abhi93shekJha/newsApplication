@@ -47,6 +47,9 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".view.dashboard.SearchActivity"/>
         <activity android:name=".view.dashboard.DisplayVideoActivity"/>
+        <activity android:name=".view.ShowPlaylistActivtiy"/>
+        <activity android:name=".view.DisplayBreakingNewsActivity">
+        </activity>
     </application>
 
 </manifest>

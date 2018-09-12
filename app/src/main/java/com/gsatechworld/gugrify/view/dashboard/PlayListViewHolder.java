@@ -22,6 +22,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.model.LatestNewItemModel;
+import com.gsatechworld.gugrify.model.OtherNewsItemModel;
+import com.gsatechworld.gugrify.model.PlayListItemModel;
+import com.gsatechworld.gugrify.model.SectionDataModel;
+import com.gsatechworld.gugrify.view.adapters.SectionListDataAdapter;
 import com.gsatechworld.gugrify.view.genericadapter.BaseViewHolder;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 

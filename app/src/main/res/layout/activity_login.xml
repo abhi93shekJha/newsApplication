@@ -162,7 +162,7 @@
                     android:drawableLeft="@drawable/ic_fb"
                     android:drawablePadding="5dp"
                     android:paddingRight="5dp"
-                    android:paddingLeft="25dp"
+                    android:paddingLeft="20dp"
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:text="Facebook"
@@ -178,7 +178,7 @@
                     android:layout_weight="0.5"
                     android:background="@color/red_color"
                     android:drawableLeft="@drawable/ic_google"
-                    android:paddingLeft="25dp"
+                    android:paddingLeft="22dp"
                     android:textSize="17sp"
                     android:text="Google"
                     android:gravity="center"
@@ -205,7 +205,7 @@
                     android:gravity="left"
                     android:text="Sign up"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -219,7 +219,7 @@
                     android:text="Terms"
                     android:textStyle="bold"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:id="@+id/youtube_row_card_view"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="4dp"
-    app:contentPadding="3dp">
-
+    android:layout_height="115dp"
+    android:layout_marginBottom="3dp"
+    android:elevation="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,17 +15,19 @@
     <!-- youtube thumbnail view to show the thumbnail of videos -->
     <com.google.android.youtube.player.YouTubeThumbnailView
         android:id="@+id/video_thumbnail_image_view"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_weight=".2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.2"
         android:background="@android:color/darker_gray"
         android:contentDescription="@string/thumbnail_image_view_desc"
         android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.8"
+        android:layout_height="wrap_content"
+        android:layout_weight=".8"
+        android:padding="6dp"
+        android:layout_marginLeft="13dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/textViewname"
@@ -35,18 +35,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="News Post headling goes here"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:textSize="17sp"
+            android:maxLines="2"
+            android:lines="2"
+            android:ellipsize="end"
+            android:textColor="@color/color_black"
+            />
         <TextView
             android:id="@+id/textViewdescription"
             android:layout_width="wrap_content"
+            android:layout_marginTop="4dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="New Description line is here "
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:text="New Description line is here sdsadasdssadsadasdsadsdsds fdf sads asd"
+            android:textSize="12dp"
+            android:maxLines="2"
+            android:lines="2"
+            android:ellipsize="end"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:weightSum="2"
+            android:layout_marginTop="7dp"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -54,30 +63,36 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:src="@drawable/seen"/>
                 <TextView
                     android:id="@+id/text1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:text="190"/>
+                    android:textColor="@color/color_black"
+                    android:textSize="10sp"
+                    android:text="190 views"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="end"
+                android:paddingRight="14dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:padding="2dp"
                     android:src="@drawable/like"/>
                 <TextView
                     android:id="@+id/text2"
                     android:layout_width="wrap_content"
                     android:layout_marginLeft="3dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/color_black"
                     android:layout_height="wrap_content"
                     android:text="19"/>
             </LinearLayout>

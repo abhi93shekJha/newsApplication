@@ -71,7 +71,7 @@ public class ExpandableView extends FrameLayout {
         View view = inflater.inflate(R.layout.expandable_view, this);
         textView = view.findViewById(R.id.tv_text);
         imageArrow = view.findViewById(R.id.iv_arrow);
-        viewColor = view.findViewById(R.id.view_color);
+//        viewColor = view.findViewById(R.id.view_color);
 
         setClickListener();
 

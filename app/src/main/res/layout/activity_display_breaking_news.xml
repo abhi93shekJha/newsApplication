@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/frame1"
+        android:layout_width="match_parent"
+        android:background="@drawable/country1"
+        android:layout_height="190dp" />
+    <LinearLayout
+        android:id="@+id/breaking_ll1"
+        android:background="@color/slaty"
+        android:layout_below="@+id/frame1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/advertisementImage"
+            android:scaleType="fitXY"
+            android:src="@drawable/country1"
+            android:layout_width="45dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="7dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/advertisementText"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:text="advertisement"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@+id/breaking_ll1"
+            android:layout_above="@+id/frame2"
+            android:id="@+id/posts_recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    <FrameLayout
+        android:id="@+id/frame2"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+    </FrameLayout>
+</RelativeLayout>

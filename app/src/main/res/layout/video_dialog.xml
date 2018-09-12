@@ -20,7 +20,7 @@
         android:layout_gravity="right"
         app:srcCompat="@drawable/ic_clock"/>
 
-    <FrameLayout
+    <FragmentLayout
         android:layout_marginTop="200dp"
         android:id="@+id/videoViewWrapper"
         android:layout_width="match_parent"
@@ -30,12 +30,12 @@
         android:layout_gravity="bottom"/>-->
 
     <!--Only for Image Related  using This Layout-->
-    <ImageView
+   <!-- <ImageView
         android:id="@+id/iv_close"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="right"
-        app:srcCompat="@drawable/ic_close_black_24dp"/>
+        app:srcCompat="@drawable/ic_close_black_24dp"/>-->
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -53,7 +53,7 @@
         android:text="@string/hang_tight_we_ll_be_right_back"
         android:layout_marginBottom="10dp"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp"/>
+        android:textSize="17sp"/>
     
     <ImageView
         android:layout_width="match_parent"
@@ -71,11 +71,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp"/>
+        android:textSize="17sp"/>
 
     <Button
-        android:layout_width="200dp"
-        android:layout_height="50dp"
+        android:id="@+id/redirectButton"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
         android:text="@string/watch_video"
         android:background="@drawable/btn_open_selector"
         android:textColor="@drawable/btn_open_color_selector"/>
