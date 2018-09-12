@@ -40,4 +40,14 @@ public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferen
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
 
     }
+
+    public void setClickedPosition(int position){
+        editor = androidPref.edit();
+        editor.putInt("position", position);
+        editor.commit();
+    }
+
+    public int getClickedPosition(){
+        return androidPref.getInt("position", 0);
+    }
 }

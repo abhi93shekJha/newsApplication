@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
@@ -30,10 +31,12 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
     Context context;
     boolean b = false;
     ArrayList<PostsByCategory> posts;
+    NewsSharedPreferences sharedPreferences;
 
     public BreakingNewsRecyclerAdapter(Context context, ArrayList<PostsByCategory> posts){
         this.context = context;
         this.posts = posts;
+        sharedPreferences = NewsSharedPreferences.getInstance(context);
     }
 
     public BreakingNewsRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,6 +70,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                     FragmentImage fragment1 = new FragmentImage();
                     FragmentLayout fragment2 = new FragmentLayout();
                     if(context instanceof DisplayBreakingNewsActivity){
+                        sharedPreferences.setClickedPosition(position-1);
                         ((DisplayBreakingNewsActivity) context).loadFragment(fragment1, fragment2, position-1);
                     }
                 }
