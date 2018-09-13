@@ -6,13 +6,17 @@ import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
@@ -34,13 +38,20 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     Animation zoomIn;
     NewsSharedPreferences sharedPreferences;
     TextView textView;
+    ViewPager viewPager;
     int i=0;
     Handler mHandler;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_display_breaking_news);
         mHandler = new Handler();
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
+
+        viewPager = (ViewPager) findViewById(R.id.image_view_pager);
+        viewPager.setAdapter(new CustomPagerAdapter(this));
 
         RecyclerView recycler = findViewById(R.id.posts_recycler);
 
@@ -48,8 +59,15 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         if(imageView != null) {
             Glide.with(DisplayBreakingNewsActivity.this).load("http://www.bloggs74.com/wp-content/uploads/resadv251.jpg?39a0e9").into(imageView);
         }
-        TextView tv = findViewById(R.id.advertisementText);
 
+        TextView scroll_line = findViewById(R.id.scrolling_line);
+        if(scroll_line != null){
+            Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+            scroll_line.setTypeface(fontBold);
+            scroll_line.setSelected(true);
+        }
+
+        TextView tv = findViewById(R.id.advertisementText);
         if(tv != null) {
             Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
             tv.setTypeface(fontRegular);
@@ -71,6 +89,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         textView = findViewById(R.id.breakingNewstext);
 
         if(textView != null) {
+
             textView.setTypeface(fontBold);
 
             zoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
@@ -244,4 +263,5 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             super.onConfigurationChanged(newConfig);
         }
     }*/
+
 }

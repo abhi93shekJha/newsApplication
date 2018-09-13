@@ -5,35 +5,58 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/place"
         android:src="@drawable/place"
-        android:layout_width="100dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="90dp"
+        android:layout_marginTop="8dp"
         android:scaleType="fitXY"
-        android:layout_height="22dp" />
+        android:layout_height="21dp" />
 
     <FrameLayout
+        android:id="@+id/animated_text_frame"
         android:layout_above="@+id/breaking_news_frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="45dp"
-        android:layout_marginBottom="12dp">
-    <ImageView
-        android:src="@drawable/centre_image"
-        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/place"
+        >
+    <LinearLayout
+        android:background="@color/breaking_news_transparent"
         android:layout_gravity="center"
-        android:layout_width="450dp"
-        android:layout_height="wrap_content" />
+        android:layout_width="460dp"
+        android:layout_height="210dp" />
         <TextView
             android:id="@+id/breakingNewstext"
             android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="24sp"
+            android:textSize="25sp"
             android:textColor="@color/colorWhite"
-            android:layout_width="300dp"
-            android:layout_height="match_parent" />
+            android:layout_width="330dp"
+            android:layout_height="210dp" />
     </FrameLayout>
-
+    <FrameLayout
+        android:layout_above="@+id/breaking_news_frameLayout"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_below="@+id/place"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/image_view_background"
+            android:src="@drawable/view_pager"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="10dp"
+            android:layout_width="410dp"
+            android:layout_height="200dp" />
+        <android.support.v4.view.ViewPager
+            android:id="@+id/image_view_pager"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_width="403dp"
+            android:layout_height="193dp">
+        </android.support.v4.view.ViewPager>
+    </FrameLayout>
     <FrameLayout
         android:id="@+id/breaking_news_frameLayout"
         android:layout_above="@+id/bottomLinearLayout"
@@ -70,13 +93,27 @@
             android:id="@+id/newsLine"
             android:src="@drawable/news_line"
             android:layout_width="100dp"
-            android:layout_height="20dp" />
-        <ImageView
-            android:id="@+id/scrolling_line"
+            android:layout_height="25dp" />
+        <FrameLayout
+            android:background="@color/scrolling_line"
             android:layout_width="match_parent"
-            android:scaleType="fitXY"
-            android:layout_height="20dp"
+            android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/scrolling_line"
+            android:text="@string/scrolling_line"
+            android:layout_width="match_parent"
+            android:textSize="18sp"
+            android:textColor="@color/colorWhite"
+            android:layout_marginLeft="3dp"
+            android:layout_height="25dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
             android:src="@drawable/scrolling_line" />
+        </FrameLayout>
 
     </LinearLayout>
 
