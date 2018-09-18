@@ -6,8 +6,17 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.gsatechworld.gugrify.R;
 
 public class BreakingNewsViewPagerAdapter extends PagerAdapter {
+
+    private Integer[] images = {  R.mipmap.road1,
+            R.mipmap.road2,
+            R.mipmap.road6,
+            R.mipmap.road1,
+            R.mipmap.road2};
 
     Context context;
     public BreakingNewsViewPagerAdapter(Context context){
@@ -16,20 +25,27 @@ public class BreakingNewsViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return 4;
     }
 
     @Override
     public Object instantiateItem(ViewGroup collection, int position) {
-        ModelObject modelObject = ModelObject.values()[position];
+
         LayoutInflater inflater = LayoutInflater.from(context);
-        ViewGroup layout = (ViewGroup) inflater.inflate(modelObject.getLayoutResId(), collection, false);
-        collection.addView(layout);
-        return layout;
+        View view = inflater.inflate(R.layout.breaking_news_view_pager_item, null);
+        ImageView image = view.findViewById(R.id.view_pager_image_item);
+        image.setImageResource(images[position]);
+        collection.addView(view, 0);
+        return view;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup collection, int position, Object view) {
+        collection.removeView((View) view);
     }
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return false;
+        return view == object;
     }
 }

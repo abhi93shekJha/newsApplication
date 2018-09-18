@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 import com.squareup.picasso.Picasso;
 
@@ -35,7 +36,7 @@ public class PlayListRecyclerAdapter extends RecyclerView.Adapter<PlayListRecycl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, DisplayVideoActivity.class);
+                Intent intent = new Intent(context, DisplayBreakingNewsActivity.class);
                 context.startActivity(intent);
             }
         });

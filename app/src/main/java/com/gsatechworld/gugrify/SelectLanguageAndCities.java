@@ -8,39 +8,32 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gsatechworld.gugrify.view.adapters.City;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
-import com.gsatechworld.gugrify.view.adapters.CitiesGridViewAdapter;
-import com.gsatechworld.gugrify.view.adapters.LanguageExpandableListAdapter;
 import com.gsatechworld.gugrify.view.adapters.LanguageRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//import LanguageRecyclerAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class SelectLanguageAndCities extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -124,7 +117,6 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         grid.setLayoutManager(new GridLayoutManager(this, 3));
         grid.setAdapter(l);
 //        l.setClickListener(this);
-
     }
 
     @Override
@@ -142,6 +134,25 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
 
     public ArrayList<City> getCities(){
         ArrayList<City> cities = new ArrayList<>();
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<City> call = apiService.getAllCities();
+
+        call.enqueue(new Callback<City>() {
+            @Override
+            public void onResponse(Call<City>call, Response<City> response) {
+                List<City> movies = response.body().getResults();
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<City>call, Throwable t) {
+                // Log error here since request failed
+//                Log.e(TAG, t.toString());
+            }
+        });
+
+        /*cities.add(new City("Bangalore"));
         cities.add(new City("Bangalore"));
         cities.add(new City("Bangalore"));
         cities.add(new City("Bangalore"));
@@ -160,8 +171,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         cities.add(new City("Bangalore"));
         cities.add(new City("Bangalore"));
         cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
+        cities.add(new City("Bangalore"));*/
 
         return cities;
     }

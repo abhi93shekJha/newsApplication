@@ -36,26 +36,45 @@
             android:layout_height="210dp" />
     </FrameLayout>
     <FrameLayout
+        android:id="@+id/view_pager_frame_layout"
         android:layout_above="@+id/breaking_news_frameLayout"
         android:layout_width="match_parent"
         android:visibility="visible"
         android:layout_below="@+id/place"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/image_view_background"
             android:src="@drawable/view_pager"
             android:layout_gravity="center"
-            android:scaleType="fitXY"
             android:layout_marginBottom="10dp"
-            android:layout_width="410dp"
-            android:layout_height="200dp" />
+            android:scaleType="fitXY"
+            android:layout_width="403dp"
+            android:layout_height="215dp" />
         <android.support.v4.view.ViewPager
             android:id="@+id/image_view_pager"
             android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:layout_width="403dp"
-            android:layout_height="193dp">
+            android:layout_marginLeft="0dp"
+            android:layout_marginBottom="8.5dp"
+            android:layout_width="398dp"
+            android:layout_height="206.5dp">
         </android.support.v4.view.ViewPager>
+        <LinearLayout
+            android:id="@+id/viewPagerDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_view_pager"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="35dp"
+            android:gravity="end|bottom"
+            android:orientation="horizontal" />
+        <ImageView
+            android:id="@+id/place_holder_image"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/place_holder"
+            android:scaleType="fitXY"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="85dp"
+            android:layout_height="80dp" />
     </FrameLayout>
     <FrameLayout
         android:id="@+id/breaking_news_frameLayout"

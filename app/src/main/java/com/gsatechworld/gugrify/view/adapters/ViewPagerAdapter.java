@@ -52,7 +52,6 @@ public class ViewPagerAdapter extends PagerAdapter {
         imageView.setImageResource(images[position]);
 
 //        AccelerateDecelerateInterpolator ACCELERATE_DECELERATE = new AccelerateDecelerateInterpolator();
-//
 //        TransitionGenerator generator = new ViewPagerTransitionGenerator(context);
 //        //duration = 10000ms = 10s and interpolator = ACCELERATE_DECELERATE
 //        imageView.setTransitionGenerator(generator); //set new transition on kbv

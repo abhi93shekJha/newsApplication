@@ -95,7 +95,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                         } else {
                             holder.l.setVisibility(View.VISIBLE);
                             Animation animation = AnimationUtils.loadAnimation(context,
-                                    R.anim.slide_left);
+                                    R.anim.news_slide_down);
                             holder.l.startAnimation(animation);
                             RotateAnimation rotateAnimation = new RotateAnimation(0.0f, 180.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                             rotateAnimation.setInterpolator(new DecelerateInterpolator());

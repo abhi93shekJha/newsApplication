@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +21,9 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,30 +33,110 @@ import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
+import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
 
 import java.util.ArrayList;
 
 public class DisplayBreakingNewsActivity extends AppCompatActivity {
     ArrayList<PostsByCategory> posts = new ArrayList<>();
     Animation zoomIn;
+    ViewPager viewPager;
+    FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
     NewsSharedPreferences sharedPreferences;
     TextView textView;
-    ViewPager viewPager;
+    private int dotscount;
+    private LinearLayout linearLayout;
+    private ImageView dots[];
     int i=0;
     Handler mHandler;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        //  if the screen rotates to landscape (bigger) mode, hide the status bar
+        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+
         setContentView(R.layout.activity_display_breaking_news);
+
+        //if the screen is in portrait mode, make status bar black
+        // clear FLAG_TRANSLUCENT_STATUS flag:
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        // finally change the color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
+        }
+
         mHandler = new Handler();
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
 
-        viewPager = (ViewPager) findViewById(R.id.image_view_pager);
-        viewPager.setAdapter(new CustomPagerAdapter(this));
-
         RecyclerView recycler = findViewById(R.id.posts_recycler);
+        frameLayoutTextAnimation = findViewById(R.id.animated_text_frame);
+        frameLayoutViewPager = findViewById(R.id.view_pager_frame_layout);
+        viewPager = findViewById(R.id.image_view_pager);
+        if(viewPager != null) {
+
+            //chaning the landscape mode to either animation or viewpager mode.
+            if(sharedPreferences.getClickedPosition()%2 == 0){
+                frameLayoutTextAnimation.setVisibility(View.VISIBLE);
+                frameLayoutViewPager.setVisibility(View.GONE);
+            }
+            else {
+                frameLayoutTextAnimation.setVisibility(View.GONE);
+                frameLayoutViewPager.setVisibility(View.VISIBLE);
+            }
+            BreakingNewsViewPagerAdapter b = new BreakingNewsViewPagerAdapter(DisplayBreakingNewsActivity.this);
+            viewPager.setAdapter(b);
+            dotscount = b.getCount();
+            dots = new ImageView[dotscount];
+
+            linearLayout = findViewById(R.id.viewPagerDots);
+
+            for (int i = 0; i < dotscount; i++) {
+
+                dots[i] = new ImageView(DisplayBreakingNewsActivity.this);
+                dots[i].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.non_active_dot));
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                params.setMargins(8, 0, 8, 0);
+
+                linearLayout.addView(dots[i], params);
+
+            }
+
+            dots[0].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.active_dot));
+
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+
+                    for (int i = 0; i < dotscount; i++) {
+                        dots[i].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.non_active_dot));
+                    }
+
+                    dots[position].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.active_dot));
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+        }
 
         ImageView imageView = findViewById(R.id.advertisementImage);
         if(imageView != null) {
@@ -128,13 +211,14 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                     Log.d("Reached on repeat ", "true");
                 }
             });
+
         }
 
 
         if(recycler != null) {
             FragmentImage fragment1 = new FragmentImage();
             FragmentLayout fragment2 = new FragmentLayout();
-            loadFragment(fragment1, fragment2, 0);
+            loadFragment(fragment1, fragment2, sharedPreferences.getClickedPosition());
 
             BreakingNewsRecyclerAdapter adapter = new BreakingNewsRecyclerAdapter(DisplayBreakingNewsActivity.this, posts);
             recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -151,12 +235,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 // replace the FragmentLayout with new Fragment
 
         Bundle bundle = new Bundle();
-        bundle.putString("image", posts.get(position).getImage());
+        bundle.putString("image", posts.get(sharedPreferences.getClickedPosition()).getImage());
         fragment1.setArguments(bundle);
 
         ArrayList<String> list = new ArrayList<>();
-        list.add(posts.get(position).getViews());
-        list.add(posts.get(position).getLikes());
+        list.add(posts.get(sharedPreferences.getClickedPosition()).getViews());
+        list.add(posts.get(sharedPreferences.getClickedPosition()).getLikes());
 
         bundle.putStringArrayList("forLinearLayout", list);
         fragment2.setArguments(bundle);
@@ -263,5 +347,15 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             super.onConfigurationChanged(newConfig);
         }
     }*/
+
+    @Override
+    public void onBackPressed()
+    {
+        // code here to show dialog
+        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else
+            finish();
+    }
 
 }

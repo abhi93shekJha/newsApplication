@@ -17,6 +17,7 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.LatestNewItemModel;
 import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
+import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.ShowPlaylistActivtiy;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 
@@ -72,7 +73,7 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
             holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DisplayVideoActivity.class);
+                    Intent intent = new Intent(mContext, DisplayBreakingNewsActivity.class);
                     mContext.startActivity(intent);
                 }
             });

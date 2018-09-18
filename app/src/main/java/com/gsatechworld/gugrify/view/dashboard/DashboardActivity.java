@@ -142,8 +142,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         showVideoDialog();
 
-
-
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         adapter = new RecyclerViewDataAdapter(allSampleData, this);

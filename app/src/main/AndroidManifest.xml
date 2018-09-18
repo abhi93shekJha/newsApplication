@@ -37,19 +37,23 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.dashboard.DashboardActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/AppTheme" >
         </activity>
         <activity
             android:name=".view.authentication.LoginActivity"
             android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".view.dashboard.SearchActivity"/>
+        <activity android:name=".view.dashboard.SearchActivity"
+android:screenOrientation="portrait"/>
         <activity android:name=".view.dashboard.DisplayVideoActivity"/>
-        <activity android:name=".view.ShowPlaylistActivtiy"/>
+        <activity android:name=".view.ShowPlaylistActivtiy"
+            android:screenOrientation="portrait"/>
         <activity android:name=".view.DisplayBreakingNewsActivity"
-            >
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
