@@ -1,6 +1,7 @@
 package com.gsatechworld.gugrify;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +26,9 @@ import android.widget.Toast;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.model.retrofit.CityResponse;
+import com.gsatechworld.gugrify.model.retrofit.Language;
+import com.gsatechworld.gugrify.model.retrofit.LanguageResponse;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.adapters.LanguageRecyclerAdapter;
 
@@ -38,12 +43,22 @@ import retrofit2.Response;
 public class SelectLanguageAndCities extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     boolean runOnce;
-    public static List<String> list;
+    public static ArrayList<City> list;
     FloatingActionButton selectCityButton;
     public static String selectedLanguage = "Kannada";
     RelativeLayout rLayout;
+    Spinner spinner;
     TextView textView;
     boolean b = false;
+    ApiInterface apiService;
+    RelativeLayout mainLayout;
+    ProgressBar progressBar;
+    List<CityResponse.city> lists;
+    List<String> languages;
+    NewsSharedPreferences sharedPreferences;
+    LanguageResponse language;
+    LanguageRecyclerAdapter l;
+    RecyclerView grid;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -53,50 +68,32 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_language_cities);
+        sharedPreferences = NewsSharedPreferences.getInstance(SelectLanguageAndCities.this);
+
+        //if city has already been selected
+        if(sharedPreferences.getCitySelected().length() != 0){
+            Intent intent = new Intent(SelectLanguageAndCities.this, DashboardActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+        mainLayout = findViewById(R.id.selectCityMain);
+        progressBar = findViewById(R.id.progressBar1);
+        list = new ArrayList<>();
+        lists = new ArrayList<>();
+        languages = new ArrayList<>();
 
         rLayout = findViewById(R.id.selectCityMain);
         runOnce=false;
 
-        Spinner spinner = (Spinner) findViewById(R.id.citiesSpinner);
+        spinner = (Spinner) findViewById(R.id.citiesSpinner);
         spinner.setOnItemSelectedListener(SelectLanguageAndCities.this);
 
         final List<String> categories = new ArrayList<String>();
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item){
-
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-                View v = super.getView(position, convertView, parent);
-                if (position == getCount()) {
-                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
-                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
-                }
-                return v;
-            }
-
-            @Override
-            public int getCount() {
-                return super.getCount() - 1; // you dont display last item. It is used as hint.
-            }
-        };
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dataAdapter.add("Kannada");
-        dataAdapter.add("English");
-        dataAdapter.add("Hindi");
-        dataAdapter.add("Malayalam");
-        dataAdapter.add("Select");
-        spinner.setAdapter(dataAdapter);
-        spinner.setSelection(dataAdapter.getCount());
+        getLanguages();
 
         TextView tv1 = findViewById(R.id.select_language_textView);
         selectCityButton = findViewById(R.id.languageAndCityFloating);
-        selectCityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SelectLanguageAndCities.this, DashboardActivity.class);
-                startActivity(intent);
-            }
-        });
         Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         tv1.setTypeface(fontRegular);
         //selectCityButton.setTypeface(fontRegular);
@@ -112,9 +109,9 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lang_ststusbar_color));
         }
 
-        RecyclerView grid = findViewById(R.id.select_language_grid_view);
-        LanguageRecyclerAdapter l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, getCities(), (FloatingActionButton) findViewById(R.id.languageAndCityFloating), rLayout);
-        grid.setLayoutManager(new GridLayoutManager(this, 3));
+        grid = findViewById(R.id.select_language_grid_view);
+        l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, list, (FloatingActionButton) findViewById(R.id.languageAndCityFloating), rLayout);
+        grid.setLayoutManager(new GridLayoutManager(SelectLanguageAndCities.this, 3));
         grid.setAdapter(l);
 //        l.setClickListener(this);
     }
@@ -122,9 +119,11 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         // On selecting a spinner item
-        String item = adapterView.getItemAtPosition(i).toString();
-        if(!item.equals("Select"))
-            Toast.makeText(this, "Selected: " + item, Toast.LENGTH_LONG).show();
+        String languageId = "0";
+        if(i != language.getResult().size()) {
+            languageId = language.getResult().get(i).getLanguageId();
+            getCities(languageId);
+        }
     }
 
     @Override
@@ -132,47 +131,107 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
 
     }
 
-    public ArrayList<City> getCities(){
-        ArrayList<City> cities = new ArrayList<>();
+    public void getCities(String languageId){
 
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<City> call = apiService.getAllCities();
+        list.clear();
+        mainLayout.setAlpha(0.5f);
+        progressBar.setVisibility(View.VISIBLE);
 
-        call.enqueue(new Callback<City>() {
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CityResponse> call = apiService.getAllCities(languageId);
+
+        call.enqueue(new Callback<CityResponse>() {
             @Override
-            public void onResponse(Call<City>call, Response<City> response) {
-                List<City> movies = response.body().getResults();
+            public void onResponse(Call<CityResponse> call, Response<CityResponse> response) {
+                CityResponse city = null;
+                    if (response.isSuccessful()) {
+                        city = response.body();
+                        lists = city.getResult();
+
+                        for(int i=0; i<lists.size(); i++){
+                            City c = new City(lists.get(i).getCities());
+//                            Log.d("city is", lists.get(i).getCities());
+                            list.add(c);
+                        }
+                        Log.d("List size is", String.valueOf(list.size()));
+                        l.notifyDataSetChanged();
+                        mainLayout.setAlpha(1.0f);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                    else {
+                        Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT);
+                    }
 //                Log.d(TAG, "Number of movies received: " + movies.size());
             }
 
             @Override
-            public void onFailure(Call<City>call, Throwable t) {
+            public void onFailure(Call<CityResponse>call, Throwable t) {
                 // Log error here since request failed
-//                Log.e(TAG, t.toString());
+                Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
             }
         });
+    }
 
-        /*cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));
-        cities.add(new City("Bangalore"));*/
+    public void getLanguages(){
+       /* languages.add("Kannada");
+        languages.add("English");
+        languages.add("Hindi");
+        languages.add("Malayalam");
+        languages.add("Select");*/
+        mainLayout.setAlpha(0.5f);
+        progressBar.setVisibility(View.VISIBLE);
 
-        return cities;
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<LanguageResponse> call = apiService.getAllLanguages();
+        call.enqueue(new Callback<LanguageResponse>() {
+            @Override
+            public void onResponse(Call<LanguageResponse> call, Response<LanguageResponse> response) {
+                if (response.isSuccessful()) {
+                    language = response.body();
+                    Log.d("Response for language", language.getResult().get(0).getLanguage());
+                    fillSpinner();
+                }
+                else {
+                    Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT);
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<LanguageResponse>call, Throwable t) {
+                // Log error here since request failed
+                Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
+            }
+        });
+    }
+
+    public void fillSpinner(){
+        for(int i=0; i<language.getResult().size(); i++) {
+            languages.add(language.getResult().get(i).getLanguage());
+        }
+        languages.add("Select");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages){
+
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View v = super.getView(position, convertView, parent);
+                if (position == getCount()) {
+                    ((TextView) v.findViewById(android.R.id.text1)).setText("");
+                    ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                }
+                return v;
+            }
+
+            @Override
+            public int getCount() {
+                return (languages.size() - 1); // you dont display last item. It is used as hint.
+            }
+        };
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+        spinner.setSelection(dataAdapter.getCount());
+
+        mainLayout.setAlpha(1.0f);
+        progressBar.setVisibility(View.GONE);
     }
 }

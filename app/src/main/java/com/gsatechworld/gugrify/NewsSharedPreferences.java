@@ -31,9 +31,18 @@ public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferen
         editor.commit();
     }
 
-
     public boolean getIsFirstTime(){
         return androidPref.getBoolean("FirstTime", true);
+    }
+
+    public void setCitySelected(String value){
+        editor = androidPref.edit();
+        editor.putString("citySelected", value);
+        editor.commit();
+    }
+
+    public String getCitySelected(){
+        return androidPref.getString("citySelected", "");
     }
 
     @Override

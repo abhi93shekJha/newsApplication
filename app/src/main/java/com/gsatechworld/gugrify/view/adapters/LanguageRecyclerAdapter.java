@@ -2,29 +2,26 @@ package com.gsatechworld.gugrify.view.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
+import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import static com.gsatechworld.gugrify.SelectLanguageAndCities.list;
 
 //import android.support.v7.app.AlertController;
 
@@ -39,6 +36,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     boolean b=false;
     boolean once=false;
     View temp;
+    NewsSharedPreferences sharedPreferences;
     ArrayList<Integer> selectedItem = new ArrayList<>();
 
     public LanguageRecyclerAdapter(final Context context, ArrayList<City> citie, FloatingActionButton action, RelativeLayout rLayout) {
@@ -48,6 +46,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
         expandedPositionSet = new HashSet<>();
         this.context = context;
         this.cities = citie;
+        sharedPreferences = NewsSharedPreferences.getInstance(context);
 
         action.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +67,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-         if (cities.get(position).isSelected == true){
+         if (cities.get(position).isSelected() == true){
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.brown));
             holder.tvBrown.setVisibility(View.GONE);
             holder.tvWhite.setVisibility(View.VISIBLE);
@@ -89,7 +88,19 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
                 once = false;
             }
         }
-         holder.tvBrown.setText(cities.get(position).cityName);
+
+        //clicked on floating action button
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sharedPreferences.setCitySelected(cities.get(position).getCityName());
+                Intent intent = new Intent(context, DashboardActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+         holder.tvWhite.setText(cities.get(position).getCityName());
+         holder.tvBrown.setText(cities.get(position).getCityName());
     }
 
     @Override
@@ -125,7 +136,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
                             b=true;
                         }
 
-                        if(!cities.get(getAdapterPosition()).isSelected){
+                        if(!cities.get(getAdapterPosition()).isSelected()){
                         cities.get(getAdapterPosition()).setSelected(true);
 
                         if(selectedItem.size() != 0){

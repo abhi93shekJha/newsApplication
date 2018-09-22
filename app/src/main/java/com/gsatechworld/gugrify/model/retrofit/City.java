@@ -1,13 +1,10 @@
 package com.gsatechworld.gugrify.model.retrofit;
 
-import com.google.gson.annotations.SerializedName;
-
 public class City {
+    String cityName;
+    boolean isSelected;
 
-    @SerializedName("city_name")
-    private String cityName;
-
-    public City(String cityName){
+    public City(String cityName) {
         this.cityName = cityName;
     }
 
@@ -19,4 +16,11 @@ public class City {
         this.cityName = cityName;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }

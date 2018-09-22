@@ -34,8 +34,8 @@ dependencies {
 
     //Using retrofit and gson
     compile 'com.google.code.gson:gson:2.6.2'
-    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
-    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
 
     compile 'com.github.aakira:expandable-layout:1.6.0@aar'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
