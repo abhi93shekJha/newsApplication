@@ -55,6 +55,12 @@ android:screenOrientation="portrait"/>
         <activity android:name=".view.DisplayBreakingNewsActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".view.ReporterProfile"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".view.ReporterPostActivity"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

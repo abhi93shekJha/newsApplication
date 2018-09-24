@@ -5,8 +5,10 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
         <item name="windowNoTitle">true</item>
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
         <!-- other styles -->
         <!--<item name="android:actionButtonStyle">@style/ActionButton</item>-->
         <!--<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>-->

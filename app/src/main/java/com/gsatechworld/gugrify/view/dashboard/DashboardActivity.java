@@ -37,6 +37,7 @@ import com.gsatechworld.gugrify.model.NavItemModel;
 import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
 import com.gsatechworld.gugrify.model.SectionDataModel;
+import com.gsatechworld.gugrify.view.ReporterProfile;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
@@ -401,6 +402,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             return true;
         }
 
+        if (id == R.id.action_avatar){
+            startActivity(new Intent(DashboardActivity.this, ReporterProfile.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

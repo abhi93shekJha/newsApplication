@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         android:background="@color/profile_pic_background"
         android:id="@+id/linearLayout1"
@@ -20,12 +21,12 @@
             android:paddingRight="25dp"
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_height="150dp" >
+            android:layout_height="170dp" >
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/reporterImage"
                 android:src="@color/colorWhite"
-                android:layout_width="70sp"
-                android:layout_height="70sp" />
+                android:layout_width="75sp"
+                android:layout_height="75sp" />
             <TextView
                 android:id="@+id/reporterName"
                 android:layout_marginTop="5dp"
@@ -36,6 +37,8 @@
                 android:layout_height="wrap_content" />
             <LinearLayout
                 android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -63,7 +66,7 @@
         android:layout_below="@+id/linearLayout1"
         android:weightSum="9"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_weight="3"
@@ -75,12 +78,12 @@
                 android:text="23"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold"
-                android:textSize="19sp"
+                android:textSize="21sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="My Posts"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textColor="@color/colorWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -97,14 +100,14 @@
             android:orientation="vertical">
             <TextView
                 android:text="11"
-                android:textSize="19sp"
+                android:textSize="21sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="My Playlist"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textColor="@color/colorWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -121,14 +124,14 @@
             android:orientation="vertical">
             <TextView
                 android:text="05"
-                android:textSize="19sp"
+                android:textSize="21sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="My Ads"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textColor="@color/colorWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -150,24 +153,39 @@
         android:layout_height="50dp">
     <LinearLayout
         android:id="@+id/linearLayout3"
+        android:weightSum="3"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:orientation="horizontal">
         <ImageView
             android:src="@drawable/home_icon"
             android:padding="7dp"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <ImageView
             android:padding="7dp"
+            android:layout_weight="1"
             android:src="@drawable/contact_us"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <ImageView
             android:padding="7dp"
             android:src="@drawable/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
     </android.support.v7.widget.CardView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/languageAndCityFloating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="22dp"
+        android:visibility="visible"
+        app:backgroundTint="@color/profile_pic_background"
+        app:srcCompat="@drawable/plus" />
 </RelativeLayout>
