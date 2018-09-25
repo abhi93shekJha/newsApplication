@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:textSize="18sp"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"  />
     </RelativeLayout>
     <TextView
         android:id="@+id/newsDescriptionTitle"
