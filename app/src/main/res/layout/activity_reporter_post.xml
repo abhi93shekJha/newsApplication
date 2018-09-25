@@ -7,6 +7,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:paddingBottom="20dp"
     >
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -115,7 +116,7 @@
         android:layout_below="@+id/editTextRelative2"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
-        android:textSize="18sp"
+        android:textSize="15sp"
         android:textColor="@color/color_black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -125,14 +126,240 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:prompt="Select"
-        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         android:spinnerMode="dropdown" />
-    <LinearLayout
+    <TableLayout
+        android:id="@+id/imageListTableLayout"
+        android:layout_marginLeft="15dp"
+        android:visibility="gone"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/newsTypeSelectionSpinner"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:stretchColumns="*"
+        android:layout_height="match_parent">
+        <TableRow>
+        <ImageView
+            android:id="@+id/image1"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/shape1"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <ImageView
+            android:id="@+id/image2"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/shape1"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/uploadImage1"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/uploadImage2"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/image3"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <ImageView
+                android:id="@+id/image4"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/uploadImage3"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/uploadImage4"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/image5"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <ImageView
+                android:id="@+id/image6"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/uploadImage5"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/uploadImage6"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/image7"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <ImageView
+                android:id="@+id/image8"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/uploadImage7"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/uploadImage8"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/image9"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <ImageView
+                android:id="@+id/image10"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/uploadImage9"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/uploadImage10"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+        </TableRow>
+        <TableRow>
+            <ImageView
+                android:id="@+id/image11"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <ImageView
+                android:id="@+id/image12"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape1"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/uploadImage11"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/uploadImage12"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Upload image"
+                android:padding="8dp" />
+        </TableRow>
+    </TableLayout>
+    <LinearLayout
+        android:id="@+id/editTextListLinearLayout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/newsTypeSelectionSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/textRelative1"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/newsDescriptionTitle"
+                android:layout_height="40dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@drawable/shape"
+                    android:layout_height="match_parent">
+                </View>
+                <EditText
+                    android:id="@+id/editText1"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textSize="18sp"
+                    android:background="@android:color/transparent" />
+            </RelativeLayout>
 
     </LinearLayout>
 </RelativeLayout>
