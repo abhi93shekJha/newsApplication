@@ -2,7 +2,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/mail"
         android:title="Add to playlist" />
-    <item android:id="@+id/upload"
-        android:title="Share"
-        />
 </menu>

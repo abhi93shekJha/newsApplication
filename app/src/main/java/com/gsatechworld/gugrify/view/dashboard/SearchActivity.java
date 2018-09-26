@@ -28,6 +28,7 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<NewsListHolder> arrayList = new ArrayList<>();
     SearchRecyclerAdapter adapter;
     RecyclerView rView;
+    String reporterId = "";
 //    ImageView iv_back;
 
     @Override
@@ -94,6 +95,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 adapter.getFilter().filter(newText);
                 return true;
             }

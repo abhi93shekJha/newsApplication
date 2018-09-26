@@ -32,7 +32,8 @@ public class ReporterProfile extends AppCompatActivity {
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ReporterProfile.this, SearchActivity.class));
+                Intent intent = new Intent(ReporterProfile.this, SearchActivity.class);
+                startActivity(intent);
             }
         });
 
