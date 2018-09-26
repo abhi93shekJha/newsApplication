@@ -237,29 +237,37 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         }
 
         // show or hide Ad Fragment
-        FragmentManager fm = getFragmentManager();
-        addShowHideListener(fm.findFragmentById(R.id.frameShowAdd), true);
+        if(frameShowAdd != null) {
+            FragmentManager fm = getFragmentManager();
+            addShowHideListener(fm.findFragmentById(R.id.frameShowAdd), true);
+
+            // default first item selected
+            int currentPosition = adapter.getCurrentItemSelectedPosition();
+            adapter.itemClicked(currentPosition);
+        }
 
         //
-        ll_forward.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentPosition = adapter.getCurrentItemSelectedPosition();
-                adapter.itemClicked(currentPosition+1);
-                recycler.smoothScrollToPosition(currentPosition+1);
-            }
-        });
-
-        ll_rewind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentPosition = adapter.getCurrentItemSelectedPosition();
-                adapter.itemClicked(currentPosition-1);
-                if(currentPosition != 0){
-                    recycler.smoothScrollToPosition(currentPosition-1);
+        if(ll_forward != null && ll_rewind != null){
+            ll_forward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int currentPosition = adapter.getCurrentItemSelectedPosition();
+                    adapter.itemClicked(currentPosition+1);
+                    recycler.smoothScrollToPosition(currentPosition+1);
                 }
-            }
-        });
+            });
+
+            ll_rewind.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int currentPosition = adapter.getCurrentItemSelectedPosition();
+                    adapter.itemClicked(currentPosition-1);
+                    if(currentPosition != 0){
+                        recycler.smoothScrollToPosition(currentPosition-1);
+                    }
+                }
+            });
+        }
     }
 
     private void addShowHideListener(Fragment fragment, boolean isShowAdd) {

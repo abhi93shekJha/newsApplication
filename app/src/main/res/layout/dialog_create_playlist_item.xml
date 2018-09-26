@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
-                android:text="Forgot" />
+                android:text="Cancel" />
 
         </LinearLayout>
 
