@@ -1,5 +1,6 @@
 package com.gsatechworld.gugrify.fragment;
 
+
 import android.app.Fragment;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;

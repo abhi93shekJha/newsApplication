@@ -71,4 +71,7 @@
     </array>
 
     <color name="black_overlay">#66000000</color>
+
+    <color name="colorButton_disabled">#FF888888</color>
+    <color name="LDialogs_transparent">@color/colorWhite</color>
 </resources>

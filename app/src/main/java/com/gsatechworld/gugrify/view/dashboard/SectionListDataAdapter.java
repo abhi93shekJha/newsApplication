@@ -1,4 +1,4 @@
-package com.gsatechworld.gugrify.view.adapters;
+package com.gsatechworld.gugrify.view.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.ShowPlaylistActivtiy;
-import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
+import com.gsatechworld.gugrify.view.playlist.PlayListDetaildViewActivity;
 
 import java.util.ArrayList;
 
@@ -90,7 +90,7 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
             holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, ShowPlaylistActivtiy.class);
+                    Intent intent = new Intent(mContext, PlayListDetaildViewActivity.class);
                     mContext.startActivity(intent);
                 }
             });

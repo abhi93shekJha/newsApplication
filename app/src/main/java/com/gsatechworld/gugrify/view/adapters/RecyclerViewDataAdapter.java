@@ -1,5 +1,6 @@
 package com.gsatechworld.gugrify.view.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
@@ -31,8 +32,10 @@ import com.gsatechworld.gugrify.model.SectionDataModel;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
-import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.dashboard.EndlessScrollListener;
+import com.gsatechworld.gugrify.view.dashboard.SectionListDataAdapter;
+import com.gsatechworld.gugrify.view.playlist.CreatePlayListDialog;
 
 import java.util.ArrayList;
 
@@ -52,6 +55,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     Animation animation;
 
     private int lastPosition = -1;
+    private CreatePlayListDialog createPlayListDialog;
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         protected TextView itemTitle;
@@ -258,8 +262,15 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             if(menuItem.getTitle().equals("Add to playlist")){
-                                Intent intent = new Intent(mContext, LoginActivity.class);
-                                mContext.startActivity(intent);
+//                                Intent intent = new Intent(mContext, LoginActivity.class);
+//                                mContext.startActivity(intent);
+
+                                // need to login first before creating playlist
+
+                                // show playlist for creating playlist
+                                createPlayListDialog = createPlayListDialog.getInstance(mContext, (Activity) mContext);
+                                createPlayListDialog.showDialog();
+                                createPlayListDialog.show();
                             }
                             return false;
                         }

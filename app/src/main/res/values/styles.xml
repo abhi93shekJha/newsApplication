@@ -113,4 +113,44 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="customRatingBar"
+        parent="android:style/Widget.Material.RatingBar.Small">
+    </style>
+
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
+
+    <style name="DialogSlideAnim" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+
+    <style name="login_button_sub_ll">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/selector_button2_phone</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="login_button_sub_img">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:clickable">false</item>
+    </style>
+
+    <style name="login_button_sub_tv">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:textColor">@drawable/selector_button_text2_phone</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:clickable">false</item>
+    </style>
+
 </resources>
