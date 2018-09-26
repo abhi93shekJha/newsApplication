@@ -11,12 +11,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter;
+import com.gsatechworld.gugrify.view.dashboard.SearchActivity;
 
 public class ReporterProfile extends AppCompatActivity {
     FloatingActionButton addNewPost;
+    ImageView profileSearch;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,13 @@ public class ReporterProfile extends AppCompatActivity {
         ReporterProfileRecyclerAdapter adapter = new ReporterProfileRecyclerAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+        profileSearch = findViewById(R.id.reporterProfileSearch);
+        profileSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ReporterProfile.this, SearchActivity.class));
+            }
+        });
 
         // clear FLAG_TRANSLUCENT_STATUS flag:
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

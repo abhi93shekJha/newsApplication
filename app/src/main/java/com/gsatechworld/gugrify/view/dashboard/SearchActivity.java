@@ -114,7 +114,7 @@ public class SearchActivity extends AppCompatActivity {
         return true;
     }
 
-    private  void setData(){
+    private void setData(){
         NewsListHolder holder = new NewsListHolder();
         holder.setImage("https://i.ytimg.com/vi/icqDxNab3Do/maxresdefault.jpg");
         holder.setPostHeading("News Post Headlines goes here");
