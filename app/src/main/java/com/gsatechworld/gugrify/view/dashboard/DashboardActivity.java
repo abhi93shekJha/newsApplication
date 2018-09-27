@@ -45,8 +45,6 @@ import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
-
 public class DashboardActivity extends AppCompatActivity implements OnRecyclerItemClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
@@ -134,8 +132,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ststusbar_color));
         }
-
-        ButterKnife.bind(this);
 
         allSampleData = new ArrayList<>();
 

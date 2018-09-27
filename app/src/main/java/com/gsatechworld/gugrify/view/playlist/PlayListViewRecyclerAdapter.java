@@ -37,6 +37,7 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
     boolean once = false;
     ArrayList<Integer> selectedItem = new ArrayList<>();
     public int currentItemClickedPosition = 0;
+    ArrayList<Integer> playListItems = new ArrayList<>();
 
     public PlayListViewRecyclerAdapter(Context context, ArrayList<PlayListModel> posts) {
         this.context = context;
@@ -55,7 +56,6 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
 
 //        holder.setIsRecyclable(false);
 //        holder.expandableLinearLayout.setInRecyclerView(true);
-
         if (posts.get(position).isClicked() == true) {
             holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.black_overlay));
             holder.likes.setTextColor(context.getResources().getColor(R.color.colorWhite));
@@ -64,9 +64,6 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
 
             holder.iv_like.setColorFilter(context.getResources().getColor(R.color.colorWhite));
             holder.iv_view.setColorFilter(context.getResources().getColor(R.color.colorWhite));
-            if (!once) {
-                once = true;
-            }
         } else {
             holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
             holder.likes.setTextColor(context.getResources().getColor(R.color.color_black));
@@ -74,9 +71,6 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
             holder.views.setTextColor(context.getResources().getColor(R.color.color_black));
             holder.iv_like.setColorFilter(context.getResources().getColor(R.color.color_black));
             holder.iv_view.setColorFilter(context.getResources().getColor(R.color.color_black));
-            if (selectedItem.size() == 0) {
-                once = false;
-            }
         }
 
         Glide.with(context).load(posts.get(position).getImage()).into(holder.image);

@@ -17,7 +17,6 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.NewsListHolder;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
-import com.squareup.picasso.Picasso;
 
 public class PlayListRecyclerAdapter extends RecyclerView.Adapter<PlayListRecyclerAdapter.MyViewHolder>{
     Context context;
