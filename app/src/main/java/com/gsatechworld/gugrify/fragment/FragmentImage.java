@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,13 +33,15 @@ import java.util.List;
 public class FragmentImage extends Fragment {
     TextView animatedTextView;
     String post_id;
-    Animation zoomIn;
+    Animation zoomIn, animFadeIn, animFadeOut;
     Handler mHandler;
     ViewPager viewPager;
     private int dotscount;
-    private LinearLayout linearLayout;
+    private LinearLayout linearLayout, pausePlayLayout;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
+    ImageView previous, pause, play, next;
     NewsSharedPreferences sharedPreferences;
+    RelativeLayout postDetailFragmentImage;
     private ImageView dots[];
     int i=0;
     @Override
@@ -49,6 +52,61 @@ public class FragmentImage extends Fragment {
         post_id = getArguments().getString("post_id");
         final ArrayList<String> texts = (ArrayList<String>) getPostDetailsFromServer(post_id);
 
+        postDetailFragmentImage = view.findViewById(R.id.fragment_image_layout);
+        animatedTextView = view.findViewById(R.id.breakingNewstextWithAnimation);
+
+        //this block of code is for pausing and play the visible animations
+        pausePlayLayout = view.findViewById(R.id.pausePlayNextPreviousLayout);
+        postDetailFragmentImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                pausePlayLayout.setVisibility(View.VISIBLE);
+                animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
+                pausePlayLayout.startAnimation(animFadeIn);
+                animFadeIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                         pausePlayLayout.setVisibility(View.VISIBLE);
+                         animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
+                         pausePlayLayout.startAnimation(animFadeOut);
+
+                        animFadeOut.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                pausePlayLayout.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        });
+
+        previous = view.findViewById(R.id.previousButton);
+        pause = view.findViewById(R.id.pauseButton);
+        play = view.findViewById(R.id.playButton);
+        next = view.findViewById(R.id.nextButton);
+
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity().getApplicationContext());
         mHandler = new Handler();
         frameLayoutTextAnimation = view.findViewById(R.id.animated_text_frame);
@@ -56,7 +114,6 @@ public class FragmentImage extends Fragment {
 
         //setting animation for text
         Typeface fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
-        animatedTextView = view.findViewById(R.id.breakingNewstext);
 
         if(animatedTextView != null) {
 
@@ -64,7 +121,6 @@ public class FragmentImage extends Fragment {
 
             zoomIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.zoom_in);
             animatedTextView.setText(texts.get(i++));
-//            zoomIn.setRepeatCount(Animation.INFINITE);
             animatedTextView.setAnimation(zoomIn);
 
             zoomIn.setAnimationListener(new Animation.AnimationListener() {
@@ -100,6 +156,31 @@ public class FragmentImage extends Fragment {
             });
 
         } // till here I have set the text animation
+
+        //pausing and playing the animation
+        pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mHandler.removeCallbacksAndMessages(null);
+                animatedTextView.setVisibility(View.GONE);
+
+                view.setVisibility(View.GONE);
+                play.setVisibility(View.VISIBLE);
+            }
+        });
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                animatedTextView.setVisibility(View.VISIBLE);
+                animatedTextView.startAnimation(zoomIn);
+
+                view.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
+            }
+        }); // pausing and playing stops here
 
 
         //here is the code for setting viewpager

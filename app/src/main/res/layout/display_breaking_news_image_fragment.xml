@@ -2,6 +2,7 @@
 <RelativeLayout android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/news_background"
+    android:id="@+id/fragment_image_layout"
     android:layout_width="match_parent">
     <FrameLayout
         android:id="@+id/animated_text_frame"
@@ -14,17 +15,63 @@
         <LinearLayout
             android:background="@color/breaking_news_transparent"
             android:layout_gravity="center"
+            android:visibility="visible"
             android:layout_width="460dp"
             android:layout_height="210dp" />
+        <LinearLayout
+            android:id="@+id/pausePlayNextPreviousLayout"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:weightSum="3"
+            android:layout_width="460dp"
+            android:layout_height="210dp" >
+            <ImageView
+                android:id="@+id/previousButton"
+                android:layout_weight="1"
+                android:src="@mipmap/previous"
+                android:layout_marginLeft="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp" />
+            <FrameLayout
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp">
+            <ImageView
+                android:id="@+id/pauseButton"
+                android:src="@mipmap/pause"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/playButton"
+                android:src="@mipmap/play"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/nextButton"
+                android:layout_weight="1"
+                android:src="@mipmap/next"
+                android:layout_marginRight="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp" />
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/breakingNewstext"
-            android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
+            android:id="@+id/breakingNewstextWithAnimation"
+            android:layout_width="330dp"
+            android:layout_height="210dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="25sp"
+            android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
             android:textColor="@color/colorWhite"
-            android:layout_width="330dp"
-            android:layout_height="210dp" />
+            android:textSize="25sp" />
     </FrameLayout>
     <FrameLayout
         android:id="@+id/view_pager_frame_layout"

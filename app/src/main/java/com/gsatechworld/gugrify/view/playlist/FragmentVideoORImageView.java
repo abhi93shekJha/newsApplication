@@ -137,12 +137,16 @@ public class FragmentVideoORImageView extends Fragment {
                             if(isOnPauseCalled){
                                 anim.setTarget(textView);
                                 textView.setText(posts.get(1).getTexts().get(i++));
-                                anim.pause();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    anim.pause();
+                                }
                                 //isOnPauseCalled = false;
                             } else if(isOnResumeCalled){
                                 anim.setTarget(textView);
                                 textView.setText(posts.get(1).getTexts().get(i++));
-                                anim.resume();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    anim.resume();
+                                }
                                 anim.start();
                                 //isOnResumeCalled = false;
                             } else {
