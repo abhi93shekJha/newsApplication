@@ -38,7 +38,7 @@ import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
 import java.util.ArrayList;
 
 public class DisplayBreakingNewsActivity extends AppCompatActivity {
-    ArrayList<PostsByCategory> posts = new ArrayList<>();
+    public ArrayList<PostsByCategory> posts = new ArrayList<>();
     Animation zoomIn;
     ViewPager viewPager;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
@@ -235,12 +235,13 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 // replace the FragmentLayout with new Fragment
 
         Bundle bundle = new Bundle();
-        bundle.putString("image", posts.get(sharedPreferences.getClickedPosition()).getImage());
+        bundle.putString("post_id", posts.get(sharedPreferences.getClickedPosition()).getPostId());
         fragment1.setArguments(bundle);
 
         ArrayList<String> list = new ArrayList<>();
         list.add(posts.get(sharedPreferences.getClickedPosition()).getViews());
         list.add(posts.get(sharedPreferences.getClickedPosition()).getLikes());
+        list.add(String.valueOf(posts.get(position).getComments().size()));
 
         bundle.putStringArrayList("forLinearLayout", list);
         fragment2.setArguments(bundle);
@@ -309,9 +310,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         text3.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
         text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
 
-        PostsByCategory p1 = new PostsByCategory(image1, head1, desc1, view1, likes1, comments1, text1);
-        PostsByCategory p2 = new PostsByCategory(image2, head2, desc2, view2, likes2, comments2, text2);
-        PostsByCategory p3 = new PostsByCategory(image3, head3, desc3, view3, likes3, comments3, text3);
+        PostsByCategory p1 = new PostsByCategory("0", image1, head1, desc1, view1, likes1, comments1, text1);
+        PostsByCategory p2 = new PostsByCategory("1", image2, head2, desc2, view2, likes2, comments2, text2);
+        PostsByCategory p3 = new PostsByCategory("2", image3, head3, desc3, view3, likes3, comments3, text3);
 
         posts.add(p1);
         posts.add(p2);

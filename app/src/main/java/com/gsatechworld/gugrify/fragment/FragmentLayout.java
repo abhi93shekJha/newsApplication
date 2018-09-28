@@ -26,10 +26,10 @@ public class FragmentLayout extends Fragment {
 // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.display_breaking_news_layout_fragment, container, false);
 
-        ArrayList<String> viewsAndLikes = getArguments().getStringArrayList("forLinearLayout");
+        ArrayList<String> viewsLikesAndComments = getArguments().getStringArrayList("forLinearLayout");
         TextView views = view.findViewById(R.id.viewsText);
         TextView likes = view.findViewById(R.id.likesText);
-        TextView comments = view.findViewById(R.id.commentsText);
+        TextView commentsNumber = view.findViewById(R.id.commentsText);
         TextView shares = view.findViewById(R.id.shareText);
 
         LinearLayout layout = view.findViewById(R.id.addToPlaylistLayout);
@@ -55,11 +55,12 @@ public class FragmentLayout extends Fragment {
         Typeface fontRegular = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Regular.ttf");
         views.setTypeface(fontRegular);
         likes.setTypeface(fontRegular);
-        comments.setTypeface(fontRegular);
+        commentsNumber.setTypeface(fontRegular);
         shares.setTypeface(fontRegular);
 
-        views.setText(viewsAndLikes.get(0));
-        likes.setText(viewsAndLikes.get(1));
+        views.setText(viewsLikesAndComments.get(0));
+        likes.setText(viewsLikesAndComments.get(1));
+        commentsNumber.setText(viewsLikesAndComments.get(2));
 
         return view;
     }

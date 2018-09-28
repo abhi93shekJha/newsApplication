@@ -32,11 +32,18 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
     boolean b = false;
     ArrayList<PostsByCategory> posts;
     NewsSharedPreferences sharedPreferences;
+    Boolean[] clicked;
+    int previous=0;
 
     public BreakingNewsRecyclerAdapter(Context context, ArrayList<PostsByCategory> posts){
         this.context = context;
         this.posts = posts;
         sharedPreferences = NewsSharedPreferences.getInstance(context);
+        clicked = new Boolean[posts.size()];
+        for(int i=0; i<posts.size(); i++){
+            clicked[i] = false;
+        }
+        clicked[0] = true;
     }
 
     public BreakingNewsRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,12 +76,27 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                 public void onClick(View view) {
                     FragmentImage fragment1 = new FragmentImage();
                     FragmentLayout fragment2 = new FragmentLayout();
+
+                    if(previous != position-1) {
+                        clicked[previous] = false;
+                        notifyDataSetChanged();
+                    }
+
+                    clicked[position-1] = true;
+                    previous = position-1;
+
                     if(context instanceof DisplayBreakingNewsActivity){
                         sharedPreferences.setClickedPosition(position-1);
+                        notifyItemChanged(position);
                         ((DisplayBreakingNewsActivity) context).loadFragment(fragment1, fragment2, position-1);
                     }
                 }
             });
+
+            if(clicked[position-1])
+                holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.ststusbar_color));
+            else
+                holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
         }
 
         else {

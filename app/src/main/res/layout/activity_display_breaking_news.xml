@@ -5,7 +5,6 @@
     <FrameLayout
         android:id="@+id/frame1"
         android:layout_width="match_parent"
-        android:background="@drawable/country1"
         android:layout_height="190dp" />
     <LinearLayout
         android:id="@+id/breaking_ll1"

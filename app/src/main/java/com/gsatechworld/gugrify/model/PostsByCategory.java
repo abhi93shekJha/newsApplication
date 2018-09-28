@@ -8,11 +8,23 @@ public class PostsByCategory {
     String news_description;
     String views;
     String likes;
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    String postId;
     ArrayList<String> comments;
     ArrayList<String> texts;
 
-    public PostsByCategory(String image, String news_headlines, String news_description, String views, String likes,
+
+    public PostsByCategory(String postId, String image, String news_headlines, String news_description, String views, String likes,
                            ArrayList<String> comments, ArrayList<String> texts) {
+        this.postId = postId;
         this.image = image;
         this.news_headlines = news_headlines;
         this.news_description = news_description;
