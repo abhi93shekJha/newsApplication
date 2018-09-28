@@ -21,8 +21,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -67,6 +69,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
     final private int REQUEST_CODE_ASK_PERMISSIONS_EXTERNAL_STORAGE = 200;
     protected static final int GALLERY_PICTURE=0, CAMERA_REQUEST=1;
     static ImageView forEverywhereImage;
+    Toolbar toolbar;
     ImageView image0, image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, image11, image12;
     private Intent pictureActionIntent = null;
     Bitmap bitmap;
@@ -76,6 +79,10 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reporter_post);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Gugrify");
+        setSupportActionBar(toolbar);
 
         checkIfExternalStoragePresent();
         languages = new ArrayList<>();
