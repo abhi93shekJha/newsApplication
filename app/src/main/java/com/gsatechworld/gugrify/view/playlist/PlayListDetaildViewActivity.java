@@ -8,7 +8,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,10 +47,11 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     private FrameLayout frameLayoutTextAnimation;
     private FrameLayout frameLayoutViewPager, frameShowAdd;
     private RecyclerView recycler;
-    private LinearLayout ll_rewind, ll_play, ll_forward, ll_suffle, ll_frame2;
+    private LinearLayout ll_rewind, ll_play, ll_forward, ll_suffle, ll_frame2, ll_repeat;
     private PlayListViewRecyclerAdapter adapter;
     private ImageView iv_suffle, iv_rewind, iv_play, iv_forward, iv_repeat;
     private boolean isSuffleEnabled = false;
+    private boolean isPlayEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         ll_rewind = (LinearLayout)findViewById(R.id.ll_rewind);
         ll_play = (LinearLayout)findViewById(R.id.ll_play);
         ll_forward = (LinearLayout)findViewById(R.id.ll_forward);
+        ll_repeat = (LinearLayout)findViewById(R.id.ll_repeat);
         iv_suffle = (ImageView)findViewById(R.id.iv_suffle);
         ll_suffle = (LinearLayout)findViewById(R.id.ll_suffle);
         recycler = (RecyclerView) findViewById(R.id.playlist_recycler);
@@ -87,6 +91,10 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             iv_play.setColorFilter(getResources().getColor(R.color.color_black));
             iv_forward.setColorFilter(getResources().getColor(R.color.color_black));
             iv_repeat.setColorFilter(getResources().getColor(R.color.color_black));
+
+            isPlayEnabled = true;
+            iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_pause));
+
         }
 
         ll_share = (LinearLayout)findViewById(R.id.ll_share);
@@ -319,6 +327,38 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                 }
             });
         }
+
+        if(ll_play != null){
+            ll_play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!isPlayEnabled) {
+                        isPlayEnabled = true;
+                        iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_pause));
+                        FragmentVideoORImageView fragment = (FragmentVideoORImageView)
+                                getFragmentManager().findFragmentByTag("videoFragment");
+                        fragment.resumePlay();
+                    } else {
+                        isPlayEnabled = false;
+                        iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_play));
+                        FragmentVideoORImageView fragment = (FragmentVideoORImageView)
+                                getFragmentManager().findFragmentByTag("videoFragment");
+                        fragment.stopPlay();
+                    }
+                }
+            });
+        }
+
+        if(ll_repeat != null){
+            ll_repeat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentVideoORImageView fragment = (FragmentVideoORImageView)
+                            getFragmentManager().findFragmentByTag("videoFragment");
+                    fragment.repeatPlay();
+                }
+            });
+        }
     }
 
     private void addShowHideListener(Fragment fragment, boolean isShowAdd) {
@@ -460,9 +500,10 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putString("image", posts.get(position).getImage());
+        bundle.putParcelableArrayList("postArray", posts);
         fragment1.setArguments(bundle);
 
-        fragmentTransaction.replace(R.id.frame1, fragment1);
+        fragmentTransaction.replace(R.id.frame1, fragment1, "videoFragment");
         fragmentTransaction.commit(); // save the changes
     }
 

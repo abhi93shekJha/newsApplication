@@ -1,8 +1,11 @@
 package com.gsatechworld.gugrify.view.playlist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class PlayListModel {
+public class PlayListModel implements Parcelable{
     String image;
     String news_headlines;
     String views;
@@ -21,6 +24,28 @@ public class PlayListModel {
         this.texts = texts;
         this.isClicked = isClicked;
     }
+
+    protected PlayListModel(Parcel in) {
+        image = in.readString();
+        news_headlines = in.readString();
+        views = in.readString();
+        likes = in.readString();
+        comments = in.createStringArrayList();
+        texts = in.createStringArrayList();
+        isClicked = in.readByte() != 0;
+    }
+
+    public static final Creator<PlayListModel> CREATOR = new Creator<PlayListModel>() {
+        @Override
+        public PlayListModel createFromParcel(Parcel in) {
+            return new PlayListModel(in);
+        }
+
+        @Override
+        public PlayListModel[] newArray(int size) {
+            return new PlayListModel[size];
+        }
+    };
 
     public String getImage() {
         return image;
@@ -53,5 +78,21 @@ public class PlayListModel {
 
     public void setClicked(boolean clicked) {
         isClicked = clicked;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(image);
+        parcel.writeString(news_headlines);
+        parcel.writeString(views);
+        parcel.writeString(likes);
+        parcel.writeStringList(comments);
+        parcel.writeStringList(texts);
+        parcel.writeByte((byte) (isClicked ? 1 : 0));
     }
 }

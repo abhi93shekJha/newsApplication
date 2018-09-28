@@ -28,8 +28,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_love" />
-                            <entry key="sourceFile" value="C:\Users\desktop\Desktop\svgIcons\if_fast-forward_3325121.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic__pause" />
+                            <entry key="sourceFile" value="C:\Users\desktop\Desktop\svgIcons\if_icon-pause_211871.svg" />
                           </map>
                         </option>
                       </PersistentState>

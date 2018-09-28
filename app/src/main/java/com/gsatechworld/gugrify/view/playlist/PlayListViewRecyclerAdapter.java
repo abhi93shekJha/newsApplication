@@ -153,7 +153,7 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
             currentItemClickedPosition = adapterPosition;
             if (!posts.get(adapterPosition).isClicked()) {
                 posts.get(adapterPosition).setClicked(true);
-                FragmentImage fragment1 = new FragmentImage();
+                FragmentVideoORImageView fragment1 = new FragmentVideoORImageView();
                 if (context instanceof PlayListDetaildViewActivity) {
                     ((PlayListDetaildViewActivity) context).loadFragment(fragment1, adapterPosition);
                 }
