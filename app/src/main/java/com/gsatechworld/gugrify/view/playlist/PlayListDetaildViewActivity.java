@@ -482,6 +482,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         Fragment imgFragment = new FragmentImage();
         Bundle bundle = new Bundle();
         bundle.putString("image", posts.get(0).getImage());
+        bundle.putString("post_id","0");
         imgFragment.setArguments(bundle);
         // create a FragmentManager
         //FragmentManager fm = getFragmentManager();
@@ -501,6 +502,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("image", posts.get(position).getImage());
         bundle.putParcelableArrayList("postArray", posts);
+        bundle.putString("post_id","0");
         fragment1.setArguments(bundle);
 
         fragmentTransaction.replace(R.id.frame1, fragment1, "videoFragment");
