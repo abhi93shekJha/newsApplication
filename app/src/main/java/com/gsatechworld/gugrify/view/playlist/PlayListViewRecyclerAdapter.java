@@ -116,33 +116,10 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
 
                 @Override
                 public void onClick(View view) {
-//                    if(posts.get(position).isClicked){
-//                        posts.get(position).setClicked(false);
-//                        view.setBackgroundColor(view.getContext().getResources().getColor(R.color.colorWhite));
-//                        holder.likes.setTextColor(view.getContext().getResources().getColor(R.color.color_black));
-//                        holder.headline.setTextColor(view.getContext().getResources().getColor(R.color.color_black));
-//                        holder.views.setTextColor(view.getContext().getResources().getColor(R.color.color_black));
-//
-//                        holder.iv_like.setColorFilter(view.getContext().getResources().getColor(R.color.color_black));
-//                        holder.iv_view.setColorFilter(view.getContext().getResources().getColor(R.color.color_black));
-//                        Toast.makeText(context, String.valueOf(position), Toast.LENGTH_SHORT).show();
-//
-//                    } else {
-//                        posts.get(position).setClicked(true);
-//                        view.setBackgroundColor(view.getContext().getResources().getColor(R.color.black_overlay));
-//                        holder.likes.setTextColor(view.getContext().getResources().getColor(R.color.colorWhite));
-//                        holder.headline.setTextColor(view.getContext().getResources().getColor(R.color.colorWhite));
-//                        holder.views.setTextColor(view.getContext().getResources().getColor(R.color.colorWhite));
-//
-//                        holder.iv_like.setColorFilter(view.getContext().getResources().getColor(R.color.colorWhite));
-//                        holder.iv_view.setColorFilter(view.getContext().getResources().getColor(R.color.colorWhite));
-//                        FragmentImage fragment1 = new FragmentImage();
-//                        if(context instanceof PlayListDetaildViewActivity){
-//                            ((PlayListDetaildViewActivity) context).loadFragment(fragment1, position);
-//                        }
-//                    }
-                    currentItemClickedPosition = getAdapterPosition();
-                    itemClicked(getAdapterPosition());
+                    if(currentItemClickedPosition != getAdapterPosition()){
+                        currentItemClickedPosition = getAdapterPosition();
+                        itemClicked(getAdapterPosition());
+                    }
                 }
             });
         }

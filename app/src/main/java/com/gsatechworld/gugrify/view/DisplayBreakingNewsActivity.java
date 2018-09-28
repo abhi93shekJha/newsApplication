@@ -207,7 +207,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
-
                     Log.d("Reached on repeat ", "true");
                 }
             });

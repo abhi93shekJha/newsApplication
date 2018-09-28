@@ -37,6 +37,8 @@ public class FragmentVideoORImageView extends Fragment {
     private ArrayList<PlayListModel> posts;
     private Runnable m_handlerTask;
     private Animator anim;
+    private boolean isOnPauseCalled = false;
+    private boolean isOnResumeCalled = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,7 +107,9 @@ public class FragmentVideoORImageView extends Fragment {
 
 
         Typeface fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
+
         textView = view.findViewById(R.id.breakingNewstext);
+        textView.setTypeface(fontBold);
 
         anim = AnimatorInflater.loadAnimator(getActivity().getApplicationContext(), R.animator.zoom_in);
         anim.setTarget(textView);
@@ -113,23 +117,40 @@ public class FragmentVideoORImageView extends Fragment {
         anim.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                //anim = animator;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    animator.resume();
+                    Log.d(FragmentVideoORImageView.class.getSimpleName(), "called --->  onAnimationStart");
+                }
             }
 
             @Override
             public void onAnimationEnd(final Animator animator) {
-
+                Log.d(FragmentVideoORImageView.class.getSimpleName(), "called --->  onAnimationEnd");
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Log.d("Inside", "postDelayed"+String.valueOf(i));
-                            if(i==3)
-                                i=0;
-                      //      anim = animator;
-                            anim.setTarget(textView);
-                            textView.setText(posts.get(1).getTexts().get(i++));
-                            anim.start();
-                            //start your activity here
+                            if(i==3) {
+                                i = 0;
+                            }
+                                //      anim = animator;
+                            if(isOnPauseCalled){
+                                anim.setTarget(textView);
+                                textView.setText(posts.get(1).getTexts().get(i++));
+                                anim.pause();
+                                //isOnPauseCalled = false;
+                            } else if(isOnResumeCalled){
+                                anim.setTarget(textView);
+                                textView.setText(posts.get(1).getTexts().get(i++));
+                                anim.resume();
+                                anim.start();
+                                //isOnResumeCalled = false;
+                            } else {
+                                anim.setTarget(textView);
+                                textView.setText(posts.get(1).getTexts().get(i++));
+                                anim.start();
+                            }
+                                //start your activity here
                         }
 
                     }, 2000L);
@@ -137,12 +158,18 @@ public class FragmentVideoORImageView extends Fragment {
 
             @Override
             public void onAnimationCancel(Animator animator) {
-               // anim = animator;
+                Log.d(FragmentVideoORImageView.class.getSimpleName(), "called --->  onAnimationCancel");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                   // animator.pause();
+                }
             }
 
             @Override
             public void onAnimationRepeat(Animator animator) {
-               // anim = animator;
+                Log.d(FragmentVideoORImageView.class.getSimpleName(), "called --->  onAnimationRepeat");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                   // animator.pause();
+                }
             }
         });
 
@@ -150,6 +177,7 @@ public class FragmentVideoORImageView extends Fragment {
             anim.addPauseListener(new Animator.AnimatorPauseListener() {
                 @Override
                 public void onAnimationPause(Animator animator) {
+                    Log.d(FragmentVideoORImageView.class.getSimpleName(), "called --->  onAnimationPause");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         animator.pause();
                     }
@@ -157,8 +185,11 @@ public class FragmentVideoORImageView extends Fragment {
 
                 @Override
                 public void onAnimationResume(Animator animator) {
+                    Log.d(FragmentVideoORImageView.class.getSimpleName(), "called --->  onAnimationResume");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                         animator.resume();
+                        //isOnPauseCalled = false;
+                       // isOnResumeCalled = true;
                     }
                 }
             });
@@ -224,6 +255,8 @@ public class FragmentVideoORImageView extends Fragment {
         if(textView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 anim.pause();
+                isOnPauseCalled = true;
+                isOnResumeCalled = false;
             }
         }
     }
@@ -232,15 +265,32 @@ public class FragmentVideoORImageView extends Fragment {
     public void resumePlay() {
         if(textView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                anim.resume();
+                anim.start();
+                isOnResumeCalled = true;
+                isOnPauseCalled = false;
             }
         }
     }
 
     public void repeatPlay() {
         if(textView != null){
+            mHandler.removeCallbacks(null);
+            anim.cancel();
             anim.start();
         }
+    }
 
+    @Override
+    public void onDestroy () {
+        mHandler.removeCallbacksAndMessages(null);
+        super.onDestroy ();
+
+    }
+
+    @Override
+    public void onStop () {
+        mHandler.removeCallbacksAndMessages(null);
+        //mHandler.removeCallbacks(null);
+        super.onStop ();
     }
 }
