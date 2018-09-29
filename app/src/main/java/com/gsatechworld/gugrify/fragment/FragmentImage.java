@@ -34,7 +34,7 @@ public class FragmentImage extends Fragment {
     TextView animatedTextView;
     String post_id;
     Animation zoomIn, animFadeIn, animFadeOut;
-    Handler mHandler;
+    Handler mHandler, animateHandler;
     ViewPager viewPager;
     private int dotscount;
     private LinearLayout linearLayout, pausePlayLayout;
@@ -43,6 +43,7 @@ public class FragmentImage extends Fragment {
     NewsSharedPreferences sharedPreferences;
     RelativeLayout postDetailFragmentImage;
     private ImageView dots[];
+    boolean first = true;
     int i=0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,61 +52,48 @@ public class FragmentImage extends Fragment {
         View view = inflater.inflate(R.layout.display_breaking_news_image_fragment, container, false);
         post_id = getArguments().getString("post_id");
         final ArrayList<String> texts = (ArrayList<String>) getPostDetailsFromServer(post_id);
+        animateHandler = new Handler();
 
         postDetailFragmentImage = view.findViewById(R.id.fragment_image_layout);
         animatedTextView = view.findViewById(R.id.breakingNewstextWithAnimation);
+        animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
 
         //this block of code is for pausing and play the visible animations
         pausePlayLayout = view.findViewById(R.id.pausePlayNextPreviousLayout);
+        animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
         postDetailFragmentImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 pausePlayLayout.setVisibility(View.VISIBLE);
-                animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
-                pausePlayLayout.startAnimation(animFadeIn);
-                animFadeIn.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                    pausePlayLayout.startAnimation(animFadeIn);
+                    animFadeIn.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                         pausePlayLayout.setVisibility(View.VISIBLE);
-                         animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
-                         pausePlayLayout.startAnimation(animFadeOut);
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
 
-                        animFadeOut.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
+                            animateHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pausePlayLayout.setVisibility(View.VISIBLE);
+                                    pausePlayLayout.startAnimation(animFadeOut);
+                                    pausePlayLayout.setVisibility(View.GONE);
+                                }
+                            }, 1000L);
+                        }
 
-                            }
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
 
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                pausePlayLayout.setVisibility(View.GONE);
-                            }
+                        }
+                    });
+                }
+        }); //this is the end of showing play and pause buttons
 
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-            }
-        });
-
-        previous = view.findViewById(R.id.previousButton);
-        pause = view.findViewById(R.id.pauseButton);
-        play = view.findViewById(R.id.playButton);
-        next = view.findViewById(R.id.nextButton);
 
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity().getApplicationContext());
         mHandler = new Handler();
@@ -120,7 +108,7 @@ public class FragmentImage extends Fragment {
             animatedTextView.setTypeface(fontBold);
 
             zoomIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.zoom_in);
-            animatedTextView.setText(texts.get(i++));
+            animatedTextView.setText(texts.get(0));
             animatedTextView.setAnimation(zoomIn);
 
             zoomIn.setAnimationListener(new Animation.AnimationListener() {
@@ -137,10 +125,11 @@ public class FragmentImage extends Fragment {
                         @Override
                         public void run() {
                             Log.d("Inside", "postDelayed"+String.valueOf(i));
-                            if(i==3)
-                                i=0;
+                            if(i >= 2)
+                                i=-1;
+                            animatedTextView.setText(texts.get(++i));
                             animatedTextView.startAnimation(zoomIn);
-                            animatedTextView.setText(texts.get(i++));
+//                            animatedTextView.setText(texts.get(i++));
                             //start your activity here
                         }
 
@@ -158,6 +147,11 @@ public class FragmentImage extends Fragment {
         } // till here I have set the text animation
 
         //pausing and playing the animation
+        previous = view.findViewById(R.id.previousButton);
+        pause = view.findViewById(R.id.pauseButton);
+        play = view.findViewById(R.id.playButton);
+        next = view.findViewById(R.id.nextButton);
+
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -167,6 +161,10 @@ public class FragmentImage extends Fragment {
 
                 view.setVisibility(View.GONE);
                 play.setVisibility(View.VISIBLE);
+
+                animateHandler.removeCallbacksAndMessages(null);
+                pausePlayLayout.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -175,10 +173,16 @@ public class FragmentImage extends Fragment {
             public void onClick(View view) {
 
                 animatedTextView.setVisibility(View.VISIBLE);
+                if(i == 2)
+                    i = -1;
+                animatedTextView.setText(texts.get(++i));
                 animatedTextView.startAnimation(zoomIn);
 
                 view.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
+
+                pausePlayLayout.startAnimation(animFadeOut);
+                pausePlayLayout.setVisibility(View.GONE);
             }
         }); // pausing and playing stops here
 
@@ -242,14 +246,14 @@ public class FragmentImage extends Fragment {
             }
         }); //till here I have set the viewpager
 
-
+        //code for changing to landscape mode
         ImageView image = view.findViewById(R.id.enlarge);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
-        });
+        }); //changes the activity to landscape mode
 
         return view;
     }
@@ -289,5 +293,23 @@ public class FragmentImage extends Fragment {
         text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
 
         return texts.get(Integer.parseInt(post_id));
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((DisplayBreakingNewsActivity)getActivity()).goToNext();
+            }
+        });
+
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((DisplayBreakingNewsActivity)getActivity()).goToPrevious();
+            }
+        });
     }
 }

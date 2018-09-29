@@ -32,8 +32,8 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
     boolean b = false;
     ArrayList<PostsByCategory> posts;
     NewsSharedPreferences sharedPreferences;
-    Boolean[] clicked;
-    int previous=0;
+    public Boolean[] clicked;
+    public int previous=0;
 
     public BreakingNewsRecyclerAdapter(Context context, ArrayList<PostsByCategory> posts){
         this.context = context;

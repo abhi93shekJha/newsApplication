@@ -41,6 +41,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     public ArrayList<PostsByCategory> posts = new ArrayList<>();
     Animation zoomIn;
     ViewPager viewPager;
+    BreakingNewsRecyclerAdapter adapter;
+    RecyclerView recycler;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
     NewsSharedPreferences sharedPreferences;
     TextView textView;
@@ -76,7 +78,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
 
-        RecyclerView recycler = findViewById(R.id.posts_recycler);
+        recycler = findViewById(R.id.posts_recycler);
         frameLayoutTextAnimation = findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = findViewById(R.id.view_pager_frame_layout);
         viewPager = findViewById(R.id.image_view_pager);
@@ -219,7 +221,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             FragmentLayout fragment2 = new FragmentLayout();
             loadFragment(fragment1, fragment2, sharedPreferences.getClickedPosition());
 
-            BreakingNewsRecyclerAdapter adapter = new BreakingNewsRecyclerAdapter(DisplayBreakingNewsActivity.this, posts);
+            adapter = new BreakingNewsRecyclerAdapter(DisplayBreakingNewsActivity.this, posts);
             recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recycler.setAdapter(adapter);
         }
@@ -234,12 +236,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 // replace the FragmentLayout with new Fragment
 
         Bundle bundle = new Bundle();
-        bundle.putString("post_id", posts.get(sharedPreferences.getClickedPosition()).getPostId());
+        bundle.putString("post_id", posts.get(position).getPostId());
         fragment1.setArguments(bundle);
 
         ArrayList<String> list = new ArrayList<>();
-        list.add(posts.get(sharedPreferences.getClickedPosition()).getViews());
-        list.add(posts.get(sharedPreferences.getClickedPosition()).getLikes());
+        list.add(posts.get(position).getViews());
+        list.add(posts.get(position).getLikes());
         list.add(String.valueOf(posts.get(position).getComments().size()));
 
         bundle.putStringArrayList("forLinearLayout", list);
@@ -326,27 +328,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         posts.add(p3);
     }
 
-    /*@Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        if(newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
-            onCreate(new Bundle());
-            super.onConfigurationChanged(newConfig);
-        }
-        else {
-            setContentView(R.layout.activity_display_breaking_news);
-            ImageView image = findViewById(R.id.portraitImage);
-            Glide.with(DisplayBreakingNewsActivity.this).load("http://www.bloggs74.com/wp-content/uploads/resadv251.jpg?39a0e9").into(image);
-            ImageView reduce = findViewById(R.id.reduceImage);
-            reduce.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                }
-            });
-            super.onConfigurationChanged(newConfig);
-        }
-    }*/
+
 
     @Override
     public void onBackPressed()
@@ -358,4 +340,57 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             finish();
     }
 
+    //changing the adapter to go to next item
+    public void goToNext(){
+
+        FragmentImage fragment1 = new FragmentImage();
+        FragmentLayout fragment2 = new FragmentLayout();
+
+        if(adapter.previous == (adapter.getItemCount()-1) - 1){
+            adapter.clicked[0] = true;
+            //loading both the fragments with clicked position
+            loadFragment(fragment1, fragment2, 0);
+
+            adapter.clicked[(adapter.getItemCount()-1) - 1] = false;
+            recycler.smoothScrollToPosition(0);
+            adapter.previous = 0;
+        }
+        else {
+            adapter.clicked[adapter.previous] = false;
+            adapter.clicked[adapter.previous + 1] = true;
+            //loading both the fragments with clicked position
+            loadFragment(fragment1, fragment2, adapter.previous + 1);
+
+            recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
+            adapter.previous = adapter.previous + 1;
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    //changing the adapter to go to previous item
+    public void goToPrevious(){
+
+        FragmentImage fragment1 = new FragmentImage();
+        FragmentLayout fragment2 = new FragmentLayout();
+
+        if(adapter.previous == 0){
+            adapter.clicked[(adapter.getItemCount()-1)-1] = true;
+            //loading both the fragments with clicked position
+            loadFragment(fragment1, fragment2, (adapter.getItemCount()-1)-1);
+
+            adapter.clicked[adapter.previous] = false;
+            recycler.smoothScrollToPosition(((adapter.getItemCount()-1)-1)+1); //added this extra 1 to scroll the recycler to correct position
+            adapter.previous = (adapter.getItemCount()-1)-1;
+        }
+        else {
+            adapter.clicked[adapter.previous - 1] = true;
+            //loading both the fragments with clicked position
+            loadFragment(fragment1, fragment2, adapter.previous - 1);
+
+            adapter.clicked[adapter.previous] = false;
+            recycler.smoothScrollToPosition(adapter.previous);
+            adapter.previous = adapter.previous - 1;
+        }
+        adapter.notifyDataSetChanged();
+    }
 }
