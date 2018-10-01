@@ -78,15 +78,6 @@ public class ReporterProfile extends AppCompatActivity {
         adapter = new ReporterProfileRecyclerAdapter(this, loadData());
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-        profileSearch = findViewById(R.id.reporterProfileSearch);
-        profileSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ReporterProfile.this, SearchActivity.class);
-                startActivity(intent);
-            }
-        });
-
 
 
 

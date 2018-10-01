@@ -15,39 +15,35 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/reporterProfileSearch"
-            android:paddingLeft="15dp"
-            android:paddingTop="15dp"
-            android:src="@drawable/search_icon"
-            android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:layout_height="wrap_content" />
         <LinearLayout
+            android:weightSum="1"
             android:gravity="center"
-            android:paddingRight="25dp"
             android:layout_width="match_parent"
             android:orientation="vertical"
+            android:layout_gravity="center"
             android:layout_height="170dp" >
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/reporterImage"
                 android:src="@color/colorWhite"
-                android:layout_width="75sp"
-                android:layout_height="75sp" />
+                android:layout_weight="0.5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
             <TextView
                 android:id="@+id/reporterName"
                 android:layout_marginTop="5dp"
                 android:text="Reporter Name"
                 android:textSize="20sp"
+                android:layout_weight="0.2"
                 android:textColor="@color/colorWhite"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="0dp" />
             <LinearLayout
                 android:gravity="center"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="2dp"
+                android:layout_weight="0.3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:orientation="horizontal">
                 <ImageView
                     android:layout_width="17dp"
@@ -62,24 +58,20 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
-        <ImageView
-            android:src="@drawable/search_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/linearLayoutPost"
         android:background="@color/profile_pic_background_dark"
         android:layout_below="@+id/linearLayoutProfile"
-        android:weightSum="2"
+        android:weightSum="1"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:orientation="horizontal">
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="0.499"
             android:gravity="center"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
@@ -97,13 +89,14 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <View
+            android:layout_weight="0.002"
             android:background="@color/transparent"
-            android:layout_width="1dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"/>
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="0.499"
             android:gravity="center"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
