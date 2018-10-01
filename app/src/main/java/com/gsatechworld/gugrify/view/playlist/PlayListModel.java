@@ -14,8 +14,20 @@ public class PlayListModel implements Parcelable{
     ArrayList<String> texts;
     boolean isClicked;
 
-    public PlayListModel(String image, String news_headlines, String views, String likes,
+    public String getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(String post_id) {
+        this.post_id = post_id;
+    }
+
+    String post_id;
+
+    public PlayListModel(String post_id, String image, String news_headlines, String views, String likes,
                          ArrayList<String> comments, ArrayList<String> texts, boolean isClicked) {
+
+        this.post_id = post_id;
         this.image = image;
         this.news_headlines = news_headlines;
         this.views = views;

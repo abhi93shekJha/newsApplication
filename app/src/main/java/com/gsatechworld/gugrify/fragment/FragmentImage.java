@@ -26,6 +26,8 @@ import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
+import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
+import com.gsatechworld.gugrify.view.playlist.PlayListDetaildViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +35,15 @@ import java.util.List;
 public class FragmentImage extends Fragment {
     TextView animatedTextView;
     String post_id;
-    Animation zoomIn, animFadeIn, animFadeOut;
+    Animation zoomIn, animFadeIn, animFadeOut, animFadeIn1, animFadeOut1;
     Handler mHandler, animateHandler;
-    ViewPager viewPager;
+    AutoScrollViewPager viewPager;
     private int dotscount;
     private LinearLayout linearLayout, pausePlayLayout;
-    FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
-    ImageView previous, pause, play, next;
+    public static LinearLayout pausePlayLayout1;
+    BreakingNewsViewPagerAdapter b;
+    public static FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
+    public static ImageView previous, pause, play, next, previousView, pauseView, playView, nextView;
     NewsSharedPreferences sharedPreferences;
     RelativeLayout postDetailFragmentImage;
     private ImageView dots[];
@@ -57,16 +61,27 @@ public class FragmentImage extends Fragment {
 
         postDetailFragmentImage = view.findViewById(R.id.fragment_image_layout);
         animatedTextView = view.findViewById(R.id.breakingNewstextWithAnimation);
-        animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
+        if(getActivity() != null) {
+            animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
+            animFadeOut1 = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
+        }
 
-        //this block of code is for pausing and play the visible animations
+        frameLayoutTextAnimation = view.findViewById(R.id.animated_text_frame);
+        frameLayoutViewPager = view.findViewById(R.id.view_pager_frame_layout);
+
+        //this block of code is for pausing and play the visible animations (for text animations)
         pausePlayLayout = view.findViewById(R.id.pausePlayNextPreviousLayout);
-        animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
-        postDetailFragmentImage.setOnClickListener(new View.OnClickListener() {
+        pausePlayLayout1 = view.findViewById(R.id.pausePlayNextPreviousLayout1);
+        if(getActivity() != null) {
+            animFadeIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
+            animFadeIn1 = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
+        }
+
+        frameLayoutTextAnimation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                pausePlayLayout.setVisibility(View.VISIBLE);
+                    pausePlayLayout.setVisibility(View.VISIBLE);
                     pausePlayLayout.startAnimation(animFadeIn);
                     animFadeIn.setAnimationListener(new Animation.AnimationListener() {
                         @Override
@@ -93,13 +108,11 @@ public class FragmentImage extends Fragment {
                         }
                     });
                 }
-        }); //this is the end of showing play and pause buttons
+        }); //this is the end of showing play and pause buttons (for text animations)
 
 
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity().getApplicationContext());
         mHandler = new Handler();
-        frameLayoutTextAnimation = view.findViewById(R.id.animated_text_frame);
-        frameLayoutViewPager = view.findViewById(R.id.view_pager_frame_layout);
 
         //setting animation for text
         Typeface fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
@@ -147,7 +160,7 @@ public class FragmentImage extends Fragment {
 
         } // till here I have set the text animation
 
-        //pausing and playing the animation
+        //pausing and playing the animation (for textviews)
         previous = view.findViewById(R.id.previousButton);
         pause = view.findViewById(R.id.pauseButton);
         play = view.findViewById(R.id.playButton);
@@ -190,6 +203,10 @@ public class FragmentImage extends Fragment {
 
         //here is the code for setting viewpager
         viewPager = view.findViewById(R.id.image_view_pager);
+        viewPager.startAutoScroll();
+        viewPager.setInterval(3000);
+        viewPager.setCycle(true);
+        viewPager.setStopScrollWhenTouch(true);
 
         //here I am setting the visibility of viewPage and textAnimations according to item selected
         if(sharedPreferences.getClickedPosition()%2 == 0){
@@ -201,7 +218,7 @@ public class FragmentImage extends Fragment {
             frameLayoutViewPager.setVisibility(View.VISIBLE);
         }
 
-        BreakingNewsViewPagerAdapter b = new BreakingNewsViewPagerAdapter(getActivity().getApplicationContext());
+        b = new BreakingNewsViewPagerAdapter(getActivity().getApplicationContext());
         viewPager.setAdapter(b);
         dotscount = b.getCount();
         dots = new ImageView[dotscount];
@@ -210,8 +227,10 @@ public class FragmentImage extends Fragment {
 
         for (int i = 0; i < dotscount; i++) {
 
-            dots[i] = new ImageView(getActivity().getApplicationContext());
-            dots[i].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.non_active_dot));
+            if(getActivity() != null) {
+                dots[i] = new ImageView(getActivity().getApplicationContext());
+                dots[i].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.non_active_dot));
+            }
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -222,7 +241,8 @@ public class FragmentImage extends Fragment {
 
         }
 
-        dots[0].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.active_dot));
+        if(getActivity() != null)
+            dots[0].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.active_dot));
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -234,10 +254,11 @@ public class FragmentImage extends Fragment {
             public void onPageSelected(int position) {
 
                 for (int i = 0; i < dotscount; i++) {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.non_active_dot));
+                    if(getActivity() != null)
+                        dots[i].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.non_active_dot));
                 }
-
-                dots[position].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.active_dot));
+                if(getActivity() != null)
+                    dots[position].setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.active_dot));
 
             }
 
@@ -246,6 +267,51 @@ public class FragmentImage extends Fragment {
 
             }
         }); //till here I have set the viewpager
+
+        //this block of code pauses and plays the viewpager images
+        if(getActivity() != null)
+            animFadeIn1 = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
+        postDetailFragmentImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        }); //this is the end of showing play and pause buttons (for image viewpager)
+
+        //pausing and playing the animation (for viewpager)
+        previousView = view.findViewById(R.id.previousButton1);
+        pauseView = view.findViewById(R.id.pauseButton1);
+        playView = view.findViewById(R.id.playButton1);
+        nextView = view.findViewById(R.id.nextButton1);
+        pauseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                view.setVisibility(View.GONE);
+                playView.setVisibility(View.VISIBLE);
+
+                linearLayout.setVisibility(View.GONE);
+                viewPager.stopAutoScroll();
+
+                b.animateHandler.removeCallbacksAndMessages(null);
+                pausePlayLayout1.setVisibility(View.VISIBLE);
+
+            }
+        });
+        playView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                view.setVisibility(View.GONE);
+                pauseView.setVisibility(View.VISIBLE);
+
+                linearLayout.setVisibility(View.VISIBLE);
+                viewPager.startAutoScroll();
+
+                pausePlayLayout1.startAnimation(animFadeOut1);
+                pausePlayLayout1.setVisibility(View.GONE);
+            }
+        }); // playing and pausing animation for viewpager ends here
 
         //code for changing to landscape mode
         ImageView image = view.findViewById(R.id.enlarge);
@@ -266,7 +332,6 @@ public class FragmentImage extends Fragment {
     }
 
     List<String> getPostDetailsFromServer(String post_id){
-        DisplayBreakingNewsActivity activity = new DisplayBreakingNewsActivity();
 
         ArrayList<ArrayList<String>> texts = new ArrayList<>();
 
@@ -302,14 +367,40 @@ public class FragmentImage extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((DisplayBreakingNewsActivity)getActivity()).goToNext();
+                if(getActivity() instanceof DisplayBreakingNewsActivity)
+                    ((DisplayBreakingNewsActivity)getActivity()).goToNext();
+                else
+                    ((PlayListDetaildViewActivity)getActivity()).goToNext();
             }
         });
 
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((DisplayBreakingNewsActivity)getActivity()).goToPrevious();
+                if(getActivity() instanceof  DisplayBreakingNewsActivity)
+                    ((DisplayBreakingNewsActivity)getActivity()).goToPrevious();
+                else
+                    ((PlayListDetaildViewActivity)getActivity()).goToPrevious();
+            }
+        });
+
+        nextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(getActivity() instanceof  DisplayBreakingNewsActivity)
+                    ((DisplayBreakingNewsActivity)getActivity()).goToNext();
+                else
+                    ((PlayListDetaildViewActivity)getActivity()).goToNext();
+            }
+        });
+
+        previousView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(getActivity() instanceof DisplayBreakingNewsActivity)
+                    ((DisplayBreakingNewsActivity)getActivity()).goToPrevious();
+                else
+                    ((PlayListDetaildViewActivity)getActivity()).goToPrevious();
             }
         });
     }

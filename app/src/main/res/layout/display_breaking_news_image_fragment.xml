@@ -18,6 +18,15 @@
             android:visibility="visible"
             android:layout_width="460dp"
             android:layout_height="210dp" />
+        <TextView
+            android:id="@+id/breakingNewstextWithAnimation"
+            android:layout_width="330dp"
+            android:layout_height="210dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
+            android:textColor="@color/colorWhite"
+            android:textSize="25sp" />
         <LinearLayout
             android:id="@+id/pausePlayNextPreviousLayout"
             android:orientation="horizontal"
@@ -39,19 +48,19 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp">
-            <ImageView
-                android:id="@+id/pauseButton"
-                android:src="@mipmap/pause"
-                android:visibility="visible"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/pauseButton"
+                    android:src="@mipmap/pause"
+                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/playButton"
-                android:src="@mipmap/play"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/playButton"
+                    android:src="@mipmap/play"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </FrameLayout>
             <ImageView
                 android:id="@+id/nextButton"
@@ -62,16 +71,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="45dp" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/breakingNewstextWithAnimation"
-            android:layout_width="330dp"
-            android:layout_height="210dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
-            android:textColor="@color/colorWhite"
-            android:textSize="25sp" />
     </FrameLayout>
     <FrameLayout
         android:id="@+id/view_pager_frame_layout"
@@ -89,14 +88,14 @@
             android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="215dp" />
-        <android.support.v4.view.ViewPager
+        <com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager
             android:id="@+id/image_view_pager"
             android:layout_gravity="center"
             android:layout_marginLeft="0dp"
             android:layout_marginBottom="8.5dp"
             android:layout_width="398dp"
             android:layout_height="206.5dp">
-        </android.support.v4.view.ViewPager>
+        </com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager>
         <LinearLayout
             android:id="@+id/viewPagerDots"
             android:layout_width="wrap_content"
@@ -106,6 +105,50 @@
             android:layout_marginBottom="25dp"
             android:gravity="end|bottom"
             android:orientation="horizontal" />
+        <LinearLayout
+            android:id="@+id/pausePlayNextPreviousLayout1"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:weightSum="3"
+            android:layout_width="460dp"
+            android:layout_height="210dp" >
+            <ImageView
+                android:id="@+id/previousButton1"
+                android:layout_weight="1"
+                android:src="@mipmap/previous"
+                android:layout_marginLeft="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp" />
+            <FrameLayout
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp">
+                <ImageView
+                    android:id="@+id/pauseButton1"
+                    android:src="@mipmap/pause"
+                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/playButton1"
+                    android:src="@mipmap/play"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/nextButton1"
+                android:layout_weight="1"
+                android:src="@mipmap/next"
+                android:layout_marginRight="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp" />
+        </LinearLayout>
         <!--<ImageView
             android:id="@+id/place_holder_image"
             android:layout_gravity="right|center_vertical"

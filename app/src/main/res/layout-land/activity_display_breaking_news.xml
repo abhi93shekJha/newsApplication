@@ -49,14 +49,14 @@
             android:scaleType="fitXY"
             android:layout_width="403dp"
             android:layout_height="215dp" />
-        <android.support.v4.view.ViewPager
+        <com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager
             android:id="@+id/image_view_pager"
             android:layout_gravity="center"
             android:layout_marginLeft="0dp"
             android:layout_marginBottom="8.5dp"
             android:layout_width="398dp"
             android:layout_height="206.5dp">
-        </android.support.v4.view.ViewPager>
+        </com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager>
         <LinearLayout
             android:id="@+id/viewPagerDots"
             android:layout_width="wrap_content"

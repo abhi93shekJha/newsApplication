@@ -34,13 +34,14 @@ import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
+import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
 
 import java.util.ArrayList;
 
 public class DisplayBreakingNewsActivity extends AppCompatActivity {
     public ArrayList<PostsByCategory> posts = new ArrayList<>();
     Animation zoomIn;
-    ViewPager viewPager;
+    AutoScrollViewPager viewPager;
     BreakingNewsRecyclerAdapter adapter;
     RecyclerView recycler;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
@@ -81,8 +82,16 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         recycler = findViewById(R.id.posts_recycler);
         frameLayoutTextAnimation = findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = findViewById(R.id.view_pager_frame_layout);
+
+        //setting autoscroll viewpager for the landscape mode
         viewPager = findViewById(R.id.image_view_pager);
         if(viewPager != null) {
+
+            viewPager = findViewById(R.id.image_view_pager);
+            viewPager.startAutoScroll();
+            viewPager.setInterval(3000);
+            viewPager.setCycle(true);
+            viewPager.setStopScrollWhenTouch(true);
 
             //chaning the landscape mode to either animation or viewpager mode.
             if(sharedPreferences.getClickedPosition()%2 == 0){
@@ -138,7 +147,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 
                 }
             });
-        }
+        }// end of code for setting autoscroll viewpager
 
         ImageView imageView = findViewById(R.id.advertisementImage);
         if(imageView != null) {
@@ -203,7 +212,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                             //start your activity here
                         }
 
-                    }, 2000L);
+                    }, 3000L);
 
                 }
 
@@ -350,6 +359,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             adapter.clicked[0] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, 0);
+            sharedPreferences.setClickedPosition(0);
 
             adapter.clicked[(adapter.getItemCount()-1) - 1] = false;
             recycler.smoothScrollToPosition(0);
@@ -360,6 +370,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             adapter.clicked[adapter.previous + 1] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, adapter.previous + 1);
+            sharedPreferences.setClickedPosition(adapter.previous + 1);
 
             recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
             adapter.previous = adapter.previous + 1;
@@ -377,6 +388,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             adapter.clicked[(adapter.getItemCount()-1)-1] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, (adapter.getItemCount()-1)-1);
+            sharedPreferences.setClickedPosition((adapter.getItemCount()-1)-1);
 
             adapter.clicked[adapter.previous] = false;
             recycler.smoothScrollToPosition(((adapter.getItemCount()-1)-1)+1); //added this extra 1 to scroll the recycler to correct position
@@ -386,6 +398,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             adapter.clicked[adapter.previous - 1] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, (adapter.previous - 1));
+            sharedPreferences.setClickedPosition((adapter.previous - 1));
 
             adapter.clicked[adapter.previous] = false;
             recycler.smoothScrollToPosition(adapter.previous);

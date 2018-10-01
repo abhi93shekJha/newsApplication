@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 
@@ -40,6 +42,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     ArrayList<Integer> listPlaylistItemPositions;
     private LinearLayout ll_share;
     private TextView textView;
+    NewsSharedPreferences sharedPreferences;
     Animation zoomIn;
     int i=0;
     Handler mHandler;
@@ -70,6 +73,14 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
 
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+        // finally change the color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
+        }
+
+        sharedPreferences = NewsSharedPreferences.getInstance(this);
+
         ll_frame2 = (LinearLayout)findViewById(R.id.frame2);
         frameShowAdd = (FrameLayout)findViewById(R.id.frameShowAdd);
         ll_rewind = (LinearLayout)findViewById(R.id.ll_rewind);
@@ -144,51 +155,6 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                 frameLayoutTextAnimation.setVisibility(View.VISIBLE);
                 frameLayoutViewPager.setVisibility(View.GONE);
 
-//            BreakingNewsViewPagerAdapter b = new BreakingNewsViewPagerAdapter(DisplayBreakingNewsActivity.this);
-//            viewPager.setAdapter(b);
-//            dotscount = b.getCount();
-//            dots = new ImageView[dotscount];
-//
-//            linearLayout = findViewById(R.id.viewPagerDots);
-//
-//            for (int i = 0; i < dotscount; i++) {
-//
-//                dots[i] = new ImageView(DisplayBreakingNewsActivity.this);
-//                dots[i].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.non_active_dot));
-//
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-//                        LinearLayout.LayoutParams.WRAP_CONTENT);
-//
-//                params.setMargins(8, 0, 8, 0);
-//
-//                linearLayout.addView(dots[i], params);
-//
-//            }
-//
-//            dots[0].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.active_dot));
-//
-//            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//                @Override
-//                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//                }
-//
-//                @Override
-//                public void onPageSelected(int position) {
-//
-//                    for (int i = 0; i < dotscount; i++) {
-//                        dots[i].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.non_active_dot));
-//                    }
-//
-//                    dots[position].setImageDrawable(ContextCompat.getDrawable(DisplayBreakingNewsActivity.this, R.drawable.active_dot));
-//
-//                }
-//
-//                @Override
-//                public void onPageScrollStateChanged(int state) {
-//
-//                }
-//            });
         }
 
         ImageView imageView = findViewById(R.id.advertisementImage);
@@ -212,6 +178,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         textView = findViewById(R.id.breakingNewstext);
 
+        //this is for landscape textviews
         if(textView != null) {
 
             textView.setTypeface(fontBold);
@@ -242,7 +209,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                             //start your activity here
                         }
 
-                    }, 2000L);
+                    }, 3000L);
                 }
 
                 @Override
@@ -252,7 +219,8 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                 }
             });
         }
-        // show or hide Ad Fragment
+
+        // show or hide Ad Fragment in portrait mode
         if(frameShowAdd != null) {
             FragmentManager fm = getFragmentManager();
             addShowHideListener(fm.findFragmentById(R.id.frameShowAdd), true);
@@ -262,7 +230,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             adapter.itemClicked(currentPosition);
         }
 
-        //
+
         if(ll_forward != null && ll_rewind != null){
             ll_forward.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -278,7 +246,6 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                         int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
                         if(currentPositionAdapter == currentPosition){
                             currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-
                         }
                         adapter.itemClicked(currentPosition);
                         recycler.smoothScrollToPosition(currentPosition);
@@ -302,12 +269,10 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                         int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
                         if(currentPositionAdapter == currentPosition){
                             currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-
                         }
                         adapter.itemClicked(currentPosition);
                         recycler.smoothScrollToPosition(currentPosition);
                     }
-
                 }
             });
         }
@@ -335,15 +300,18 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                     if(!isPlayEnabled) {
                         isPlayEnabled = true;
                         iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_pause));
-                        FragmentVideoORImageView fragment = (FragmentVideoORImageView)
-                                getFragmentManager().findFragmentByTag("videoFragment");
-                        fragment.resumePlay();
+                        if(FragmentImage.frameLayoutViewPager.getVisibility() == View.VISIBLE)
+                            FragmentImage.playView.performClick();
+                        else
+                            FragmentImage.play.performClick();
+
                     } else {
                         isPlayEnabled = false;
                         iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_play));
-                        FragmentVideoORImageView fragment = (FragmentVideoORImageView)
-                                getFragmentManager().findFragmentByTag("videoFragment");
-                        fragment.stopPlay();
+                        if(FragmentImage.frameLayoutViewPager.getVisibility() == View.VISIBLE)
+                            FragmentImage.pauseView.performClick();
+                        else
+                            FragmentImage.pause.performClick();
                     }
                 }
             });
@@ -362,15 +330,6 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     }
 
     private void addShowHideListener(Fragment fragment, boolean isShowAdd) {
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.setCustomAnimations(android.R.animator.fade_in,
-//                android.R.animator.fade_out);
-//        if (fragment.isHidden()) {
-//            ft.show(fragment);
-//        } else {
-//            ft.hide(fragment);
-//        }
-        //ft.commit();
 
         if(isShowAdd){
             frameShowAdd.setVisibility(View.VISIBLE);
@@ -444,17 +403,17 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         text3.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
         text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
 
-        PlayListModel p1 = new PlayListModel(image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p2 = new PlayListModel(image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p3 = new PlayListModel(image3, head3, view3, likes3, comments3, text3, false);
+        PlayListModel p1 = new PlayListModel("0",image1, head1, view1, likes1, comments1, text1, false);
+        PlayListModel p2 = new PlayListModel("1",image2, head2, view2, likes2, comments2, text2, false);
+        PlayListModel p3 = new PlayListModel("2",image3, head3, view3, likes3, comments3, text3, false);
 
-        PlayListModel p4 = new PlayListModel(image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p5 = new PlayListModel(image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p6 = new PlayListModel(image3, head3, view3, likes3, comments3, text3, false);
+        PlayListModel p4 = new PlayListModel("0",image1, head1, view1, likes1, comments1, text1, false);
+        PlayListModel p5 = new PlayListModel("1",image2, head2, view2, likes2, comments2, text2, false);
+        PlayListModel p6 = new PlayListModel("2",image3, head3, view3, likes3, comments3, text3, false);
 
-        PlayListModel p7 = new PlayListModel(image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p8 = new PlayListModel(image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p9 = new PlayListModel(image3, head3, view3, likes3, comments3, text3, false);
+        PlayListModel p7 = new PlayListModel("0",image1, head1, view1, likes1, comments1, text1, false);
+        PlayListModel p8 = new PlayListModel("1",image2, head2, view2, likes2, comments2, text2, false);
+        PlayListModel p9 = new PlayListModel("2",image3, head3, view3, likes3, comments3, text3, false);
 
         posts.add(p1);
         listPlaylistItemPositions.add(0);
@@ -500,9 +459,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         // replace the FragmentLayout with new Fragment
 
         Bundle bundle = new Bundle();
-        bundle.putString("image", posts.get(position).getImage());
-        bundle.putParcelableArrayList("postArray", posts);
-        bundle.putString("post_id","0");
+        bundle.putString("post_id", posts.get(position).getPost_id());
         fragment1.setArguments(bundle);
 
         fragmentTransaction.replace(R.id.frame1, fragment1, "videoFragment");
@@ -518,4 +475,45 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         else
             finish();
     }
+
+    public void goToNext(){
+        if(!isSuffleEnabled){
+            int currentPosition = adapter.getCurrentItemSelectedPosition();
+            adapter.itemClicked(currentPosition+1);
+            recycler.smoothScrollToPosition(currentPosition+1);
+        } else {
+            // get random positions
+            Random rand = new Random();
+            int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
+            int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+            if(currentPositionAdapter == currentPosition){
+                currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+            }
+            adapter.itemClicked(currentPosition);
+            recycler.smoothScrollToPosition(currentPosition);
+        }
+    }
+
+    public void goToPrevious(){
+        if(!isSuffleEnabled){
+            int currentPosition = adapter.getCurrentItemSelectedPosition();
+            adapter.itemClicked(currentPosition-1);
+            if(currentPosition != 0){
+                recycler.smoothScrollToPosition(currentPosition-1);
+            }
+        } else {
+            // get random positions
+            Random rand = new Random();
+            int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
+            int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+            if(currentPositionAdapter == currentPosition){
+                currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+
+            }
+            adapter.itemClicked(currentPosition);
+            recycler.smoothScrollToPosition(currentPosition);
+        }
+    }
+
 }
+
