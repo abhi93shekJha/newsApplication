@@ -51,6 +51,7 @@ public class FragmentImage extends Fragment {
 // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.display_breaking_news_image_fragment, container, false);
         post_id = getArguments().getString("post_id");
+        Log.d("Post id is:", post_id);
         final ArrayList<String> texts = (ArrayList<String>) getPostDetailsFromServer(post_id);
         animateHandler = new Handler();
 

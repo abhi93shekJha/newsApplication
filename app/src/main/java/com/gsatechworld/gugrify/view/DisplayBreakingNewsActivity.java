@@ -385,7 +385,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         else {
             adapter.clicked[adapter.previous - 1] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, adapter.previous - 1);
+            loadFragment(fragment1, fragment2, (adapter.previous - 1));
 
             adapter.clicked[adapter.previous] = false;
             recycler.smoothScrollToPosition(adapter.previous);
