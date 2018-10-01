@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/frl_main"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="8dp"
@@ -22,33 +23,56 @@
             />
 
         <LinearLayout
-            android:layout_width="80dp"
+            android:id="@+id/ll_img_bag"
+            android:layout_width="90dp"
             android:layout_height="135dp"
             android:layout_gravity="end|center"
-            android:background="@color/global_color_green_accent"
-            android:backgroundTint="#90000000"
+            android:background="@color/black_transparent"
+            android:backgroundTint="@color/black_transparent"
             android:orientation="vertical"
             android:weightSum="1"
             android:gravity="end|center">
+            <RelativeLayout
+                android:id="@+id/rl_title"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Abccd gsd"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp" />
 
-            <TextView
-                android:layout_weight="0.4"
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="Sample Title"
-                android:textColor="@android:color/white"
-                android:textSize="22sp" />
-            <ImageView
-                android:id="@+id/ivOPen"
-                android:layout_weight="0.2"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:srcCompat="@drawable/ic_menu" />
+                <ImageView
+                    android:id="@+id/ivOPen"
+                    android:layout_below="@+id/tvTitle"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:srcCompat="@drawable/ic_menu"/>
+
+                <TextView
+                    android:layout_below="@+id/tvTitle"
+                    android:id="@+id/tvTitleCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="25dp"
+                    android:paddingTop="8dp"
+                    android:text="Abcd dj"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
+                    android:layout_alignTop="@+id/ivOPen"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp" />
+            </RelativeLayout>
+
         </LinearLayout>
     </FrameLayout>
     <View

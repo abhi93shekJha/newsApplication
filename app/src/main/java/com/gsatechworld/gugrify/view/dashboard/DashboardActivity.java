@@ -210,9 +210,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private ArrayList<PlayListItemModel> createPlaylistData() {
         ArrayList<PlayListItemModel> playListItemModelArrayList = new ArrayList<>();
         playListItemModelArrayList.add(new PlayListItemModel("99 +", "", "aaaaa", R.drawable.food6));
-        playListItemModelArrayList.add(new PlayListItemModel("25", "", "bbbbb", R.drawable.food2));
-        playListItemModelArrayList.add(new PlayListItemModel("10", "", "ccccc", R.drawable.food7));
-        playListItemModelArrayList.add(new PlayListItemModel("70", "", "ddddd", R.drawable.food4));
+//        playListItemModelArrayList.add(new PlayListItemModel("25", "", "bbbbb", R.drawable.food2));
+//        playListItemModelArrayList.add(new PlayListItemModel("10", "", "ccccc", R.drawable.food7));
+        playListItemModelArrayList.add(new PlayListItemModel(null, null, null, R.drawable.ic_add));
 
         return playListItemModelArrayList;
     }

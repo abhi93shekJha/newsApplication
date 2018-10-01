@@ -20,6 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -69,6 +70,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
         protected CardView listItemCard;
 
         protected CardView card;
+        RelativeLayout rl_headLine;
 
         public ItemRowHolder(View itemView) {
             super(itemView);
@@ -84,6 +86,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             this.listItemCard = itemView.findViewById(R.id.listItemCard);
 
             this.card = itemView.findViewById(R.id.listItemCard);
+            rl_headLine =itemView.findViewById(R.id.rl_headLine);
 
         }
     }
@@ -203,19 +206,26 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             holder.recyclerView.setHasFixedSize(true);
             holder.recyclerView.setRecycledViewPool(recycledViewPool);
             snapHelper.attachToRecyclerView(holder.recyclerView);*/
-
+            holder.btnMore.setVisibility(View.GONE);
             holder.itemTitle.setText(dataList.get(position).getHeaderTitle());
         }
         if (position == 2) {
 //            Log.d("Time for", "playlist xml");
             playListItems = dataList.get(position).getPlayListItemModelArrayList();
 //            Log.d("Size of playList", String.valueOf(playListItems.size()));
-            adapter = new SectionListDataAdapter(playListItems, mContext, 2, position-1);
+            if(playListItems.size() >1){
+                adapter = new SectionListDataAdapter(playListItems, mContext, 2, position-1);
+            } else {
+                if(holder.rl_headLine != null){
+                    holder.btnMore.setVisibility(View.GONE);
+                    holder.itemTitle.setVisibility(View.GONE);
+                }
+                adapter = new SectionListDataAdapter(null, mContext, 2, position-1);
+            }
 
-//            holder.btnMore.setVisibility(View.INVISIBLE);
             holder.itemTitle.setText(dataList.get(position).getHeaderTitle());
 
-         /*   holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+         /* holder.recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recyclerView.setAdapter(adapter);
             holder.recyclerView.setHasFixedSize(true);
             holder.recyclerView.setRecycledViewPool(recycledViewPool);
@@ -254,6 +264,34 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                     mContext.startActivity(new Intent(mContext, DisplayBreakingNewsActivity.class));
                 }
             });
+            holder.btnMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(mContext, view);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if(menuItem.getTitle().equals("Add to playlist")){
+//                                Intent intent = new Intent(mContext, LoginActivity.class);
+//                                mContext.startActivity(intent);
+
+                                // need to login first before creating playlist
+
+                                // show playlist for creating playlist
+                                createPlayListDialog = createPlayListDialog.getInstance(mContext, (Activity) mContext);
+                                createPlayListDialog.showDialog();
+                                createPlayListDialog.show();
+                            }
+                            return false;
+                        }
+                    });
+                    popup.inflate(R.menu.popup_menu);
+                    popup.show();
+                }
+            });
+        }
+
+        if(position == 1){
             holder.btnMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

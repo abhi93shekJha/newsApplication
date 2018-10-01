@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:id="@+id/mainLayout"
     android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
     android:orientation="horizontal">
 
     <FrameLayout
@@ -23,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="#DEffc107"
+            android:background="@color/gugrify_yellow"
             android:gravity="bottom|center">
 
             <TextView

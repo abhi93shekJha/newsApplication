@@ -369,4 +369,6 @@
     <color name="md_blue_grey_500">#607D8B</color>
     <color name="md_blue_grey_600">#546E7A</color>
     <color name="md_blue_grey_700">#455A64</color>
+    <color name="black_transparent">#90000000</color>
+    <color name="gugrify_yellow">#DEffc107</color>
 </resources>
