@@ -98,6 +98,11 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
                     holder.tvTitleCount.setVisibility(View.GONE);
                     holder.frl_main.setBackgroundColor(mContext.getResources().getColor(R.color.global_color_green_accent));
                 }
+            } else {
+                holder.ll_img_bag.setVisibility(View.VISIBLE);
+                holder.tvTitle.setVisibility(View.VISIBLE);
+                holder.tvTitleCount.setVisibility(View.VISIBLE);
+                holder.itemImage.setPadding(0, 0, 0, 0);
             }
             holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
