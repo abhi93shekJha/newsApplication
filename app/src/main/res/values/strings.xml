@@ -49,7 +49,7 @@
         <item>Supreme Court hearing demanding scrapping Article 35A to resume today: Only BJP lawyer to present case, main hearing on 31 Aug</item>
         <item>
 Kerala floods: Rahul Gandhi to begin two-day visit to Chengannur, Alappuzha in deluge-affected areas from tomorrow</item>
-        <item>Do not wipe out Jawaharlal Nehru's role, he belonged to India: Manmohan tells Narendra Modi over Teen Murti Complex</item>
+        <item>Do not wipe out Jawaharlal Nehrus role, he belonged to India: Manmohan tells Narendra Modi over Teen Murti Complex</item>
         <item>
 Meghalaya chief minister Conrad Sangma wins South-Tura Assembly bypoll by over 8,400 votes; NPP levels tally with Congress
 </item>
@@ -77,4 +77,7 @@ Meghalaya chief minister Conrad Sangma wins South-Tura Assembly bypoll by over 8
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_login1">Sign in</string>
+
+    <string name="please_enter_the_credentials">Please Enter The Credentials</string>
 </resources>

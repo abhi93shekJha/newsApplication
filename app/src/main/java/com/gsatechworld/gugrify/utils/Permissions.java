@@ -11,6 +11,7 @@ import android.widget.Toast;
 import static android.support.constraint.Constraints.TAG;
 
 class Permissions {
+/*
     private static final Permissions ourInstance = new Permissions();
 
     static Permissions getInstance() {
@@ -55,6 +56,7 @@ class Permissions {
             ActivityCompat.requestPermissions(Your_Activity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
     }
+*/
 
 
 }

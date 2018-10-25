@@ -16,4 +16,30 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">245dp</dimen>
     <dimen name="activity_horizontal_nav">10dp</dimen>
+
+
+    <dimen name="activity_Top_margin">16dp</dimen>
+    <dimen name="activity_Bottom_margin">12dp</dimen>
+    <dimen name="activity_Left_margin">15dp</dimen>
+    <dimen name="activity_Right_margin">15dp</dimen>
+    <dimen name="activity_Between_margin">3dp</dimen>
+    <dimen name="size_one_dp">1dp</dimen>
+    <dimen name="size_two_dp">2dp</dimen>
+    <dimen name="size_three_dp">3dp</dimen>
+    <dimen name="size_four_dp">4dp</dimen>
+    <dimen name="size_five_dp">5dp</dimen>
+    <dimen name="size_six_dp">6dp</dimen>
+    <dimen name="size_seven_dp">7dp</dimen>
+    <dimen name="size_eight_dp">8dp</dimen>
+    <dimen name="size_ten_dp">10dp</dimen>
+    <dimen name="size_twl_dp">12dp</dimen>
+    <dimen name="size_forn_dp">14dp</dimen>
+    <dimen name="size_large">15dp</dimen>
+    <dimen name="size_sixtn_dp">16dp</dimen>
+    <dimen name="size_extra_large">17dp</dimen>
+    <dimen name="size_huge">21dp</dimen>
+    <dimen name="tab_hight">40dp</dimen>
+    <dimen name="circle_indicator_dimen">64dp</dimen>
+    <dimen name="dimen_20">20dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
 </resources>

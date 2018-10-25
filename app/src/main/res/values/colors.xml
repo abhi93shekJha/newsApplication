@@ -29,6 +29,7 @@
 
     // login screen status bar color
     <color name="ststusbar_login_color">#ED030303</color>
+    <color name="black">#000000</color>
 
     // select language
     <color name="lang_ststusbar_color">#99AFB42B</color>
