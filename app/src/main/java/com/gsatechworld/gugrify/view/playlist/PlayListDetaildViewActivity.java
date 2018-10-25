@@ -6,10 +6,14 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -33,6 +37,10 @@ import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -129,20 +137,16 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Share to Social Media
 
-                ImageView imageView = (ImageView) findViewById(R.id.iv_share);
-                Drawable mDrawable = null;
-                Bitmap mBitmap  = null;
-
-//                String path = MediaStore.Images.Media.insertImage(getContentResolver(),
-//                        mBitmap, "Design", null);
-
-                //Uri uri = Uri.parse(path);
-
+                Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.country7);
                 Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("image/*");
-                //share.putExtra(Intent.EXTRA_STREAM, uri);
-                share.putExtra(Intent.EXTRA_TEXT, "I found something cool!");
-                startActivity(Intent.createChooser(share, "Share Your Design!"));
+                share.setType("image/jpeg");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                String path = MediaStore.Images.Media.insertImage(getContentResolver(),
+                        icon, "Title", null);
+                Uri imageUri =  Uri.parse(path);
+                share.putExtra(Intent.EXTRA_STREAM, imageUri);
+                startActivity(Intent.createChooser(share, "Share Image"));
             }
         });
 
@@ -474,6 +478,19 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         else
             finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                } else {
+                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                }
+                break;
+        }
     }
 
     public void goToNext(){

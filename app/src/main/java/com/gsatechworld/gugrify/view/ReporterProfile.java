@@ -3,6 +3,7 @@ package com.gsatechworld.gugrify.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class ReporterProfile extends AppCompatActivity {
     private LinearLayout linearLayoutProfile, linearLayoutPost;
     private CardView reporter_below_layout;
     private FloatingActionButton languageAndCityFloating;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -236,7 +238,7 @@ public class ReporterProfile extends AppCompatActivity {
 
     public void initSearchView()
     {
-        final SearchView searchView =
+        searchView =
                 (SearchView) search_menu.findItem(R.id.action_filter_search).getActionView();
 
         // Enable/Disable Submit button in the keyboard
@@ -296,9 +298,7 @@ public class ReporterProfile extends AppCompatActivity {
                 }
                 //update recyclerview
                 adapter.updateList(temp);
-
             }
-
         });
 
     }
@@ -375,4 +375,17 @@ public class ReporterProfile extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void onBackPressed()
+//    {
+//        item_search.collapseActionView();
+//        linearLayoutPost.setVisibility(View.VISIBLE);
+//        linearLayoutProfile.setVisibility(View.VISIBLE);
+//        languageAndCityFloating.setVisibility(View.VISIBLE);
+//        reporter_below_layout.setVisibility(View.VISIBLE);
+//
+//        if(!searchView.isFocused()){
+//            finish();
+//        }
+//    }
 }
