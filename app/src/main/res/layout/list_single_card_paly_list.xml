@@ -71,7 +71,7 @@
                     android:textStyle="bold"
                     android:layout_alignTop="@+id/ivOPen"
                     android:textColor="@android:color/white"
-                    android:textSize="22sp" />
+                    android:textSize="24sp" />
             </RelativeLayout>
 
         </LinearLayout>
