@@ -44,17 +44,19 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Abccd gsd"
+                    android:padding="4dp"
+                    android:maxLines="2"
+                    android:marqueeRepeatLimit="1"
+                    android:text="Entertainment Playlist"
+                    android:layout_marginBottom="10dp"
                     android:textColor="@android:color/white"
-                    android:textSize="22sp" />
+                    android:textSize="21sp" />
 
                 <ImageView
                     android:id="@+id/ivOPen"
                     android:layout_below="@+id/tvTitle"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="30dp"
                     app:srcCompat="@drawable/ic_menu"/>
 
                 <TextView
@@ -62,12 +64,11 @@
                     android:id="@+id/tvTitleCount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:paddingLeft="25dp"
-                    android:paddingTop="8dp"
-                    android:text="Abcd dj"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:text="99+"
+                    android:textStyle="bold"
                     android:layout_alignTop="@+id/ivOPen"
                     android:textColor="@android:color/white"
                     android:textSize="22sp" />

@@ -96,7 +96,8 @@ public class SectionListDataAdapter extends RecyclerView.Adapter<SectionListData
                     holder.ll_img_bag.setVisibility(View.GONE);
                     holder.tvTitle.setVisibility(View.GONE);
                     holder.tvTitleCount.setVisibility(View.GONE);
-                    holder.frl_main.setBackgroundColor(mContext.getResources().getColor(R.color.global_color_green_accent));
+                    //holder.frl_main.setBackgroundColor(mContext.getResources().getColor(R.color.global_color_green_accent));
+                    holder.frl_main.setBackgroundColor(mContext.getResources().getColor(R.color.black_overlay));
                 }
             } else {
                 holder.ll_img_bag.setVisibility(View.VISIBLE);
