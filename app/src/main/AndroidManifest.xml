@@ -75,13 +75,16 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.DisplayBreakingNewsActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ReporterProfile"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.ReporterPostActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity android:name=".view.playlist.PlayListDetaildViewActivity" />
     </application>
 

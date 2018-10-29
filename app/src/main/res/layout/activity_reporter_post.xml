@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:paddingBottom="20dp"
-    >
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_main"
+    android:background="@color/colorWhite"
+    android:paddingBottom="0dp">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -17,19 +16,38 @@
         android:background="@color/colorPrimary"
         app:popupTheme="@style/AppTheme.PopupOverlay" >
     </android.support.v7.widget.Toolbar>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        ><!--android:fillViewport="true"-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp">
+
+
     <LinearLayout
         android:id="@+id/uploadImageLinearLayout"
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
     <ImageView
         android:id="@+id/news_main_image"
         android:background="@drawable/shape"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
-        android:paddingLeft="10dp"
+        android:padding="5dp"
+        android:scaleType="fitXY"
         android:layout_width="200dp"
+        android:src="@drawable/ic_menu_camera"
         android:layout_height="150dp" />
         <Button
             android:id="@+id/uploadImage0"
@@ -41,7 +59,7 @@
             android:text="Upload image"
             android:padding="8dp" />
     </LinearLayout>
-    <TextView
+    <!--<TextView
         android:id="@+id/newsHeadlineTitle"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="10dp"
@@ -51,32 +69,66 @@
         android:text="News Headline"
         android:layout_below="@+id/uploadImageLinearLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" />-->
     <RelativeLayout
         android:id="@+id/editTextRelative1"
-        android:paddingTop="10dp"
+        android:layout_marginTop="0dp"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@+id/newsHeadlineTitle"
-        android:paddingLeft="10dp"
-        android:layout_height="100dp">
-        <View
+        android:layout_below="@+id/uploadImageLinearLayout"
+        android:layout_height="wrap_content">
+        <!--android:layout_below="@+id/newsHeadlineTitle"-->
+       <!-- <View
             android:layout_width="match_parent"
             android:background="@drawable/shape"
             android:layout_height="match_parent">
-        </View>
-    <EditText
-        android:id="@+id/newsHeadline"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:textSize="18sp"
-        android:background="@android:color/transparent"  />
+        </View>-->
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp">
+
+
+        <EditText
+            android:id="@+id/newsHeadline"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="18sp"
+            android:hint="News HeadLine" />
+        </android.support.design.widget.TextInputLayout>
+
     </RelativeLayout>
-    <TextView
+
+            <RelativeLayout
+                android:id="@+id/editTextRelative"
+                android:layout_marginTop="0dp"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/uploadImageLinearLayout"
+                android:layout_height="wrap_content">
+                <!--android:layout_below="@+id/newsHeadlineTitle"-->
+                <!-- <View
+                     android:layout_width="match_parent"
+                     android:background="@drawable/shape"
+                     android:layout_height="match_parent">
+                 </View>-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp">
+
+
+                    <EditText
+                        android:id="@+id/newsBriefDesc"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:textSize="18sp"
+                        android:hint="News Brief Description" />
+                </android.support.design.widget.TextInputLayout>
+
+            </RelativeLayout>
+
+   <!-- <TextView
         android:id="@+id/newsDescriptionTitle"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="10dp"
@@ -86,45 +138,53 @@
         android:text="News Description"
         android:layout_below="@+id/editTextRelative1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" />-->
     <RelativeLayout
         android:id="@+id/editTextRelative2"
-        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@+id/newsDescriptionTitle"
-        android:paddingLeft="10dp"
-        android:layout_height="100dp">
-        <View
+        android:layout_below="@+id/editTextRelative1"
+        android:paddingLeft="0dp"
+        android:layout_height="wrap_content">
+        <!--android:layout_below="@+id/newsDescriptionTitle"-->
+      <!--  <View
             android:layout_width="match_parent"
             android:background="@drawable/shape"
             android:layout_height="match_parent">
-        </View>
+        </View>-->
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/shape"
+            android:layout_margin="0dp">
         <EditText
             android:id="@+id/newsDescription"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="15dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:textSize="18sp"
-            android:background="@android:color/transparent" />
+            android:gravity="top|left"
+            android:backgroundTint="@color/colorWhite"
+            android:textColor="@color/black"
+            android:hint="News Description"
+            android:inputType="textMultiLine"
+            android:textSize="18sp"/>
+        </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
     <TextView
         android:id="@+id/selectCategoryTitle"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="3dp"
         android:textColor="@color/color_black"
         android:layout_below="@+id/editTextRelative2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select News Category"
-        android:textSize="15sp"></TextView>
+        android:textSize="15sp"/>
     <RelativeLayout
         android:id="@+id/categorySpinnerRelativeLayout"
-        android:layout_width="200dp"
-        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
         android:layout_marginTop="10dp"
         android:layout_height="40dp"
         android:layout_below="@+id/selectCategoryTitle"
@@ -140,7 +200,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:layout_marginRight="21dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="3dp"
             android:spinnerMode="dropdown" />
 
         <ImageView
@@ -157,17 +217,19 @@
         android:id="@+id/selectPostTypeText"
         android:text="Select input type (images or texts)"
         android:layout_below="@+id/categorySpinnerRelativeLayout"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="3dp"
         android:textSize="15sp"
         android:textColor="@color/color_black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <RelativeLayout
         android:id="@+id/spinnerRelativeLayout"
-        android:layout_width="200dp"
-        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_height="40dp"
         android:layout_below="@+id/selectPostTypeText"
         android:background="@drawable/spinner_border"
@@ -182,7 +244,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:layout_marginRight="21dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="3dp"
             android:spinnerMode="dropdown" />
 
         <ImageView
@@ -195,12 +257,14 @@
             android:src="@mipmap/drop" />
 
     </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp" />
     <TableLayout
         android:id="@+id/imageListTableLayout"
-        android:layout_marginLeft="15dp"
         android:visibility="gone"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_below="@+id/spinnerRelativeLayout"
         android:layout_width="match_parent"
         android:stretchColumns="*"
@@ -209,6 +273,8 @@
         <ImageView
             android:id="@+id/image1"
             android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:scaleType="fitXY"
             android:background="@drawable/shape1"
             android:layout_width="100dp"
             android:layout_height="100dp" />
@@ -216,6 +282,8 @@
             android:id="@+id/image2"
             android:layout_marginLeft="5dp"
             android:background="@drawable/shape1"
+            android:padding="5dp"
+            android:scaleType="fitXY"
             android:layout_width="100dp"
             android:layout_height="100dp" />
         </TableRow>
@@ -241,12 +309,16 @@
             <ImageView
                 android:id="@+id/image3"
                 android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
             <ImageView
                 android:id="@+id/image4"
                 android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
@@ -273,12 +345,16 @@
             <ImageView
                 android:id="@+id/image5"
                 android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
             <ImageView
                 android:id="@+id/image6"
                 android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
@@ -305,12 +381,16 @@
             <ImageView
                 android:id="@+id/image7"
                 android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
             <ImageView
                 android:id="@+id/image8"
                 android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
@@ -337,12 +417,16 @@
             <ImageView
                 android:id="@+id/image9"
                 android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
             <ImageView
                 android:id="@+id/image10"
                 android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
@@ -369,12 +453,16 @@
             <ImageView
                 android:id="@+id/image11"
                 android:layout_marginRight="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
             <ImageView
                 android:id="@+id/image12"
                 android:layout_marginLeft="5dp"
+                android:padding="5dp"
+                android:scaleType="fitXY"
                 android:background="@drawable/shape1"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
@@ -400,253 +488,280 @@
     </TableLayout>
     <LinearLayout
         android:id="@+id/editTextListLinearLayout"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="15dp"
         android:layout_below="@+id/spinnerRelativeLayout"
         android:orientation="vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!--  android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"-->
+
         <RelativeLayout
                 android:id="@+id/textRelative1"
-            android:layout_marginTop="15dp"
+                android:layout_marginTop="0dp"
                 android:layout_width="match_parent"
                 android:layout_below="@+id/newsDescriptionTitle"
-                android:layout_height="50dp">
-                <View
+                android:layout_height="wrap_content">
+                <!--<View
                     android:layout_width="match_parent"
                     android:background="@drawable/shape"
-                    android:layout_height="match_parent">
-                </View>
+                    android:layout_height="match_parent"/>-->
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
                 <EditText
                     android:id="@+id/editText1"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:textSize="18sp"
-                    android:background="@android:color/transparent" />
+                    android:gravity="top|left"
+                    android:hint="News Text 1"
+                    android:inputType="textMultiLine"
+                    android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
             </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative2"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+           <!-- <View
                 android:layout_width="match_parent"
                 android:background="@drawable/shape"
                 android:layout_height="match_parent">
-            </View>
+            </View>-->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp">
             <EditText
                 android:id="@+id/editText2"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 2"
+                android:inputType="textMultiLine"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative3"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+          <!--  <View
                 android:layout_width="match_parent"
                 android:background="@drawable/shape"
                 android:layout_height="match_parent">
-            </View>
+            </View>-->
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
             <EditText
                 android:id="@+id/editText3"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 3"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative4"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText4"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 4"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative5"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText5"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 5"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative6"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText6"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 6"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative7"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText7"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 7"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative8"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText8"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 8"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative9"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText9"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 9"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative10"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText10"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 10"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative11"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText11"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 11"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/textRelative12"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
             android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="50dp">
-            <View
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp">
+
             <EditText
                 android:id="@+id/editText12"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:background="@android:color/transparent" />
+                android:gravity="top|left"
+                android:hint="News Text 12"
+                android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
         </RelativeLayout>
     </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
-</ScrollView>
