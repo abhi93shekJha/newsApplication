@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_main"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:paddingBottom="0dp">
 
@@ -12,756 +12,621 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:popupTheme="@style/AppTheme.PopupOverlay" >
-    </android.support.v7.widget.Toolbar>
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"></android.support.v7.widget.Toolbar>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        ><!--android:fillViewport="true"-->
+        android:layout_below="@+id/toolbar"><!--android:fillViewport="true"-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
 
-    <LinearLayout
-        android:id="@+id/uploadImageLinearLayout"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-    <ImageView
-        android:id="@+id/news_main_image"
-        android:background="@drawable/shape"
-        android:padding="5dp"
-        android:scaleType="fitXY"
-        android:layout_width="200dp"
-        android:src="@drawable/ic_menu_camera"
-        android:layout_height="150dp" />
-        <Button
-            android:id="@+id/uploadImage0"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:layout_gravity="center_vertical"
-            android:text="Upload image"
-            android:padding="8dp" />
-    </LinearLayout>
-    <!--<TextView
-        android:id="@+id/newsHeadlineTitle"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/color_black"
-        android:text="News Headline"
-        android:layout_below="@+id/uploadImageLinearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />-->
-    <RelativeLayout
-        android:id="@+id/editTextRelative1"
-        android:layout_marginTop="0dp"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/uploadImageLinearLayout"
-        android:layout_height="wrap_content">
-        <!--android:layout_below="@+id/newsHeadlineTitle"-->
-       <!-- <View
-            android:layout_width="match_parent"
-            android:background="@drawable/shape"
-            android:layout_height="match_parent">
-        </View>-->
+            <LinearLayout
+                android:id="@+id/uploadImageLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/toolbar"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp">
+                <ImageView
+                    android:id="@+id/news_main_image"
+                    android:layout_width="160dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/shape"
+                    android:padding="5dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/image_icon" />
 
-
-        <EditText
-            android:id="@+id/newsHeadline"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:textSize="18sp"
-            android:hint="News HeadLine" />
-        </android.support.design.widget.TextInputLayout>
-
-    </RelativeLayout>
+            </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/editTextRelative"
-                android:layout_marginTop="0dp"
+                android:id="@+id/editTextRelative1"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/uploadImageLinearLayout"
-                android:layout_height="wrap_content">
-                <!--android:layout_below="@+id/newsHeadlineTitle"-->
-                <!-- <View
-                     android:layout_width="match_parent"
-                     android:background="@drawable/shape"
-                     android:layout_height="match_parent">
-                 </View>-->
+                android:layout_marginTop="0dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="0dp">
 
-
                     <EditText
-                        android:id="@+id/newsBriefDesc"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/newsHeadline"
                         android:layout_width="match_parent"
-                        android:textSize="18sp"
-                        android:hint="News Brief Description" />
+                        android:layout_height="wrap_content"
+                        android:hint="News HeadLine"
+                        android:textSize="18sp" />
                 </android.support.design.widget.TextInputLayout>
 
             </RelativeLayout>
 
-   <!-- <TextView
-        android:id="@+id/newsDescriptionTitle"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/color_black"
-        android:text="News Description"
-        android:layout_below="@+id/editTextRelative1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />-->
-    <RelativeLayout
-        android:id="@+id/editTextRelative2"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/editTextRelative1"
-        android:paddingLeft="0dp"
-        android:layout_height="wrap_content">
-        <!--android:layout_below="@+id/newsDescriptionTitle"-->
-      <!--  <View
-            android:layout_width="match_parent"
-            android:background="@drawable/shape"
-            android:layout_height="match_parent">
-        </View>-->
+            <RelativeLayout
+                android:id="@+id/editTextRelative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/uploadImageLinearLayout"
+                android:layout_marginTop="0dp">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@drawable/shape"
-            android:layout_margin="0dp">
-        <EditText
-            android:id="@+id/newsDescription"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:gravity="top|left"
-            android:backgroundTint="@color/colorWhite"
-            android:textColor="@color/black"
-            android:hint="News Description"
-            android:inputType="textMultiLine"
-            android:textSize="18sp"/>
-        </android.support.design.widget.TextInputLayout>
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/selectCategoryTitle"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="3dp"
-        android:textColor="@color/color_black"
-        android:layout_below="@+id/editTextRelative2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select News Category"
-        android:textSize="15sp"/>
-    <RelativeLayout
-        android:id="@+id/categorySpinnerRelativeLayout"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginTop="10dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/selectCategoryTitle"
-        android:background="@drawable/spinner_border"
-        android:orientation="horizontal">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp">
 
-        <Spinner
-            android:id="@+id/categorySelectionSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:layout_marginRight="21dp"
-            android:layout_marginLeft="3dp"
-            android:spinnerMode="dropdown" />
+                    <EditText
+                        android:id="@+id/newsBrief"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="News Brief"
+                        android:textSize="18sp" />
+                </android.support.design.widget.TextInputLayout>
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="18dp"
-            android:layout_marginRight="6dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:src="@mipmap/drop" />
+            </RelativeLayout>
 
-    </RelativeLayout>
-    <TextView
-        android:id="@+id/selectPostTypeText"
-        android:text="Select input type (images or texts)"
-        android:layout_below="@+id/categorySpinnerRelativeLayout"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="3dp"
-        android:textSize="15sp"
-        android:textColor="@color/color_black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <RelativeLayout
-        android:id="@+id/spinnerRelativeLayout"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/selectPostTypeText"
-        android:background="@drawable/spinner_border"
-        android:orientation="horizontal">
+            <RelativeLayout
+                android:id="@+id/editTextRelative2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextRelative1"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="0dp">
 
-        <Spinner
-            android:id="@+id/newsTypeSelectionSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:layout_marginRight="21dp"
-            android:layout_marginLeft="3dp"
-            android:spinnerMode="dropdown" />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_margin="0dp"
+                    android:background="@drawable/shape">
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="18dp"
-            android:layout_marginRight="6dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:src="@mipmap/drop" />
+                    <EditText
+                        android:id="@+id/newsDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@color/colorWhite"
+                        android:gravity="top|left"
+                        android:hint="News Description"
+                        android:inputType="textMultiLine"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+                </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/selectCategoryTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editTextRelative2"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="10dp"
+                android:text="Select News Category"
+                android:textColor="@color/color_black"
+                android:textSize="15sp" />
+
+            <RelativeLayout
+                android:id="@+id/categorySpinnerRelativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/selectCategoryTitle"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/spinner_border"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/categorySelectionSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="21dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:spinnerMode="dropdown" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="6dp"
+                    android:src="@mipmap/drop" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/selectPostTypeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/categorySpinnerRelativeLayout"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="10dp"
+                android:text="Select input type (images or texts)"
+                android:textColor="@color/color_black"
+                android:textSize="15sp" />
+
+            <RelativeLayout
+                android:id="@+id/spinnerRelativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/selectPostTypeText"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/spinner_border"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/newsTypeSelectionSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="21dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:spinnerMode="dropdown" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="18dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="6dp"
+                    android:src="@mipmap/drop" />
+
+            </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
-    <TableLayout
-        android:id="@+id/imageListTableLayout"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@+id/spinnerRelativeLayout"
-        android:layout_width="match_parent"
-        android:stretchColumns="*"
-        android:layout_height="match_parent">
-        <TableRow>
-        <ImageView
-            android:id="@+id/image1"
-            android:layout_marginRight="5dp"
-            android:padding="5dp"
-            android:scaleType="fitXY"
-            android:background="@drawable/shape1"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
-        <ImageView
-            android:id="@+id/image2"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/shape1"
-            android:padding="5dp"
-            android:scaleType="fitXY"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/uploadImage1"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-            <Button
-                android:id="@+id/uploadImage2"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/image3"
-                android:layout_marginRight="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-            <ImageView
-                android:id="@+id/image4"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/uploadImage3"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-            <Button
-                android:id="@+id/uploadImage4"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/image5"
-                android:layout_marginRight="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-            <ImageView
-                android:id="@+id/image6"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/uploadImage5"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-            <Button
-                android:id="@+id/uploadImage6"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/image7"
-                android:layout_marginRight="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-            <ImageView
-                android:id="@+id/image8"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/uploadImage7"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-            <Button
-                android:id="@+id/uploadImage8"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/image9"
-                android:layout_marginRight="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-            <ImageView
-                android:id="@+id/image10"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/uploadImage9"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-            <Button
-                android:id="@+id/uploadImage10"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-        </TableRow>
-        <TableRow>
-            <ImageView
-                android:id="@+id/image11"
-                android:layout_marginRight="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-            <ImageView
-                android:id="@+id/image12"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
-                android:scaleType="fitXY"
-                android:background="@drawable/shape1"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-        </TableRow>
-        <TableRow>
-            <Button
-                android:id="@+id/uploadImage11"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-            <Button
-                android:id="@+id/uploadImage12"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Upload image"
-                android:padding="8dp" />
-        </TableRow>
-    </TableLayout>
-    <LinearLayout
-        android:id="@+id/editTextListLinearLayout"
-        android:layout_below="@+id/spinnerRelativeLayout"
-        android:orientation="vertical"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="0dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!--  android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"-->
 
-        <RelativeLayout
-                android:id="@+id/textRelative1"
+            <TableLayout
+                android:id="@+id/imageListTableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/spinnerRelativeLayout"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:stretchColumns="*"
+                android:visibility="gone">
+
+                <TableRow>
+
+                    <ImageView
+                        android:id="@+id/image3"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+
+                    <ImageView
+                        android:id="@+id/image4"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+                </TableRow>
+
+                <TableRow android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/image5"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+
+                    <ImageView
+                        android:id="@+id/image6"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+                </TableRow>
+
+                <TableRow android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/image7"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+
+                    <ImageView
+                        android:id="@+id/image8"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+                </TableRow>
+
+                <TableRow android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/image9"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+
+                    <ImageView
+                        android:id="@+id/image10"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+                </TableRow>
+
+                <TableRow android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/image11"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+
+                    <ImageView
+                        android:id="@+id/image12"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/shape1"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/image_icon" />
+                </TableRow>
+
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/editTextListLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="0dp"
-                android:layout_width="match_parent"
-                android:layout_below="@+id/newsDescriptionTitle"
-                android:layout_height="wrap_content">
-                <!--<View
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/textRelative1"
                     android:layout_width="match_parent"
-                    android:background="@drawable/shape"
-                    android:layout_height="match_parent"/>-->
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle"
+                    android:layout_marginTop="0dp">
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-                <EditText
-                    android:id="@+id/editText1"
-                    android:layout_height="match_parent"
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 1"
+                            android:inputType="textMultiLine"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative2"
                     android:layout_width="match_parent"
-                    android:gravity="top|left"
-                    android:hint="News Text 1"
-                    android:inputType="textMultiLine"
-                    android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-            </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative2"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-           <!-- <View
-                android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>-->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="0dp">
-            <EditText
-                android:id="@+id/editText2"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 2"
-                android:inputType="textMultiLine"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative3"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-          <!--  <View
-                android:layout_width="match_parent"
-                android:background="@drawable/shape"
-                android:layout_height="match_parent">
-            </View>-->
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 2"
+                            android:inputType="textMultiLine"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 3"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 4"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 5"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 6"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText7"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 7"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText8"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 8"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText9"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 9"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText10"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 10"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText11"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 11"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/textRelative12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/newsDescriptionTitle">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp">
+
+                        <EditText
+                            android:id="@+id/editText12"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="top|left"
+                            android:hint="News Text 12"
+                            android:textSize="18sp" />
+                    </android.support.design.widget.TextInputLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_news_submit"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-            <EditText
-                android:id="@+id/editText3"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 3"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative4"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText4"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 4"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative5"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText5"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 5"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative6"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText6"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 6"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative7"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText7"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 7"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative8"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText8"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 8"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative9"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText9"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 9"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative10"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText10"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 10"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative11"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText11"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 11"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/textRelative12"
-            android:layout_width="match_parent"
-            android:layout_below="@+id/newsDescriptionTitle"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="0dp">
-
-            <EditText
-                android:id="@+id/editText12"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:gravity="top|left"
-                android:hint="News Text 12"
-                android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-        </RelativeLayout>
-    </LinearLayout>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:text="Submit news" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

@@ -14,6 +14,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 

@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.gsatechworld.gugrify.R;
 
 /**
@@ -64,7 +67,17 @@ public class ShowAdFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_add, container, false);
+        View view = inflater.inflate(R.layout.fragment_show_add, container, false);
+        AdView mAdView = view.findViewById(R.id.playlist_adMob2);
+
+        //implementing AdMob here
+        MobileAds.initialize(getActivity(), "ca-app-pub-3940256099942544~3347511713");
+        AdRequest adRequest = new AdRequest.Builder().build();
+        if (mAdView != null)
+            mAdView.loadAd(adRequest);
+        //end of AdMob
+
+        return view;
     }
 
 

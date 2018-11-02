@@ -27,6 +27,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
@@ -40,23 +45,29 @@ import java.util.ArrayList;
 
 public class DisplayBreakingNewsActivity extends AppCompatActivity {
     public ArrayList<PostsByCategory> posts = new ArrayList<>();
-    Animation zoomIn;
+    Animation zoomIn, animFadeIn, animFadeOut, animFadeIn1;
     AutoScrollViewPager viewPager;
     BreakingNewsRecyclerAdapter adapter;
     RecyclerView recycler;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
+    ImageView pause, play, pauseView, playView;
+    public static LinearLayout pausePlayLayout;
     NewsSharedPreferences sharedPreferences;
     TextView textView;
     private int dotscount;
-    private LinearLayout linearLayout;
+    InterstitialAd mInterstitialAd;
+    BreakingNewsViewPagerAdapter b;
+    private LinearLayout linearLayout, pausePlayLayout1;
     private ImageView dots[];
-    int i=0;
-    Handler mHandler;
-    protected void onCreate(Bundle savedInstanceState){
+    int i = 0;
+    Handler mHandler, animateHandler;
+    AdView mAdView;
+
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //  if the screen rotates to landscape (bigger) mode, hide the status bar
-        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
@@ -74,8 +85,47 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
         }
+        animateHandler = new Handler();
+        animFadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+        animFadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                pausePlayLayout1.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        pausePlayLayout1 = findViewById(R.id.pausePlayNextPreviousLayout1);
+
+        //implementing AdMob here
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.news_details_adMob);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        if (mAdView != null)
+            mAdView.loadAd(adRequest);
+        //end of AdMob
 
         mHandler = new Handler();
+        //interstitial advertisement
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });//end of advertisement
+
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
 
@@ -85,7 +135,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 
         //setting autoscroll viewpager for the landscape mode
         viewPager = findViewById(R.id.image_view_pager);
-        if(viewPager != null) {
+        if (viewPager != null) {
 
             viewPager = findViewById(R.id.image_view_pager);
             viewPager.startAutoScroll();
@@ -94,15 +144,14 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             viewPager.setStopScrollWhenTouch(true);
 
             //chaning the landscape mode to either animation or viewpager mode.
-            if(sharedPreferences.getClickedPosition()%2 == 0){
+            if (sharedPreferences.getClickedPosition() % 2 == 0) {
                 frameLayoutTextAnimation.setVisibility(View.VISIBLE);
                 frameLayoutViewPager.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 frameLayoutTextAnimation.setVisibility(View.GONE);
                 frameLayoutViewPager.setVisibility(View.VISIBLE);
             }
-            BreakingNewsViewPagerAdapter b = new BreakingNewsViewPagerAdapter(DisplayBreakingNewsActivity.this);
+            b = new BreakingNewsViewPagerAdapter(DisplayBreakingNewsActivity.this);
             viewPager.setAdapter(b);
             dotscount = b.getCount();
             dots = new ImageView[dotscount];
@@ -149,40 +198,61 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             });
         }// end of code for setting autoscroll viewpager
 
-        ImageView imageView = findViewById(R.id.advertisementImage);
-        if(imageView != null) {
-            Glide.with(DisplayBreakingNewsActivity.this).load("http://www.bloggs74.com/wp-content/uploads/resadv251.jpg?39a0e9").into(imageView);
-        }
-
         TextView scroll_line = findViewById(R.id.scrolling_line);
-        if(scroll_line != null){
+        if (scroll_line != null) {
             Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
             scroll_line.setTypeface(fontBold);
             scroll_line.setSelected(true);
         }
 
-        TextView tv = findViewById(R.id.advertisementText);
-        if(tv != null) {
-            Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-            tv.setTypeface(fontRegular);
-        }
 
         //this will fetch the data from server.
         loadData();
 
-        /*ImageView reduce = findViewById(R.id.reduceImage);
-        if(reduce != null) {
-            reduce.setOnClickListener(new View.OnClickListener() {
+
+        //this block of code is for pausing and play the visible animations (for text animations)
+        pausePlayLayout = findViewById(R.id.pausePlayNextPreviousLayout);
+        animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pause_play_fade_in);
+        animFadeIn1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pause_play_fade_in);
+
+        if (frameLayoutTextAnimation != null)
+            frameLayoutTextAnimation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+                    pausePlayLayout.setVisibility(View.VISIBLE);
+                    pausePlayLayout.startAnimation(animFadeIn);
+                    animFadeIn.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+
+                            animateHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pausePlayLayout.setVisibility(View.VISIBLE);
+                                    pausePlayLayout.startAnimation(animFadeOut);
+                                    pausePlayLayout.setVisibility(View.GONE);
+                                }
+                            }, 1000L);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
                 }
-            });
-        }*/
+            }); //this is the end of showing play and pause buttons (for text animations)
+
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         textView = findViewById(R.id.breakingNewstext);
 
-        if(textView != null) {
+        if (textView != null) {
 
             textView.setTypeface(fontBold);
 
@@ -204,9 +274,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("Inside", "postDelayed"+String.valueOf(i));
-                            if(i==3)
-                                i=0;
+                            Log.d("Inside", "postDelayed" + String.valueOf(i));
+                            if (i == 3)
+                                i = 0;
                             textView.startAnimation(zoomIn);
                             textView.setText(posts.get(sharedPreferences.getClickedPosition()).getTexts().get(i++));
                             //start your activity here
@@ -225,7 +295,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         }
 
 
-        if(recycler != null) {
+        if (recycler != null) {
             FragmentImage fragment1 = new FragmentImage();
             FragmentLayout fragment2 = new FragmentLayout();
             loadFragment(fragment1, fragment2, sharedPreferences.getClickedPosition());
@@ -235,9 +305,98 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
             recycler.setAdapter(adapter);
         }
 
+
+        //pausing and playing the animation (for textviews)
+        pause = findViewById(R.id.pauseButton);
+        play = findViewById(R.id.playButton);
+
+        if (pause != null)
+            pause.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    mHandler.removeCallbacksAndMessages(null);
+                    textView.setVisibility(View.GONE);
+
+                    view.setVisibility(View.GONE);
+                    play.setVisibility(View.VISIBLE);
+
+                    animateHandler.removeCallbacksAndMessages(null);
+                    pausePlayLayout.setVisibility(View.VISIBLE);
+
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    } else {
+                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+                    }
+
+                }
+            });
+
+        if (play != null)
+            play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    textView.setVisibility(View.VISIBLE);
+                    if (i == 3)
+                        i = 0;
+                    textView.setText(posts.get(sharedPreferences.getClickedPosition()).getTexts().get(i++));
+                    textView.startAnimation(zoomIn);
+
+                    view.setVisibility(View.GONE);
+                    pause.setVisibility(View.VISIBLE);
+
+                    pausePlayLayout.startAnimation(animFadeOut);
+                    pausePlayLayout.setVisibility(View.GONE);
+                }
+            }); // pausing and playing stops here
+
+        //pausing and playing the animation (for viewpager)
+        pauseView = findViewById(R.id.pauseButton1);
+        playView = findViewById(R.id.playButton1);
+        if (pauseView != null)
+            pauseView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    view.setVisibility(View.GONE);
+                    playView.setVisibility(View.VISIBLE);
+
+                    linearLayout.setVisibility(View.GONE);
+                    viewPager.stopAutoScroll();
+
+                    b.animateHandler.removeCallbacksAndMessages(null);
+                    pausePlayLayout1.setVisibility(View.VISIBLE);
+
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    } else {
+                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+                    }
+
+                }
+            });
+
+        if (playView != null)
+            playView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    view.setVisibility(View.GONE);
+                    pauseView.setVisibility(View.VISIBLE);
+
+                    linearLayout.setVisibility(View.VISIBLE);
+                    viewPager.startAutoScroll();
+
+                    pausePlayLayout1.startAnimation(animFadeOut);
+                    pausePlayLayout1.setVisibility(View.GONE);
+                }
+            }); // playing and pausing animation for viewpager ends here
+
     }
 
-    public void loadFragment(Fragment fragment1, Fragment fragment2, int position){
+    public void loadFragment(Fragment fragment1, Fragment fragment2, int position) {
         // create a FragmentManager
         FragmentManager fm = getFragmentManager();
 // create a FragmentTransaction to begin the transaction and replace the Fragment
@@ -262,7 +421,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         fragmentTransaction.commit(); // save the changes
     }
 
-    public void loadData(){
+    public void loadData() {
         sharedPreferences.setClickedPosition(0);
 
         String image1 = "https://i2-prod.manchestereveningnews.co.uk/incoming/article13699191.ece/ALTERNATES/s615/unnamed-2.jpg";
@@ -338,34 +497,31 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     }
 
 
-
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         // code here to show dialog
-        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         else
             finish();
     }
 
     //changing the adapter to go to next item
-    public void goToNext(){
+    public void goToNext() {
 
         FragmentImage fragment1 = new FragmentImage();
         FragmentLayout fragment2 = new FragmentLayout();
 
-        if(adapter.previous == (adapter.getItemCount()-1) - 1){
+        if (adapter.previous == (adapter.getItemCount() - 1) - 1) {
             adapter.clicked[0] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, 0);
             sharedPreferences.setClickedPosition(0);
 
-            adapter.clicked[(adapter.getItemCount()-1) - 1] = false;
+            adapter.clicked[(adapter.getItemCount() - 1) - 1] = false;
             recycler.smoothScrollToPosition(0);
             adapter.previous = 0;
-        }
-        else {
+        } else {
             adapter.clicked[adapter.previous] = false;
             adapter.clicked[adapter.previous + 1] = true;
             //loading both the fragments with clicked position
@@ -379,22 +535,21 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     }
 
     //changing the adapter to go to previous item
-    public void goToPrevious(){
+    public void goToPrevious() {
 
         FragmentImage fragment1 = new FragmentImage();
         FragmentLayout fragment2 = new FragmentLayout();
 
-        if(adapter.previous == 0){
-            adapter.clicked[(adapter.getItemCount()-1)-1] = true;
+        if (adapter.previous == 0) {
+            adapter.clicked[(adapter.getItemCount() - 1) - 1] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, (adapter.getItemCount()-1)-1);
-            sharedPreferences.setClickedPosition((adapter.getItemCount()-1)-1);
+            loadFragment(fragment1, fragment2, (adapter.getItemCount() - 1) - 1);
+            sharedPreferences.setClickedPosition((adapter.getItemCount() - 1) - 1);
 
             adapter.clicked[adapter.previous] = false;
-            recycler.smoothScrollToPosition(((adapter.getItemCount()-1)-1)+1); //added this extra 1 to scroll the recycler to correct position
-            adapter.previous = (adapter.getItemCount()-1)-1;
-        }
-        else {
+            recycler.smoothScrollToPosition(((adapter.getItemCount() - 1) - 1) + 1); //added this extra 1 to scroll the recycler to correct position
+            adapter.previous = (adapter.getItemCount() - 1) - 1;
+        } else {
             adapter.clicked[adapter.previous - 1] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, (adapter.previous - 1));

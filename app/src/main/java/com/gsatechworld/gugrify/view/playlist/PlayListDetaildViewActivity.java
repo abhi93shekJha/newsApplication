@@ -34,6 +34,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
@@ -53,7 +57,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     private TextView textView;
     NewsSharedPreferences sharedPreferences;
     Animation zoomIn;
-    int i=0;
+    int i = 0;
     Handler mHandler;
     private ViewPager viewPager;
     private FrameLayout frameLayoutTextAnimation;
@@ -64,17 +68,26 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     private ImageView iv_suffle, iv_rewind, iv_play, iv_forward, iv_repeat;
     private boolean isSuffleEnabled = false;
     private boolean isPlayEnabled = false;
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //  if the screen rotates to landscape (bigger) mode, hide the status bar
-        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_play_list_detaild_view);
+
+        //implementing AdMob here
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.playlistAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        if (mAdView != null)
+            mAdView.loadAd(adRequest);
+        //end of AdMob
+
 
         //if the screen is in portrait mode, make status bar black
         // clear FLAG_TRANSLUCENT_STATUS flag:
@@ -90,22 +103,22 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
 
         sharedPreferences = NewsSharedPreferences.getInstance(this);
 
-        ll_frame2 = (LinearLayout)findViewById(R.id.frame2);
-        frameShowAdd = (FrameLayout)findViewById(R.id.frameShowAdd);
-        ll_rewind = (LinearLayout)findViewById(R.id.ll_rewind);
-        ll_play = (LinearLayout)findViewById(R.id.ll_play);
-        ll_forward = (LinearLayout)findViewById(R.id.ll_forward);
-        ll_repeat = (LinearLayout)findViewById(R.id.ll_repeat);
-        iv_suffle = (ImageView)findViewById(R.id.iv_suffle);
-        ll_suffle = (LinearLayout)findViewById(R.id.ll_suffle);
+        ll_frame2 = (LinearLayout) findViewById(R.id.frame2);
+        frameShowAdd = (FrameLayout) findViewById(R.id.frameShowAdd);
+        ll_rewind = (LinearLayout) findViewById(R.id.ll_rewind);
+        ll_play = (LinearLayout) findViewById(R.id.ll_play);
+        ll_forward = (LinearLayout) findViewById(R.id.ll_forward);
+        ll_repeat = (LinearLayout) findViewById(R.id.ll_repeat);
+        iv_suffle = (ImageView) findViewById(R.id.iv_suffle);
+        ll_suffle = (LinearLayout) findViewById(R.id.ll_suffle);
         recycler = (RecyclerView) findViewById(R.id.playlist_recycler);
 
-        iv_rewind = (ImageView)findViewById(R.id.iv_rewind);
-        iv_play = (ImageView)findViewById(R.id.iv_play);
-        iv_forward = (ImageView)findViewById(R.id.iv_forward);
-        iv_repeat = (ImageView)findViewById(R.id.iv_repeat);
+        iv_rewind = (ImageView) findViewById(R.id.iv_rewind);
+        iv_play = (ImageView) findViewById(R.id.iv_play);
+        iv_forward = (ImageView) findViewById(R.id.iv_forward);
+        iv_repeat = (ImageView) findViewById(R.id.iv_repeat);
 
-        if(ll_frame2 != null){
+        if (ll_frame2 != null) {
             iv_suffle.setColorFilter(getResources().getColor(R.color.md_grey_400));
             iv_rewind.setColorFilter(getResources().getColor(R.color.color_black));
             iv_play.setColorFilter(getResources().getColor(R.color.color_black));
@@ -117,13 +130,13 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
 
         }
 
-        ll_share = (LinearLayout)findViewById(R.id.ll_share);
+        ll_share = (LinearLayout) findViewById(R.id.ll_share);
 
         mHandler = new Handler();
 
         loadData();
 
-        if(recycler != null) {
+        if (recycler != null) {
             adapter = new PlayListViewRecyclerAdapter(this, posts);
             recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recycler.setAdapter(adapter);
@@ -131,60 +144,48 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             loadAdFragment(new ShowAdFragment());
         }
 
+        if (ll_share != null)
+            ll_share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Share to Social Media
 
-        if(ll_share != null)
-        ll_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Share to Social Media
-
-                Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.country7);
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("image/jpeg");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                String path = MediaStore.Images.Media.insertImage(getContentResolver(),
-                        icon, "Title", null);
-                Uri imageUri =  Uri.parse(path);
-                share.putExtra(Intent.EXTRA_STREAM, imageUri);
-                startActivity(Intent.createChooser(share, "Share Image"));
-            }
-        });
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.country7);
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("image/jpeg");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                    String path = MediaStore.Images.Media.insertImage(getContentResolver(),
+                            icon, "Title", null);
+                    Uri imageUri = Uri.parse(path);
+                    share.putExtra(Intent.EXTRA_STREAM, imageUri);
+                    startActivity(Intent.createChooser(share, "Share Image"));
+                }
+            });
 
         viewPager = (ViewPager) findViewById(R.id.image_view_pager);
         frameLayoutTextAnimation = findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = findViewById(R.id.view_pager_frame_layout);
-        if(viewPager != null) {
+        if (viewPager != null) {
 
             //chaning the landscape mode to either animation or viewpager mode.
-                frameLayoutTextAnimation.setVisibility(View.VISIBLE);
-                frameLayoutViewPager.setVisibility(View.GONE);
+            frameLayoutTextAnimation.setVisibility(View.VISIBLE);
+            frameLayoutViewPager.setVisibility(View.GONE);
 
-        }
-
-        ImageView imageView = findViewById(R.id.advertisementImage);
-        if(imageView != null) {
-            Glide.with(PlayListDetaildViewActivity.this).load("http://www.bloggs74.com/wp-content/uploads/resadv251.jpg?39a0e9").into(imageView);
         }
 
         TextView scroll_line = findViewById(R.id.scrolling_line);
-        if(scroll_line != null){
+        if (scroll_line != null) {
             Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
             scroll_line.setTypeface(fontBold);
             scroll_line.setSelected(true);
-        }
-
-        TextView tv = findViewById(R.id.advertisementText);
-        if(tv != null) {
-            Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-            tv.setTypeface(fontRegular);
         }
 
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         textView = findViewById(R.id.breakingNewstext);
 
         //this is for landscape textviews
-        if(textView != null) {
+        if (textView != null) {
 
             textView.setTypeface(fontBold);
 
@@ -206,9 +207,9 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d("Inside", "postDelayed"+String.valueOf(i));
-                            if(i==3)
-                                i=0;
+                            Log.d("Inside", "postDelayed" + String.valueOf(i));
+                            if (i == 3)
+                                i = 0;
                             textView.startAnimation(zoomIn);
                             textView.setText(posts.get(1).getTexts().get(i++));
                             //start your activity here
@@ -226,7 +227,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         }
 
         // show or hide Ad Fragment in portrait mode
-        if(frameShowAdd != null) {
+        if (frameShowAdd != null) {
             FragmentManager fm = getFragmentManager();
             addShowHideListener(fm.findFragmentById(R.id.frameShowAdd), true);
 
@@ -236,20 +237,20 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         }
 
 
-        if(ll_forward != null && ll_rewind != null){
+        if (ll_forward != null && ll_rewind != null) {
             ll_forward.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!isSuffleEnabled){
+                    if (!isSuffleEnabled) {
                         int currentPosition = adapter.getCurrentItemSelectedPosition();
-                        adapter.itemClicked(currentPosition+1);
-                        recycler.smoothScrollToPosition(currentPosition+1);
+                        adapter.itemClicked(currentPosition + 1);
+                        recycler.smoothScrollToPosition(currentPosition + 1);
                     } else {
                         // get random positions
                         Random rand = new Random();
                         int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
                         int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-                        if(currentPositionAdapter == currentPosition){
+                        if (currentPositionAdapter == currentPosition) {
                             currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
                         }
                         adapter.itemClicked(currentPosition);
@@ -261,18 +262,18 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             ll_rewind.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!isSuffleEnabled){
+                    if (!isSuffleEnabled) {
                         int currentPosition = adapter.getCurrentItemSelectedPosition();
-                        adapter.itemClicked(currentPosition-1);
-                        if(currentPosition != 0){
-                            recycler.smoothScrollToPosition(currentPosition-1);
+                        adapter.itemClicked(currentPosition - 1);
+                        if (currentPosition != 0) {
+                            recycler.smoothScrollToPosition(currentPosition - 1);
                         }
                     } else {
                         // get random positions
                         Random rand = new Random();
                         int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
                         int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-                        if(currentPositionAdapter == currentPosition){
+                        if (currentPositionAdapter == currentPosition) {
                             currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
                         }
                         adapter.itemClicked(currentPosition);
@@ -282,11 +283,11 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             });
         }
 
-        if(ll_suffle != null){
+        if (ll_suffle != null) {
             ll_suffle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(isSuffleEnabled){
+                    if (isSuffleEnabled) {
                         iv_suffle.setColorFilter(getResources().getColor(R.color.md_grey_400));
                         isSuffleEnabled = false;
                     } else {
@@ -298,14 +299,14 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             });
         }
 
-        if(ll_play != null){
+        if (ll_play != null) {
             ll_play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!isPlayEnabled) {
+                    if (!isPlayEnabled) {
                         isPlayEnabled = true;
                         iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_pause));
-                        if(FragmentImage.frameLayoutViewPager.getVisibility() == View.VISIBLE)
+                        if (FragmentImage.frameLayoutViewPager.getVisibility() == View.VISIBLE)
                             FragmentImage.playView.performClick();
                         else
                             FragmentImage.play.performClick();
@@ -313,7 +314,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                     } else {
                         isPlayEnabled = false;
                         iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_play));
-                        if(FragmentImage.frameLayoutViewPager.getVisibility() == View.VISIBLE)
+                        if (FragmentImage.frameLayoutViewPager.getVisibility() == View.VISIBLE)
                             FragmentImage.pauseView.performClick();
                         else
                             FragmentImage.pause.performClick();
@@ -322,7 +323,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             });
         }
 
-        if(ll_repeat != null){
+        if (ll_repeat != null) {
             ll_repeat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -334,9 +335,10 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         }
     }
 
+
     private void addShowHideListener(Fragment fragment, boolean isShowAdd) {
 
-        if(isShowAdd){
+        if (isShowAdd) {
             frameShowAdd.setVisibility(View.VISIBLE);
             // dynamically set weight for recycler view , if add is not their
             LinearLayout.LayoutParams lay = (LinearLayout.LayoutParams) recycler.getLayoutParams();
@@ -408,17 +410,17 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         text3.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
         text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
 
-        PlayListModel p1 = new PlayListModel("0",image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p2 = new PlayListModel("1",image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p3 = new PlayListModel("2",image3, head3, view3, likes3, comments3, text3, false);
+        PlayListModel p1 = new PlayListModel("0", image1, head1, view1, likes1, comments1, text1, false);
+        PlayListModel p2 = new PlayListModel("1", image2, head2, view2, likes2, comments2, text2, false);
+        PlayListModel p3 = new PlayListModel("2", image3, head3, view3, likes3, comments3, text3, false);
 
-        PlayListModel p4 = new PlayListModel("0",image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p5 = new PlayListModel("1",image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p6 = new PlayListModel("2",image3, head3, view3, likes3, comments3, text3, false);
+        PlayListModel p4 = new PlayListModel("0", image1, head1, view1, likes1, comments1, text1, false);
+        PlayListModel p5 = new PlayListModel("1", image2, head2, view2, likes2, comments2, text2, false);
+        PlayListModel p6 = new PlayListModel("2", image3, head3, view3, likes3, comments3, text3, false);
 
-        PlayListModel p7 = new PlayListModel("0",image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p8 = new PlayListModel("1",image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p9 = new PlayListModel("2",image3, head3, view3, likes3, comments3, text3, false);
+        PlayListModel p7 = new PlayListModel("0", image1, head1, view1, likes1, comments1, text1, false);
+        PlayListModel p8 = new PlayListModel("1", image2, head2, view2, likes2, comments2, text2, false);
+        PlayListModel p9 = new PlayListModel("2", image3, head3, view3, likes3, comments3, text3, false);
 
         posts.add(p1);
         listPlaylistItemPositions.add(0);
@@ -446,7 +448,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         Fragment imgFragment = new FragmentImage();
         Bundle bundle = new Bundle();
         bundle.putString("image", posts.get(0).getImage());
-        bundle.putString("post_id","0");
+        bundle.putString("post_id", "0");
         imgFragment.setArguments(bundle);
         // create a FragmentManager
         //FragmentManager fm = getFragmentManager();
@@ -456,7 +458,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public void loadFragment(Fragment fragment1, int position){
+    public void loadFragment(Fragment fragment1, int position) {
         // create a FragmentManager
         FragmentManager fm = getFragmentManager();
         // create a FragmentTransaction to begin the transaction and replace the Fragment
@@ -472,10 +474,9 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         // code here to show dialog
-        if(getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         else
             finish();
@@ -494,17 +495,17 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         }
     }
 
-    public void goToNext(){
-        if(!isSuffleEnabled){
+    public void goToNext() {
+        if (!isSuffleEnabled) {
             int currentPosition = adapter.getCurrentItemSelectedPosition();
-            adapter.itemClicked(currentPosition+1);
-            recycler.smoothScrollToPosition(currentPosition+1);
+            adapter.itemClicked(currentPosition + 1);
+            recycler.smoothScrollToPosition(currentPosition + 1);
         } else {
             // get random positions
             Random rand = new Random();
             int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
             int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-            if(currentPositionAdapter == currentPosition){
+            if (currentPositionAdapter == currentPosition) {
                 currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
             }
             adapter.itemClicked(currentPosition);
@@ -512,19 +513,19 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
         }
     }
 
-    public void goToPrevious(){
-        if(!isSuffleEnabled){
+    public void goToPrevious() {
+        if (!isSuffleEnabled) {
             int currentPosition = adapter.getCurrentItemSelectedPosition();
-            adapter.itemClicked(currentPosition-1);
-            if(currentPosition != 0){
-                recycler.smoothScrollToPosition(currentPosition-1);
+            adapter.itemClicked(currentPosition - 1);
+            if (currentPosition != 0) {
+                recycler.smoothScrollToPosition(currentPosition - 1);
             }
         } else {
             // get random positions
             Random rand = new Random();
             int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
             int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-            if(currentPositionAdapter == currentPosition){
+            if (currentPositionAdapter == currentPosition) {
                 currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
 
             }

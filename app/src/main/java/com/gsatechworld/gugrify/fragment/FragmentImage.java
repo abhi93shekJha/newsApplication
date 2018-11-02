@@ -22,6 +22,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
@@ -49,6 +52,7 @@ public class FragmentImage extends Fragment {
     private ImageView dots[];
     boolean first = true;
     int i=0;
+    InterstitialAd mInterstitialAd;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,15 +63,49 @@ public class FragmentImage extends Fragment {
         final ArrayList<String> texts = (ArrayList<String>) getPostDetailsFromServer(post_id);
         animateHandler = new Handler();
 
+
+        //interstitial advertisement
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });//end of advertisement
+
+
         postDetailFragmentImage = view.findViewById(R.id.fragment_image_layout);
         animatedTextView = view.findViewById(R.id.breakingNewstextWithAnimation);
         if(getActivity() != null) {
             animFadeOut = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
+            animFadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Log.d("Yes", "animation ended");
+                    pausePlayLayout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
             animFadeOut1 = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_out);
         }
 
+
         frameLayoutTextAnimation = view.findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = view.findViewById(R.id.view_pager_frame_layout);
+
+
 
         //this block of code is for pausing and play the visible animations (for text animations)
         pausePlayLayout = view.findViewById(R.id.pausePlayNextPreviousLayout);
@@ -111,8 +149,10 @@ public class FragmentImage extends Fragment {
         }); //this is the end of showing play and pause buttons (for text animations)
 
 
+
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity().getApplicationContext());
         mHandler = new Handler();
+
 
         //setting animation for text
         Typeface fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
@@ -160,6 +200,8 @@ public class FragmentImage extends Fragment {
 
         } // till here I have set the text animation
 
+
+
         //pausing and playing the animation (for textviews)
         previous = view.findViewById(R.id.previousButton);
         pause = view.findViewById(R.id.pauseButton);
@@ -179,6 +221,12 @@ public class FragmentImage extends Fragment {
                 animateHandler.removeCallbacksAndMessages(null);
                 pausePlayLayout.setVisibility(View.VISIBLE);
 
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
+
             }
         });
 
@@ -196,9 +244,10 @@ public class FragmentImage extends Fragment {
                 pause.setVisibility(View.VISIBLE);
 
                 pausePlayLayout.startAnimation(animFadeOut);
-                pausePlayLayout.setVisibility(View.GONE);
             }
         }); // pausing and playing stops here
+
+
 
 
         //here is the code for setting viewpager
@@ -268,6 +317,9 @@ public class FragmentImage extends Fragment {
             }
         }); //till here I have set the viewpager
 
+
+
+
         //this block of code pauses and plays the viewpager images
         if(getActivity() != null)
             animFadeIn1 = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.pause_play_fade_in);
@@ -277,6 +329,8 @@ public class FragmentImage extends Fragment {
 
             }
         }); //this is the end of showing play and pause buttons (for image viewpager)
+
+
 
         //pausing and playing the animation (for viewpager)
         previousView = view.findViewById(R.id.previousButton1);
@@ -296,6 +350,12 @@ public class FragmentImage extends Fragment {
                 b.animateHandler.removeCallbacksAndMessages(null);
                 pausePlayLayout1.setVisibility(View.VISIBLE);
 
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
+
             }
         });
         playView.setOnClickListener(new View.OnClickListener() {
@@ -308,10 +368,13 @@ public class FragmentImage extends Fragment {
                 linearLayout.setVisibility(View.VISIBLE);
                 viewPager.startAutoScroll();
 
-                pausePlayLayout1.startAnimation(animFadeOut1);
+                pausePlayLayout1.startAnimation(animFadeOut);
                 pausePlayLayout1.setVisibility(View.GONE);
             }
         }); // playing and pausing animation for viewpager ends here
+
+
+
 
         //code for changing to landscape mode
         ImageView image = view.findViewById(R.id.enlarge);
@@ -322,13 +385,14 @@ public class FragmentImage extends Fragment {
             }
         }); //changes the activity to landscape mode
 
+
+
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     List<String> getPostDetailsFromServer(String post_id){

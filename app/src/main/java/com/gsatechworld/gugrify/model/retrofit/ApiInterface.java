@@ -1,7 +1,9 @@
 package com.gsatechworld.gugrify.model.retrofit;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
@@ -14,5 +16,8 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/latest_news.php")
     Call<LanguageResponse> getLatestNews(@Query("city") String city);
+
+    @POST("gugrify_news/API/post_news.php")
+    Call<ReporterPost> getLatestNews(@Body ReporterPost post);
 
 }

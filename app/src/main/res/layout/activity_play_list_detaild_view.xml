@@ -3,56 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:weightSum="1">
+
         <FrameLayout
-            android:layout_weight="0.31"
             android:id="@+id/frame1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="0.31"
             android:background="@drawable/country1" />
+
         <LinearLayout
-            android:layout_weight="0.08"
             android:id="@+id/frame3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_below="@+id/frame1"
+            android:layout_weight="0.08"
             android:background="@color/orange_light"
             android:orientation="horizontal"
             android:weightSum="1">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/playlistAdView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvPlalistTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:text="PlayList Title" />
-
-                <TextView
-                    android:id="@+id/tvPlayListSubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Gugrify" />
-            </LinearLayout>
+                android:layout_weight="0.1"
+                ads:adSize="SMART_BANNER"
+                ads:adUnitId="ca-app-pub-3940256099942544/6300978111"></com.google.android.gms.ads.AdView>
 
             <LinearLayout
                 android:id="@+id/ll_share"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center|end"
+                android:layout_weight="0.9"
                 android:gravity="center"
-                android:layout_weight="0.2"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -65,29 +54,29 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:layout_weight="0.45"
             android:id="@+id/playlist_recycler"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_above="@+id/frame2"
-            android:layout_below="@+id/frame3"></android.support.v7.widget.RecyclerView>
+            android:layout_below="@+id/frame3"
+            android:layout_weight="0.45"></android.support.v7.widget.RecyclerView>
 
         <FrameLayout
-            android:visibility="gone"
-            android:layout_weight="0.08"
             android:id="@+id/frameShowAdd"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_above="@+id/frame2"
-            android:orientation="horizontal"></FrameLayout>
+            android:layout_weight="0.08"
+            android:orientation="horizontal"
+            android:visibility="gone"></FrameLayout>
 
         <LinearLayout
-            android:layout_weight="0.08"
             android:id="@+id/frame2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
+            android:layout_weight="0.08"
             android:orientation="horizontal"
             android:weightSum="5">
 
@@ -111,8 +100,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_weight="0.2"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -146,8 +135,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_weight="0.2"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -163,8 +152,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_weight="0.2"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -180,9 +169,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_weight="0.2"
+                        android:gravity="center"
                         android:orientation="horizontal">
+
                         <ImageView
                             android:id="@+id/iv_repeat"
                             android:layout_width="30dp"

@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -59,7 +60,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class ReporterPostActivity extends AppCompatActivity implements View.OnClickListener{
+public class ReporterPostActivity extends AppCompatActivity implements View.OnClickListener {
     List<String> languages, categories;
     TableLayout twelveImages;
     LinearLayout twelveTexts;
@@ -67,10 +68,20 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
     static String categroySelected;
     final private int REQUEST_CODE_ASK_PERMISSIONS_CAMERA = 100;
     final private int REQUEST_CODE_ASK_PERMISSIONS_EXTERNAL_STORAGE = 200;
-    protected static final int GALLERY_PICTURE=0, CAMERA_REQUEST=1;
+    protected static final int GALLERY_PICTURE = 0, CAMERA_REQUEST = 1;
     static ImageView forEverywhereImage;
+    int selectedImage;
+    boolean[] imagesPresent;
     Toolbar toolbar;
-    ImageView image0, image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, image11, image12;
+    ImageView image0, image3, image4, image5, image6, image7, image8, image9, image10, image11, image12;
+    EditText editText1, editText2, editText3, editText4, editText5, editText6, editText7, editText8, editText9, editText10, editText11, editText12;
+    EditText newsHeadline, newsBrief, newsDescription;
+
+    //variables for post request
+    String[] imageArray, textsArray;
+    String mainImage;
+    String text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11, text12, headline, description, brief;
+
     private Intent pictureActionIntent = null;
     Bitmap bitmap;
     String selectedImagePath, encodedBase64;
@@ -84,89 +95,73 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         toolbar.setTitle("Gugrify");
         setSupportActionBar(toolbar);
 
-        checkIfExternalStoragePresent();
+        textsArray = new String[12];
+        imageArray = new String[11];
+        imagesPresent = new boolean[11];
+
         languages = new ArrayList<>();
         categories = new ArrayList<>();
         twelveImages = findViewById(R.id.imageListTableLayout);
         twelveTexts = findViewById(R.id.editTextListLinearLayout);
         fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 
-        Button upload0 = findViewById(R.id.uploadImage0);
-        Button upload1 = findViewById(R.id.uploadImage1);
-        Button upload2 = findViewById(R.id.uploadImage2);
-        Button upload3 = findViewById(R.id.uploadImage3);
-        Button upload4 = findViewById(R.id.uploadImage4);
-        Button upload5 = findViewById(R.id.uploadImage5);
-        Button upload6 = findViewById(R.id.uploadImage6);
-        Button upload7 = findViewById(R.id.uploadImage7);
-        Button upload8 = findViewById(R.id.uploadImage8);
-        Button upload9 = findViewById(R.id.uploadImage9);
-        Button upload10 = findViewById(R.id.uploadImage10);
-        Button upload11 = findViewById(R.id.uploadImage11);
-        Button upload12 = findViewById(R.id.uploadImage12);
+        newsHeadline = findViewById(R.id.newsHeadline);
+        newsBrief = findViewById(R.id.newsBrief);
+        editText1 = findViewById(R.id.editText1);
+        editText2 = findViewById(R.id.editText2);
+        editText3 = findViewById(R.id.editText3);
+        editText4 = findViewById(R.id.editText4);
+        editText5 = findViewById(R.id.editText5);
+        editText6 = findViewById(R.id.editText6);
+        editText7 = findViewById(R.id.editText7);
+        editText8 = findViewById(R.id.editText8);
+        editText9 = findViewById(R.id.editText9);
+        editText10 = findViewById(R.id.editText10);
+        editText11 = findViewById(R.id.editText11);
+        editText12 = findViewById(R.id.editText12);
 
-        upload0.setTypeface(fontRegular);
-        upload1.setTypeface(fontRegular);
-        upload2.setTypeface(fontRegular);
-        upload3.setTypeface(fontRegular);
-        upload4.setTypeface(fontRegular);
-        upload5.setTypeface(fontRegular);
-        upload6.setTypeface(fontRegular);
-        upload7.setTypeface(fontRegular);
-        upload8.setTypeface(fontRegular);
-        upload9.setTypeface(fontRegular);
-        upload10.setTypeface(fontRegular);
-        upload11.setTypeface(fontRegular);
-        upload12.setTypeface(fontRegular);
-
-        upload0.setOnClickListener(this);
-        upload1.setOnClickListener(this);
-        upload2.setOnClickListener(this);
-        upload3.setOnClickListener(this);
-        upload4.setOnClickListener(this);
-        upload5.setOnClickListener(this);
-        upload6.setOnClickListener(this);
-        upload7.setOnClickListener(this);
-        upload8.setOnClickListener(this);
-        upload9.setOnClickListener(this);
-        upload10.setOnClickListener(this);
-        upload11.setOnClickListener(this);
-        upload12.setOnClickListener(this);
+        Button btn_news_submit = findViewById(R.id.btn_news_submit);
 
         image0 = findViewById(R.id.news_main_image);
-        image1 = findViewById(R.id.image1);
-        image2 = findViewById(R.id.image2);
+        image0.setOnClickListener(this);
+        image0.setTag(0);
         image3 = findViewById(R.id.image3);
+        image3.setOnClickListener(this);
+        image3.setTag(1);
         image4 = findViewById(R.id.image4);
+        image4.setOnClickListener(this);
+        image4.setTag(2);
         image5 = findViewById(R.id.image5);
+        image5.setOnClickListener(this);
+        image5.setTag(3);
         image6 = findViewById(R.id.image6);
+        image6.setOnClickListener(this);
+        image6.setTag(4);
         image7 = findViewById(R.id.image7);
+        image7.setOnClickListener(this);
+        image7.setTag(5);
         image8 = findViewById(R.id.image8);
+        image8.setOnClickListener(this);
+        image8.setTag(6);
         image9 = findViewById(R.id.image9);
+        image9.setOnClickListener(this);
+        image9.setTag(7);
         image10 = findViewById(R.id.image10);
+        image10.setOnClickListener(this);
+        image10.setTag(8);
         image11 = findViewById(R.id.image11);
+        image11.setOnClickListener(this);
+        image11.setTag(9);
         image12 = findViewById(R.id.image12);
-
-        upload0.setTag(image0);
-        upload1.setTag(image1);
-        upload2.setTag(image2);
-        upload3.setTag(image3);
-        upload4.setTag(image4);
-        upload5.setTag(image5);
-        upload6.setTag(image6);
-        upload7.setTag(image7);
-        upload8.setTag(image8);
-        upload9.setTag(image9);
-        upload10.setTag(image10);
-        upload11.setTag(image11);
-        upload12.setTag(image12);
+        image12.setOnClickListener(this);
+        image12.setTag(10);
 
         //Spinner for input type
-        Spinner spinner = findViewById(R.id.newsTypeSelectionSpinner);
+        final Spinner spinner = findViewById(R.id.newsTypeSelectionSpinner);
         languages.add("Texts");
         languages.add("Images");
         languages.add("Select");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages){
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages) {
 
             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -189,18 +184,16 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                  if(languages.get(i).equals("Select")){
-                      twelveImages.setVisibility(View.GONE);
-                      twelveTexts.setVisibility(View.GONE);
-                  }
-                  else if(languages.get(i).equals("Texts")){
-                      twelveImages.setVisibility(View.GONE);
-                      twelveTexts.setVisibility(View.VISIBLE);
-                  }
-                  else {
-                      twelveImages.setVisibility(View.VISIBLE);
-                      twelveTexts.setVisibility(View.GONE);
-                  }
+                if (languages.get(i).equals("Select")) {
+                    twelveImages.setVisibility(View.GONE);
+                    twelveTexts.setVisibility(View.GONE);
+                } else if (languages.get(i).equals("Texts")) {
+                    twelveImages.setVisibility(View.GONE);
+                    twelveTexts.setVisibility(View.VISIBLE);
+                } else {
+                    twelveImages.setVisibility(View.VISIBLE);
+                    twelveTexts.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -208,6 +201,26 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
             }
         });
+
+        //button for submitting news
+        btn_news_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!validateCommon())
+                    return;
+                if (spinner.getSelectedItem().toString().equalsIgnoreCase("Texts")) {
+                    if (!validateTexts())
+                        return;
+                } else {
+                    for (int i = 0; i < imagesPresent.length; i++) {
+                        if (!imagesPresent[i]) {
+                            Toast.makeText(ReporterPostActivity.this, "Please insert all the images.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                }
+            }
+        });//end of submitting news
 
         //Spinner for category (has to be fetched from API)
         Spinner categoriesSpinner = findViewById(R.id.categorySelectionSpinner);
@@ -217,7 +230,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         categories.add("Entertainment");
         categories.add("Education");
         categories.add("Select");
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories){
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories) {
 
             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -240,10 +253,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(categories.get(i).equals("Select")){
+                if (categories.get(i).equals("Select")) {
 
-                }
-                else {
+                } else {
                     categroySelected = categories.get(i);
                 }
             }
@@ -257,11 +269,12 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        forEverywhereImage = (ImageView) view.getTag();
+        forEverywhereImage = (ImageView) view;
+        selectedImage = (int) view.getTag();
         startDialog();
     }
 
-    void startDialog(){
+    void startDialog() {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(ReporterPostActivity.this);
         myAlertDialog.setTitle("Upload Pictures Option");
         myAlertDialog.setMessage("How do you want to set your picture?");
@@ -284,8 +297,8 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         /*File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));*/
-                            // Open your camera here.
-                            startActivityForResult(intent, CAMERA_REQUEST);
+                        // Open your camera here.
+                        startActivityForResult(intent, CAMERA_REQUEST);
                     }
                 });
         myAlertDialog.show();
@@ -300,9 +313,14 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         if (resultCode == RESULT_OK && requestCode == CAMERA_REQUEST) {
             try {
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                Bitmap convertedImage = getResizedBitmap(thumbnail, 400);
+                Bitmap convertedImage = getResizedBitmap(thumbnail, 600);
+
+                //setting into image Array to make a post
+                imageArray[selectedImage] = getStringImage(convertedImage);
+                imagesPresent[selectedImage] = true;
+
                 forEverywhereImage.setImageBitmap(convertedImage);
-                if(checkIfExternalStoragePresent())
+                if (checkIfExternalStoragePresent())
                     saveImage(thumbnail);
                 else {
                     String savedPath = saveToInternalStorage(thumbnail);
@@ -321,10 +339,15 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                 Uri contentURI = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
-                    Bitmap converetdImage = getResizedBitmap(bitmap, 400);
+                    Bitmap convertedImage = getResizedBitmap(bitmap, 600);
+
+                    //setting into image Array to make a post
+                    imageArray[selectedImage] = getStringImage(convertedImage);
+                    imagesPresent[selectedImage] = true;
+
 //                    String path = saveImage(bitmap);
                     Toast.makeText(ReporterPostActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
-                    forEverywhereImage.setImageBitmap(converetdImage);
+                    forEverywhereImage.setImageBitmap(convertedImage);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -337,7 +360,6 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
-
 
     //converting image to Base64Encode
     private String getBase64Encode(String path) {
@@ -365,7 +387,6 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
         return encodedBase64;
     }
-
 
     public String saveImage(Bitmap myBitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -400,9 +421,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         int width = image.getWidth();
         int height = image.getHeight();
 
-        Log.d("Original pixels are", String.valueOf(width)+" "+ String.valueOf(height));
+        Log.d("Original pixels are", String.valueOf(width) + " " + String.valueOf(height));
 
-        float bitmapRatio = (float)width / (float) height;
+        float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = maxSize;
             height = (int) (width / bitmapRatio);
@@ -410,31 +431,27 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
             height = maxSize;
             width = (int) (height * bitmapRatio);
         }
-        Log.d("New pixels are", String.valueOf(width)+" "+ String.valueOf(height));
+        Log.d("New pixels are", String.valueOf(width) + " " + String.valueOf(height));
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
-
 
     public boolean checkIfExternalStoragePresent() {
         Boolean isSDPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
         Boolean isSDSupportedDevice = Environment.isExternalStorageRemovable();
 
-        if(isSDSupportedDevice && isSDPresent)
-        {
+        if (isSDSupportedDevice && isSDPresent) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage){
+    private String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath=new File(directory,System.currentTimeMillis()+"profile.jpg");
+        File mypath = new File(directory, System.currentTimeMillis() + "profile.jpg");
 
         FileOutputStream fos = null;
         try {
@@ -451,6 +468,127 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
             }
         }
         return directory.getAbsolutePath();
+    }
+
+    public boolean validateCommon() {
+        headline = newsHeadline.getText().toString();
+        brief = newsBrief.getText().toString();
+        description = newsDescription.getText().toString();
+        if (headline.trim().isEmpty()) {
+            newsHeadline.setError("Empty");
+            newsHeadline.setFocusable(true);
+            return false;
+        }
+        if (brief.trim().isEmpty()) {
+            newsBrief.setError("Empty");
+            newsBrief.setFocusable(true);
+            return false;
+        }
+        if (description.trim().isEmpty()) {
+            newsDescription.setError("Empty");
+            newsDescription.setFocusable(true);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateTexts() {
+
+        text1 = editText1.getText().toString();
+        textsArray[0] = text1;
+        text2 = editText2.getText().toString();
+        textsArray[1] = text2;
+        text3 = editText3.getText().toString();
+        textsArray[2] = text3;
+        text4 = editText4.getText().toString();
+        textsArray[3] = text4;
+        text5 = editText5.getText().toString();
+        textsArray[4] = text5;
+        text6 = editText6.getText().toString();
+        textsArray[5] = text6;
+        text7 = editText7.getText().toString();
+        textsArray[6] = text7;
+        text8 = editText8.getText().toString();
+        textsArray[7] = text8;
+        text9 = editText9.getText().toString();
+        textsArray[8] = text9;
+        text10 = editText10.getText().toString();
+        textsArray[9] = text10;
+        text11 = editText11.getText().toString();
+        textsArray[10] = text11;
+        text12 = editText12.getText().toString();
+        textsArray[11] = text12;
+
+        if (text1.trim().isEmpty()) {
+            editText1.setError("Empty");
+            editText1.setFocusable(true);
+            return false;
+        }
+        if (text2.trim().isEmpty()) {
+            editText2.setError("Empty");
+            editText2.setFocusable(true);
+            return false;
+        }
+        if (text3.trim().isEmpty()) {
+            editText3.setError("Empty");
+            editText3.setFocusable(true);
+            return false;
+        }
+        if (text4.trim().isEmpty()) {
+            editText4.setError("Empty");
+            editText4.setFocusable(true);
+            return false;
+        }
+        if (text5.trim().isEmpty()) {
+            editText5.setError("Empty");
+            editText5.setFocusable(true);
+            return false;
+        }
+        if (text6.trim().isEmpty()) {
+            editText6.setError("Empty");
+            editText6.setFocusable(true);
+            return false;
+        }
+        if (text7.trim().isEmpty()) {
+            editText7.setError("Empty");
+            editText7.setFocusable(true);
+            return false;
+        }
+        if (text8.trim().isEmpty()) {
+            editText8.setError("Empty");
+            editText8.setFocusable(true);
+            return false;
+        }
+        if (text9.trim().isEmpty()) {
+            editText9.setError("Empty");
+            editText9.setFocusable(true);
+            return false;
+        }
+        if (text10.trim().isEmpty()) {
+            editText10.setError("Empty");
+            editText10.setFocusable(true);
+            return false;
+        }
+        if (text11.trim().isEmpty()) {
+            editText11.setError("Empty");
+            editText11.setFocusable(true);
+            return false;
+        }
+        if (text12.trim().isEmpty()) {
+            editText12.setError("Empty");
+            editText12.setFocusable(true);
+            return false;
+        }
+        return true;
+    }
+
+    //Bitmap to Base64
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
     }
 
 }

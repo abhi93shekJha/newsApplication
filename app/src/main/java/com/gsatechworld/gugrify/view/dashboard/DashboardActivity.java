@@ -432,9 +432,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+          if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
