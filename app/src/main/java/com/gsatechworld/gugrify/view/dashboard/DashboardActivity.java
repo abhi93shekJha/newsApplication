@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -29,43 +30,58 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.LatestNewItemModel;
 import com.gsatechworld.gugrify.model.NavItemModel;
 import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
 import com.gsatechworld.gugrify.model.SectionDataModel;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.model.retrofit.CityResponse;
+import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.view.ReporterProfile;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DashboardActivity extends AppCompatActivity implements OnRecyclerItemClickListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
 
     private AutoScrollViewPager viewPager;
     private EndlessScrollListener scrollListener;
     private ViewPagerAdapter mAdapter;
     private LinearLayoutManager l;
     RecyclerView recyclerView;
-    private int dotscount;
-    int count=0;
+    private boolean isFinished = false;
+    public static GetMainAdvertisement.Result result;
+    private DrawerLayout mainLayout;
+    int count = 0;
     private ImageView[] dots;
     private RecyclerViewDataAdapter adapter;
     private ImageView iv_place;
+    Dialog dialog;
+    public int length;
+    ProgressBar progressBar;
 
     private MediaPlayer mediaPlayer;
 
     private MediaController mc;
 
-  /*  ArrayAdapter<String> mAdapterSearch;
-    ListView mListView;*/
-    private  SwipeRefreshLayout mSwipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -90,6 +106,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             View view = getSupportActionBar().getCustomView();
         }
 
+        mainLayout = findViewById(R.id.drawer_layout);
+        progressBar = findViewById(R.id.progressBar);
+
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -100,7 +119,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         //Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo1, getTheme());
         //toggle.setHomeAsUpIndicator(drawable);
 
-        iv_place = (ImageView)findViewById(R.id.iv_place);
+        iv_place = (ImageView) findViewById(R.id.iv_place);
         iv_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,8 +156,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         createDummyData();
 
-        showVideoDialog();
-
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         adapter = new RecyclerViewDataAdapter(allSampleData, this);
@@ -148,6 +165,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         recyclerView.setLayoutManager(l);
 
         recyclerView.setAdapter(adapter);
+        showVideoDialog();
 //        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 
         scrollListener = new EndlessScrollListener(l) {
@@ -184,6 +202,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+
     }
 
     private ArrayList<NavItemModel> getNavItemList() {
@@ -209,7 +228,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     private ArrayList<PlayListItemModel> createPlaylistData() {
         ArrayList<PlayListItemModel> playListItemModelArrayList = new ArrayList<>();
-        playListItemModelArrayList.add(new PlayListItemModel("99 +", "", "aaaaa", R.drawable.food6));
+        playListItemModelArrayList.add(new PlayListItemModel("99 +", "", "aaaaa", R.drawable.road1));
 //        playListItemModelArrayList.add(new PlayListItemModel("25", "", "bbbbb", R.drawable.food2));
 //        playListItemModelArrayList.add(new PlayListItemModel("10", "", "ccccc", R.drawable.food7));
         playListItemModelArrayList.add(new PlayListItemModel(null, null, null, R.drawable.ic_add));
@@ -240,79 +259,42 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     }
 
     /* For Video*/
-    public void showVideoDialog( ) {
-        final Dialog dialog = new Dialog(DashboardActivity.this,R.style.NewDialog);//android.R.style.Theme_Dialog //android.R.style.Theme_Black_NoTitleBar_Fullscreen
+    public void showVideoDialog() {
+
+        dialog = new Dialog(DashboardActivity.this, R.style.NewDialog);//android.R.style.Theme_Dialog //android.R.style.Theme_Black_NoTitleBar_Fullscreen
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.video_dialog);
-       // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(true);
 
-       // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 //        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
         dialog.show();
 
-        if(dialog.isShowing()){
-            mediaPlayer = MediaPlayer.create(this, R.raw.prologue);
-            mediaPlayer.start();
-        }
-        if (mediaPlayer!= null){
-            mediaPlayer.start();
-        }
-
-//            iv_close.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    mediaPlayer.stop();
-//                    dialog.dismiss();
-//                }
-//            });
-
-            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    mediaPlayer.stop();
-                }
-            });
-
-
-        /*For video Related Work*/
-/*
-        final VideoView videoView =dialog.findViewById(R.id.videoview);
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.samplevideo);
-        videoView.setVideoURI(uri);
-        videoView.requestFocus();
-
-       videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                // TODO Auto-generated method stub
-                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+       /* if (result.getAudio().trim().isEmpty()) {
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
+        } else {
+            if (dialog.isShowing()) {
+                mediaPlayer = MediaPlayer.create(DashboardActivity.this, Uri.parse(result.getAudio().trim()));
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
-                    public void onVideoSizeChanged(MediaPlayer mp,
-                                                   int width, int height) {
-                        mc = new MediaController(DashboardActivity.this);
-                        videoView.setMediaController(mc);
-                        mc.setAnchorView(videoView);
-                        ((ViewGroup) mc.getParent()).removeView(mc);
-                        FragmentLayout frameLayout=dialog.findViewById(R.id.videoViewWrapper);
-                        frameLayout.addView(mc);
-                        mc.setVisibility(View.VISIBLE);
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.start();
                     }
                 });
-                videoView.start();
+                mediaPlayer.setOnBufferingUpdateListener(DashboardActivity.this);
+                mediaPlayer.setOnCompletionListener(DashboardActivity.this);
             }
-        });*/
+        }*/
 
     }
 
     private void createDummyData() {
-//            SectionDataModel dmSingle = new SectionDataModel();
-//            ArrayList<SingleItemModel> singleItemModels = new ArrayList<>();
-//            dmSingle.setAllItemInSection(singleItemModels);
-//            allSampleData.add(dmSingle);
+
         SectionDataModel sectionModel = new SectionDataModel();
         allSampleData.add(sectionModel);
 
@@ -379,7 +361,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_search){
+        if (id == R.id.action_search) {
 
            /* TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
             tvTitle.setVisibility(View.GONE);
@@ -389,8 +371,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
            /* TextView tvTitle = (TextView)toolbar.findViewById(R.id.tvTitle);
             tvTitle.setVisibility(View.GONE);*/
 
-           // Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(DashboardActivity.this,SearchActivity.class));
+            // Toast.makeText(this, "Ashish", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(DashboardActivity.this, SearchActivity.class));
             return true;
         }
         //noinspection SimplifiableIfStatement
@@ -398,7 +380,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             return true;
         }
 
-        if (id == R.id.action_avatar){
+        if (id == R.id.action_avatar) {
             startActivity(new Intent(DashboardActivity.this, ReporterProfile.class));
             return true;
         }
@@ -408,21 +390,24 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     protected void onResume() {
         super.onResume();
-
+        if(isFinished){
+            dialog.show();
+            /*mediaPlayer.seekTo(length);
+            mediaPlayer.start();*/
+        }
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mediaPlayer.stop();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                homeIntent.addCategory(Intent.CATEGORY_HOME);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(homeIntent);
-                finish();
+            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+            homeIntent.addCategory(Intent.CATEGORY_HOME);
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
+            finish();
         }
     }
 
@@ -432,7 +417,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-          if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -454,7 +439,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     }
 
-    public void  loadNextDataFromApi(int page){
+    public void loadNextDataFromApi(int page) {
         Log.d("Load number", String.valueOf(count++));
         l.scrollToPosition(3);
     }
@@ -463,4 +448,33 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        Log.d("Media completed", "True");
+        isFinished = false;
+        dialog.cancel();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("Entered", "OnStop");
+//        length = mediaPlayer.getCurrentPosition();
+        if(!isFinished)
+            isFinished = true;
+//        mediaPlayer.pause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.stop();
+    }
+
 }

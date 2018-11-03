@@ -67,6 +67,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
+
          if (cities.get(position).isSelected() == true){
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.brown));
             holder.tvBrown.setVisibility(View.GONE);

@@ -24,7 +24,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
@@ -37,11 +39,21 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.CityWiseAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
 import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DisplayBreakingNewsActivity extends AppCompatActivity {
     public ArrayList<PostsByCategory> posts = new ArrayList<>();
@@ -53,15 +65,18 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     ImageView pause, play, pauseView, playView;
     public static LinearLayout pausePlayLayout;
     NewsSharedPreferences sharedPreferences;
+    List<CityWiseAdvertisement.Result> results;
     TextView textView;
+    ApiInterface apiService;
     private int dotscount;
     InterstitialAd mInterstitialAd;
     BreakingNewsViewPagerAdapter b;
-    private LinearLayout linearLayout, pausePlayLayout1;
+    private LinearLayout linearLayout, pausePlayLayout1, breaking_ll1;
     private ImageView dots[];
     int i = 0;
     Handler mHandler, animateHandler;
     AdView mAdView;
+    ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +100,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
         }
+
         animateHandler = new Handler();
         animFadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         animFadeOut.setAnimationListener(new Animation.AnimationListener() {
@@ -393,6 +409,65 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                     pausePlayLayout1.setVisibility(View.GONE);
                 }
             }); // playing and pausing animation for viewpager ends here
+
+        //getting Ads of Reporter if not present
+        final FrameLayout frame1 = findViewById(R.id.frame1);
+        final FrameLayout frame2 = findViewById(R.id.frame2);
+        breaking_ll1 = findViewById(R.id.breaking_ll1);
+        progressBar = findViewById(R.id.progressBar);
+        if(results == null){
+            frame1.setVisibility(View.GONE);
+            frame2.setVisibility(View.GONE);
+            breaking_ll1.setVisibility(View.GONE);
+            recycler.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            apiService = ApiClient.getClient().create(ApiInterface.class);
+            Log.d("selected city is", sharedPreferences.getCitySelected());
+            Call<CityWiseAdvertisement> call = apiService.getReporterAdvertisement(sharedPreferences.getCitySelected().toLowerCase());
+
+            call.enqueue(new Callback<CityWiseAdvertisement>() {
+                @Override
+                public void onResponse(Call<CityWiseAdvertisement> call, Response<CityWiseAdvertisement> response) {
+                    CityWiseAdvertisement advertisement = null;
+                    if (response.isSuccessful()) {
+
+                        Log.d("Reached here", "true");
+                        advertisement = response.body();
+                        results = advertisement.getResult();
+
+                        Log.d("Result is", results.get(0).getCity());
+                        Log.d("Result is", results.get(0).getImage());
+
+                        frame1.setVisibility(View.VISIBLE);
+                        frame2.setVisibility(View.VISIBLE);
+                        breaking_ll1.setVisibility(View.VISIBLE);
+                        recycler.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                        frame1.setVisibility(View.VISIBLE);
+                        frame2.setVisibility(View.VISIBLE);
+                        breaking_ll1.setVisibility(View.VISIBLE);
+                        recycler.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CityWiseAdvertisement> call, Throwable t) {
+                    // Log error here since request failed
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                }
+            });
+        }//end of getting ads
 
     }
 

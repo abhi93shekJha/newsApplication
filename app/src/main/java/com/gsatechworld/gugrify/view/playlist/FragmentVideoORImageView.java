@@ -105,7 +105,6 @@ public class FragmentVideoORImageView extends Fragment {
         }
 
 
-
         Typeface fontBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
 
         textView = view.findViewById(R.id.breakingNewstext);

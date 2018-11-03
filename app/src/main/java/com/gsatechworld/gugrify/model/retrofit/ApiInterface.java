@@ -20,4 +20,9 @@ public interface ApiInterface {
     @POST("gugrify_news/API/post_news.php")
     Call<ReporterPost> getLatestNews(@Body ReporterPost post);
 
+    @GET("gugrify_news/API/get_audio.php")
+    Call<GetMainAdvertisement> getMainAdvertisement();
+
+    @GET("gugrify_news/API/get_ads.php")
+    Call<CityWiseAdvertisement> getReporterAdvertisement(@Query("city") String city);
 }
