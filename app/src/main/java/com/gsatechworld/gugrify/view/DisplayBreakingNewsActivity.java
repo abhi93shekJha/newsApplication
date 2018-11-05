@@ -73,7 +73,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     BreakingNewsViewPagerAdapter b;
     private LinearLayout linearLayout, pausePlayLayout1, breaking_ll1;
     private ImageView dots[];
-    int i = 0;
+    int i = 0, adCounter = 0;
     Handler mHandler, animateHandler;
     AdView mAdView;
     ProgressBar progressBar;
@@ -130,17 +130,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         //end of AdMob
 
         mHandler = new Handler();
-        //interstitial advertisement
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-        });//end of advertisement
 
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
@@ -340,12 +329,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                     animateHandler.removeCallbacksAndMessages(null);
                     pausePlayLayout.setVisibility(View.VISIBLE);
 
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    } else {
-                        Log.d("TAG", "The interstitial wasn't loaded yet.");
-                    }
-
                 }
             });
 
@@ -384,12 +367,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
 
                     b.animateHandler.removeCallbacksAndMessages(null);
                     pausePlayLayout1.setVisibility(View.VISIBLE);
-
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    } else {
-                        Log.d("TAG", "The interstitial wasn't loaded yet.");
-                    }
 
                 }
             });

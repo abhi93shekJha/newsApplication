@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:background="@drawable/shape"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/noInternetTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Internet!!"
+        android:gravity="center_horizontal"
+        android:textSize="30sp"
+        android:textColor="@color/black"/>
+    <TextView
+        android:layout_below="@+id/noInternetTitle"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="Please connect to internet"/>
+</RelativeLayout>

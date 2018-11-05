@@ -36,7 +36,7 @@ public class BreakingNewsViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 10;
     }
 
     @Override

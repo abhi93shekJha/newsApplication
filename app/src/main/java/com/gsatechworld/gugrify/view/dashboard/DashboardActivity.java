@@ -1,12 +1,15 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -45,13 +48,22 @@ import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.ReporterProfile;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -76,6 +88,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     Dialog dialog;
     public int length;
     ProgressBar progressBar;
+    Dialog cancelDialog;
+    File file;
 
     private MediaPlayer mediaPlayer;
 
@@ -118,6 +132,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         toggle.setDrawerIndicatorEnabled(true);
         //Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.mipmap.logo1, getTheme());
         //toggle.setHomeAsUpIndicator(drawable);
+
 
         iv_place = (ImageView) findViewById(R.id.iv_place);
         iv_place.setOnClickListener(new View.OnClickListener() {
@@ -266,30 +281,26 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         dialog.setContentView(R.layout.video_dialog);
         // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
         // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 //        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
+
         dialog.show();
 
-       /* if (result.getAudio().trim().isEmpty()) {
+        if (result.getAudio().trim().isEmpty()) {
             dialog.setCancelable(true);
             dialog.setCanceledOnTouchOutside(true);
         } else {
             if (dialog.isShowing()) {
-                mediaPlayer = MediaPlayer.create(DashboardActivity.this, Uri.parse(result.getAudio().trim()));
-                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mp.start();
-                    }
-                });
+                mediaPlayer = new MediaPlayer();
+                new PlayMainAdAsync().execute("http://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_1MG.mp3");
                 mediaPlayer.setOnBufferingUpdateListener(DashboardActivity.this);
                 mediaPlayer.setOnCompletionListener(DashboardActivity.this);
             }
-        }*/
+        }
 
     }
 
@@ -390,10 +401,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     protected void onResume() {
         super.onResume();
-        if(isFinished){
+        if (isFinished) {
             dialog.show();
-            /*mediaPlayer.seekTo(length);
-            mediaPlayer.start();*/
+            mediaPlayer.seekTo(length);
+            mediaPlayer.start();
         }
     }
 
@@ -465,16 +476,52 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     public void onStop() {
         super.onStop();
         Log.d("Entered", "OnStop");
-//        length = mediaPlayer.getCurrentPosition();
-        if(!isFinished)
+        length = mediaPlayer.getCurrentPosition();
+        if (!isFinished)
             isFinished = true;
-//        mediaPlayer.pause();
+        mediaPlayer.pause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mediaPlayer.stop();
+    }
+
+    class PlayMainAdAsync extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            cancelDialog = Utility.showWaitDialog(DashboardActivity.this);
+            cancelDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... aurl) {
+            int count;
+            try {
+                mediaPlayer.setDataSource(aurl[0]);
+                mediaPlayer.prepare();
+            } catch (Exception e) {
+                Log.d("Exception is", e.toString());
+            }
+            return null;
+        }
+
+        protected void onProgressUpdate(String... progress) {
+            Log.d("ANDRO_ASYNC", progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            mediaPlayer.start();
+            cancelDialog.cancel();
+        }
+    }
+
+    public void writeFileOnInternalStorage(Context mcoContext, String sFileName, String sBody) {
+
     }
 
 }

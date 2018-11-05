@@ -3,6 +3,7 @@ package com.gsatechworld.gugrify.view;
  * Created by Karthik's on 27-02-2016.
  */
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -24,6 +27,7 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
@@ -39,6 +43,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
     private TextView textView;
     private ApiInterface apiService;
     Animation slide;
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +85,27 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
             @Override
             public void run() {
-                Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
-                startActivity(i);
-                finish();
+                boolean b = Utility.checkInternet(SplashActivity.this);
+                if(!b){
+                    dialog = new Dialog(SplashActivity.this, R.style.NewDialog);//android.R.style.Theme_Dialog //android.R.style.Theme_Black_NoTitleBar_Fullscreen
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_no_internet);
+                    // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
+
+                    // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
+                    dialog.show();
+
+                }
+                else {
+                    Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         }, SPLASH_TIME_OUT);
     }
@@ -157,4 +180,9 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
     }
 
+    @Override
+    public void onBackPressed() {
+        dialog.cancel();
+        finish();
+    }
 }

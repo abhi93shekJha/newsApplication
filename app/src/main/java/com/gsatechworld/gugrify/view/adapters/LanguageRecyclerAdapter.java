@@ -97,6 +97,8 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
                 sharedPreferences.setCitySelected(cities.get(position).getCityName());
                 Intent intent = new Intent(context, DashboardActivity.class);
                 context.startActivity(intent);
+                if(context instanceof SelectLanguageAndCities)
+                    ((SelectLanguageAndCities) context).finish();
             }
         });
 

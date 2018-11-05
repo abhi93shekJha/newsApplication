@@ -234,4 +234,5 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         mainLayout.setAlpha(1.0f);
         progressBar.setVisibility(View.GONE);
     }
+
 }

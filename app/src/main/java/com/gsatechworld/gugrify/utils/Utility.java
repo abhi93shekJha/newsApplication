@@ -3,13 +3,21 @@ package com.gsatechworld.gugrify.utils;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.Window;
+import android.view.WindowManager;
+
+import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.view.SplashActivity;
 
 /**
  * Created by Ashish Pandey on 12/05/18.
@@ -49,4 +57,32 @@ public class Utility {
             return true;
         }
     }
+
+    public static boolean checkInternet(Context context){
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static Dialog showWaitDialog(Context context){
+        Dialog dialog = new Dialog(context, R.style.NewDialog);//android.R.style.Theme_Dialog //android.R.style.Theme_Black_NoTitleBar_Fullscreen
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_wait);
+        // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
+        return dialog;
+    }
+
+    public static void endShowDialog(Dialog dialog){
+        dialog.cancel();
+    }
+
+
 }
