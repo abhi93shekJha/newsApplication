@@ -62,7 +62,7 @@ import java.util.List;
 
 public class ReporterPostActivity extends AppCompatActivity implements View.OnClickListener {
     List<String> languages, categories;
-    TableLayout twelveImages;
+    LinearLayout twelveImages;
     LinearLayout twelveTexts;
     Typeface fontRegular;
     static String categroySelected;
@@ -75,7 +75,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
     Toolbar toolbar;
     ImageView image0, image3, image4, image5, image6, image7, image8, image9, image10, image11, image12;
     EditText editText1, editText2, editText3, editText4, editText5, editText6, editText7, editText8, editText9, editText10, editText11, editText12;
-    EditText newsHeadline, newsBrief, newsDescription;
+    EditText newsHeadline, newsBrief, newsDescription, et_youtubeId;
 
     //variables for post request
     String[] imageArray, textsArray;
@@ -93,6 +93,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Gugrify");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(toolbar);
 
         textsArray = new String[12];
@@ -106,7 +107,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
 
         newsHeadline = findViewById(R.id.newsHeadline);
+        newsDescription = findViewById(R.id.newsDescription);
         newsBrief = findViewById(R.id.newsBrief);
+        et_youtubeId = findViewById(R.id.et_youtubeId);
         editText1 = findViewById(R.id.editText1);
         editText2 = findViewById(R.id.editText2);
         editText3 = findViewById(R.id.editText3);
@@ -209,8 +212,14 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                 if (!validateCommon())
                     return;
                 if (spinner.getSelectedItem().toString().equalsIgnoreCase("Texts")) {
-                    if (!validateTexts())
+                    if (!validateTexts()) {
                         return;
+                    }
+                    if(!imagesPresent[0]){
+                        Toast.makeText(ReporterPostActivity.this, "Please insert all the images.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    makeANewsPost();
                 } else {
                     for (int i = 0; i < imagesPresent.length; i++) {
                         if (!imagesPresent[i]) {
@@ -218,6 +227,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                             return;
                         }
                     }
+                    makeANewsPost();
                 }
             }
         });//end of submitting news
@@ -589,6 +599,10 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
+    }
+
+    public void makeANewsPost(){
+
     }
 
 }

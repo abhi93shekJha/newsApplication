@@ -1,11 +1,17 @@
 package com.gsatechworld.gugrify.view;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +27,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +50,7 @@ import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.CityWiseAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
 import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
@@ -55,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DisplayBreakingNewsActivity extends AppCompatActivity {
+public class DisplayBreakingNewsActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
     public ArrayList<PostsByCategory> posts = new ArrayList<>();
     Animation zoomIn, animFadeIn, animFadeOut, animFadeIn1;
     AutoScrollViewPager viewPager;
@@ -69,7 +77,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     TextView textView;
     ApiInterface apiService;
     private int dotscount;
-    InterstitialAd mInterstitialAd;
     BreakingNewsViewPagerAdapter b;
     private LinearLayout linearLayout, pausePlayLayout1, breaking_ll1;
     private ImageView dots[];
@@ -77,6 +84,13 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
     Handler mHandler, animateHandler;
     AdView mAdView;
     ProgressBar progressBar;
+    Dialog dialog, cancelDialog;
+    int adsCount = 0, random = 0;
+    MediaPlayer mediaPlayer;
+    ImageView dialogImage;
+    TextView dialogText1, dialogText2;
+    Button dialogUrlButton;
+    public boolean active = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +106,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         //if the screen is in portrait mode, make status bar black
         // clear FLAG_TRANSLUCENT_STATUS flag:
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        active = true;
 
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -392,7 +407,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         final FrameLayout frame2 = findViewById(R.id.frame2);
         breaking_ll1 = findViewById(R.id.breaking_ll1);
         progressBar = findViewById(R.id.progressBar);
-        if(results == null){
+        if (results == null) {
             frame1.setVisibility(View.GONE);
             frame2.setVisibility(View.GONE);
             breaking_ll1.setVisibility(View.GONE);
@@ -413,6 +428,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
                         advertisement = response.body();
                         results = advertisement.getResult();
 
+                        if (results.size() > 7)
+                            adsCount = 7;
+                        else
+                            adsCount = results.size();
+
+                        showAds();
                         Log.d("Result is", results.get(0).getCity());
                         Log.d("Result is", results.get(0).getImage());
 
@@ -613,4 +634,159 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity {
         }
         adapter.notifyDataSetChanged();
     }
+
+    //for showing ads
+    public void showAds() {
+
+        dialog = new Dialog(DisplayBreakingNewsActivity.this, R.style.NewDialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.video_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        dialogImage = dialog.findViewById(R.id.iv_ad);
+        dialogText1 = dialog.findViewById(R.id.dialogText1);
+        dialogText2 = dialog.findViewById(R.id.dialogText2);
+        dialogUrlButton = dialog.findViewById(R.id.redirectButton);
+
+        //implementing ads on every 30 seconds
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (active) {
+                    dialog.show();
+                    Glide.with(DisplayBreakingNewsActivity.this).load(results.get(random).getImage()).into(dialogImage);
+                    dialogUrlButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(DisplayBreakingNewsActivity.this, ActivityShowWebView.class);
+                            intent.putExtra("url", results.get(random).getUrl());
+                            startActivity(intent);
+                        }
+                    });
+                    dialogText1.setText(results.get(random).getText1());
+                    dialogText2.setText(results.get(random).getText2());
+
+                    if (results.get(random).getAudio().trim().isEmpty()) {
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                    } else {
+                        if (dialog.isShowing()) {
+                            mediaPlayer = new MediaPlayer();
+                            new DisplayBreakingNewsActivity.PlayMainAdAsync().execute(results.get(random).getAudio());
+                            mediaPlayer.setOnBufferingUpdateListener(DisplayBreakingNewsActivity.this);
+                            mediaPlayer.setOnCompletionListener(DisplayBreakingNewsActivity.this);
+                        }
+                    }
+                }
+            }
+        }, 30000);
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                if (mediaPlayer != null)
+                    mediaPlayer.stop();
+                random = (int) (Math.random() * adsCount + 1);
+                random = random - 1;
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        if (active) {
+                            dialog.show();
+
+                            Glide.with(DisplayBreakingNewsActivity.this).load(results.get(random).getImage()).into(dialogImage);
+                            dialogUrlButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(DisplayBreakingNewsActivity.this, ActivityShowWebView.class);
+                                    intent.putExtra("url", results.get(random).getUrl());
+                                    startActivity(intent);
+                                }
+                            });
+                            dialogText1.setText(results.get(random).getText1());
+                            dialogText2.setText(results.get(random).getText2());
+
+                            if (results.get(random).getAudio().trim().isEmpty()) {
+                                dialog.setCancelable(true);
+                                dialog.setCanceledOnTouchOutside(true);
+                            } else {
+                                if (dialog.isShowing()) {
+                                    new DisplayBreakingNewsActivity.PlayMainAdAsync().execute(results.get(random).getAudio());
+                                    mediaPlayer.setOnBufferingUpdateListener(DisplayBreakingNewsActivity.this);
+                                    mediaPlayer.setOnCompletionListener(DisplayBreakingNewsActivity.this);
+                                }
+                            }
+
+                        }
+                    }
+                }, 30000);
+            }
+        }); // end of ads dialog in every 30 seconds
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        dialog.cancel();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        active = true;
+        showAds();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
+        dialog.cancel();
+    }
+
+    class PlayMainAdAsync extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*cancelDialog = Utility.showWaitDialog(DisplayBreakingNewsActivity.this);
+            cancelDialog.show();*/
+        }
+
+        @Override
+        protected String doInBackground(String... aurl) {
+
+            try {
+                mediaPlayer.setDataSource(aurl[0]);
+                mediaPlayer.prepare();
+            } catch (Exception e) {
+                Log.d("Exception is", e.toString());
+            }
+            return null;
+        }
+
+        protected void onProgressUpdate(String... progress) {
+            Log.d("ANDRO_ASYNC", progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            mediaPlayer.start();
+//            cancelDialog.cancel();
+        }
+    }
+
 }

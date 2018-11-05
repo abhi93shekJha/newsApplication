@@ -46,6 +46,7 @@
     android:layout_margin="15dp">
 
     <TextView
+        android:id="@+id/dialogText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -53,9 +54,10 @@
         android:text="@string/hang_tight_we_ll_be_right_back"
         android:layout_marginBottom="10dp"
         android:textColor="@color/colorWhite"
-        android:textSize="17sp"/>
+        android:textSize="15sp"/>
     
     <ImageView
+        android:id="@+id/iv_ad"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:src="@drawable/login_bg"
@@ -63,6 +65,7 @@
         android:scaleType="fitXY"/>
 
     <TextView
+        android:id="@+id/dialogText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -71,7 +74,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:textColor="@color/colorWhite"
-        android:textSize="17sp"/>
+        android:textSize="15sp"/>
 
     <Button
         android:id="@+id/redirectButton"

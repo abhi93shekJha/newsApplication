@@ -44,7 +44,7 @@ public class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeViewHolder>
 
         //if selected position is equal to that mean view is selected so change the cardview color
         if (selectedPosition == position) {
-//            holder.youtubeCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            holder.youtubeCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
         } else {
             //if selected position is not equal to that mean view is not selected so change the cardview color to white back again
             holder.youtubeCardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.white));

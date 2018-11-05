@@ -17,23 +17,34 @@ public class CityWiseAdvertisement {
         this.result = result;
     }
 
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
-    @SerializedName("response")
-    private String response;
-
     public class Result{
-        @SerializedName("id")
+        @SerializedName("response")
+        private String response;
+
+        @SerializedName("reporter_id")
         private String id;
 
         @SerializedName("city")
         private String city;
+
+        @SerializedName("ad_image")
+        private String image;
+
+        @SerializedName("ad_text1")
+        private String text1;
+
+        @SerializedName("ad_text2")
+        private String text2;
+
+        @SerializedName("ad_url")
+        private String url;
+
+        @SerializedName("ad_audio")
+        private String audio;
+
+        public String getResponse() {
+            return response;
+        }
 
         public String getId() {
             return id;
@@ -63,27 +74,6 @@ public class CityWiseAdvertisement {
             return audio;
         }
 
-        public String getReporter_id() {
-            return reporter_id;
-        }
-
-        @SerializedName("image")
-        private String image;
-
-        @SerializedName("text1")
-        private String text1;
-
-        @SerializedName("text2")
-        private String text2;
-
-        @SerializedName("url")
-        private String url;
-
-        @SerializedName("audio")
-        private String audio;
-
-        @SerializedName("reporter_id")
-        private String reporter_id;
     }
 
 }

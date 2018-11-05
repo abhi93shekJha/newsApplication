@@ -35,8 +35,6 @@ public class DisplayVideoActivity extends AppCompatActivity {
     //youtube player to play video when new video selected
     private YouTubePlayer youTubePlayer;
 
-    ExpandableView expandableButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +55,7 @@ public class DisplayVideoActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ststusbar_color2));
         }
 
-        /*For Expandable View*/
+        /*For Expandable View*//*
         expandableButton = findViewById(R.id.expandableButton);
         expandableButton.setCallbackListener(new ExpandableView.ExpandableButtonListener() {
             @Override
@@ -69,7 +67,7 @@ public class DisplayVideoActivity extends AppCompatActivity {
             public void onViewCollapsed() {
                // Toast.makeText(MainActivity.this, "Collapsed Details", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
 

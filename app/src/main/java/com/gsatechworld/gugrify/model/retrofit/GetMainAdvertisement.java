@@ -3,35 +3,16 @@ package com.gsatechworld.gugrify.model.retrofit;
 import com.google.gson.annotations.SerializedName;
 
 public class GetMainAdvertisement {
-    @SerializedName("response")
-    public String response;
 
-    public String getResponse() {
-        return response;
-    }
+        @SerializedName("response")
+        public String response;
 
-    public void setResponse(String response) {
-        this.response = response;
-    }
-
-    public Result getResult() {
-        return result;
-    }
-
-    public void setResult(Result result) {
-        this.result = result;
-    }
-
-    @SerializedName("result")
-    Result result;
-
-    public class Result {
-        public String getId() {
-            return id;
+        public String getResponse() {
+            return response;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setResponse(String response) {
+            this.response = response;
         }
 
         public String getAudio() {
@@ -74,9 +55,6 @@ public class GetMainAdvertisement {
             this.url = url;
         }
 
-        @SerializedName("id")
-        String id;
-
         @SerializedName("audio")
         String audio;
 
@@ -91,5 +69,5 @@ public class GetMainAdvertisement {
 
         @SerializedName("url")
         String url;
-    }
+
 }

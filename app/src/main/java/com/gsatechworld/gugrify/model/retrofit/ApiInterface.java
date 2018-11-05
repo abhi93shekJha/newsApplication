@@ -25,4 +25,5 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/get_ads.php")
     Call<CityWiseAdvertisement> getReporterAdvertisement(@Query("city") String city);
+
 }

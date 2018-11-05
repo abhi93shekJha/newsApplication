@@ -59,4 +59,15 @@ public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferen
     public int getClickedPosition(){
         return androidPref.getInt("position", 0);
     }
+
+    public void setLoggedIn(boolean value){
+        editor = androidPref.edit();
+        editor.putBoolean("login", false);
+        editor.commit();
+    }
+
+    public boolean getIsLoggedIn(){
+        return androidPref.getBoolean("login", false);
+    }
+
 }

@@ -26,7 +26,11 @@ public class BreakingNewsViewPagerAdapter extends PagerAdapter {
             R.mipmap.road2,
             R.mipmap.road6,
             R.mipmap.road1,
-            R.mipmap.road2};
+            R.mipmap.road2,
+            R.mipmap.road2,
+            R.mipmap.road6,
+            R.mipmap.road1,
+            R.mipmap.road2, R.mipmap.road2};
 
     Context context;
     public BreakingNewsViewPagerAdapter(Context context){

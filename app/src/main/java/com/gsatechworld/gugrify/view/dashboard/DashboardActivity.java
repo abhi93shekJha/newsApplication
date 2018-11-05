@@ -30,12 +30,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.LatestNewItemModel;
@@ -49,6 +53,8 @@ import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.utils.Utility;
+import com.gsatechworld.gugrify.view.ActivityShowWebView;
+import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.ReporterProfile;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
@@ -79,7 +85,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private LinearLayoutManager l;
     RecyclerView recyclerView;
     private boolean isFinished = false;
-    public static GetMainAdvertisement.Result result;
+    public static GetMainAdvertisement result;
     private DrawerLayout mainLayout;
     int count = 0;
     private ImageView[] dots;
@@ -90,6 +96,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     ProgressBar progressBar;
     Dialog cancelDialog;
     File file;
+    NewsSharedPreferences sharedPreferences;
 
     private MediaPlayer mediaPlayer;
 
@@ -122,6 +129,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         mainLayout = findViewById(R.id.drawer_layout);
         progressBar = findViewById(R.id.progressBar);
+        sharedPreferences = NewsSharedPreferences.getInstance(this);
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -204,6 +212,20 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 getResources().getStringArray(R.array.months_array));*/
         //mListView.setAdapter(mAdapterSearch);
 
+        //check if signed in
+        de.hdodenhof.circleimageview.CircleImageView profile_image= findViewById(R.id.profile_image);
+        TextView nav_header_title= findViewById(R.id.nav_header_title);
+        LinearLayout ll_location = findViewById(R.id.ll_location);
+
+        if(sharedPreferences.getIsLoggedIn()){
+            profile_image.setVisibility(View.VISIBLE);
+            ll_location.setVisibility(View.VISIBLE);
+        }
+        else{
+            profile_image.setVisibility(View.INVISIBLE);
+            ll_location.setVisibility(View.INVISIBLE);
+            nav_header_title.setText("Welcome");
+        }
 
         // create nav item list
         ArrayList<NavItemModel> navItemModelArrayList = getNavItemList();
@@ -287,21 +309,40 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 //        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
+        ImageView dialogImage = dialog.findViewById(R.id.iv_ad);
+        TextView dialogText1 = dialog.findViewById(R.id.dialogText1);
+        TextView dialogText2 = dialog.findViewById(R.id.dialogText2);
+        Button dialogUrlButton = dialog.findViewById(R.id.redirectButton);
 
         dialog.show();
 
-        if (result.getAudio().trim().isEmpty()) {
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
-        } else {
-            if (dialog.isShowing()) {
-                mediaPlayer = new MediaPlayer();
-                new PlayMainAdAsync().execute("http://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_1MG.mp3");
-                mediaPlayer.setOnBufferingUpdateListener(DashboardActivity.this);
-                mediaPlayer.setOnCompletionListener(DashboardActivity.this);
+        Glide.with(DashboardActivity.this).load(result.getImage()).into(dialogImage);
+        dialogUrlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, ActivityShowWebView.class);
+                intent.putExtra("url", result.getUrl());
+                startActivity(intent);
             }
-        }
+        });
+        dialogText1.setText(result.getText1());
+        dialogText2.setText(result.getText2());
 
+        if (result != null) {
+            if (result.getAudio().trim().isEmpty()) {
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(true);
+            } else {
+                if (dialog.isShowing()) {
+                    mediaPlayer = new MediaPlayer();
+                    new PlayMainAdAsync().execute(result.getAudio());
+                    mediaPlayer.setOnBufferingUpdateListener(DashboardActivity.this);
+                    mediaPlayer.setOnCompletionListener(DashboardActivity.this);
+                }
+            }
+        } else {
+            dialog.cancel();
+        }
     }
 
     private void createDummyData() {
@@ -401,10 +442,12 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     protected void onResume() {
         super.onResume();
-        if (isFinished) {
-            dialog.show();
-            mediaPlayer.seekTo(length);
-            mediaPlayer.start();
+        if(!isFinished) {
+            if(!dialog.isShowing()) {
+                dialog.show();
+                mediaPlayer.seekTo(length);
+                mediaPlayer.start();
+            }
         }
     }
 
@@ -468,23 +511,23 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.d("Media completed", "True");
-        isFinished = false;
         dialog.cancel();
+        isFinished = true;
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        dialog.cancel();
         Log.d("Entered", "OnStop");
         length = mediaPlayer.getCurrentPosition();
-        if (!isFinished)
-            isFinished = true;
         mediaPlayer.pause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        dialog.cancel();
         mediaPlayer.stop();
     }
 
@@ -505,6 +548,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 mediaPlayer.prepare();
             } catch (Exception e) {
                 Log.d("Exception is", e.toString());
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setCancelable(true);
             }
             return null;
         }

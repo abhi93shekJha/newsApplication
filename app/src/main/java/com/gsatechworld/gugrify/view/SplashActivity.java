@@ -156,7 +156,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
                     if (response.isSuccessful()) {
                         Log.d("Reached here", "true");
                         advertisement = response.body();
-                        DashboardActivity.result = advertisement.getResult();
+                        DashboardActivity.result = advertisement;
 
                     } else {
                         Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT);

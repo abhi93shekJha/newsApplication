@@ -1,8 +1,10 @@
 package com.gsatechworld.gugrify.view.playlist;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -10,7 +12,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -28,10 +32,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdRequest;
@@ -41,15 +48,25 @@ import com.google.android.gms.ads.MobileAds;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.CityWiseAdvertisement;
+import com.gsatechworld.gugrify.view.ActivityShowWebView;
+import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class PlayListDetaildViewActivity extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class PlayListDetaildViewActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener{
 
     ArrayList<PlayListModel> posts;
     ArrayList<Integer> listPlaylistItemPositions;
@@ -69,6 +86,17 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
     private boolean isSuffleEnabled = false;
     private boolean isPlayEnabled = false;
     AdView mAdView;
+    Dialog dialog, cancelDialog;
+    int adsCount = 0, random = 0;
+    MediaPlayer mediaPlayer;
+    ImageView dialogImage;
+    TextView dialogText1, dialogText2;
+    Button dialogUrlButton;
+    public boolean active = false;
+    ApiInterface apiService;
+
+    List<CityWiseAdvertisement.Result> results;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +107,7 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
         setContentView(R.layout.activity_play_list_detaild_view);
+        active = true;
 
         //implementing AdMob here
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
@@ -333,6 +362,57 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
                 }
             });
         }
+        //getting Ads of Reporter if not present
+        final LinearLayout ll_playlist = findViewById(R.id.ll_playlist);
+        final ProgressBar progressBar = findViewById(R.id.progressBar);
+        if (results == null) {
+            ll_playlist.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            apiService = ApiClient.getClient().create(ApiInterface.class);
+            Log.d("selected city is", sharedPreferences.getCitySelected());
+            Call<CityWiseAdvertisement> call = apiService.getReporterAdvertisement(sharedPreferences.getCitySelected().toLowerCase());
+
+            call.enqueue(new Callback<CityWiseAdvertisement>() {
+                @Override
+                public void onResponse(Call<CityWiseAdvertisement> call, Response<CityWiseAdvertisement> response) {
+                    CityWiseAdvertisement advertisement = null;
+                    if (response.isSuccessful()) {
+
+                        Log.d("Reached here", "true");
+                        advertisement = response.body();
+                        results = advertisement.getResult();
+
+                        if (results.size() > 7)
+                            adsCount = 7;
+                        else
+                            adsCount = results.size();
+
+                        showAds();
+                        Log.d("Result is", results.get(0).getCity());
+                        Log.d("Result is", results.get(0).getImage());
+
+                        ll_playlist.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                        ll_playlist.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CityWiseAdvertisement> call, Throwable t) {
+                    // Log error here since request failed
+                    ll_playlist.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                }
+            });
+        }//end of getting ads
+
     }
 
 
@@ -531,6 +611,160 @@ public class PlayListDetaildViewActivity extends AppCompatActivity {
             }
             adapter.itemClicked(currentPosition);
             recycler.smoothScrollToPosition(currentPosition);
+        }
+    }
+
+    //for showing ads
+    public void showAds() {
+
+        dialog = new Dialog(PlayListDetaildViewActivity.this, R.style.NewDialog);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.video_dialog);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        dialogImage = dialog.findViewById(R.id.iv_ad);
+        dialogText1 = dialog.findViewById(R.id.dialogText1);
+        dialogText2 = dialog.findViewById(R.id.dialogText2);
+        dialogUrlButton = dialog.findViewById(R.id.redirectButton);
+
+        //implementing ads on every 30 seconds
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (active) {
+                    dialog.show();
+                    Glide.with(PlayListDetaildViewActivity.this).load(results.get(random).getImage()).into(dialogImage);
+                    dialogUrlButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(PlayListDetaildViewActivity.this, ActivityShowWebView.class);
+                            intent.putExtra("url", results.get(random).getUrl());
+                            startActivity(intent);
+                        }
+                    });
+                    dialogText1.setText(results.get(random).getText1());
+                    dialogText2.setText(results.get(random).getText2());
+
+                    if (results.get(random).getAudio().trim().isEmpty()) {
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                    } else {
+                        if (dialog.isShowing()) {
+                            mediaPlayer = new MediaPlayer();
+                            new PlayListDetaildViewActivity.PlayMainAdAsync().execute("https://archive.org/download/testmp3testfile/mpthreetest.mp3");
+                            mediaPlayer.setOnBufferingUpdateListener(PlayListDetaildViewActivity.this);
+                            mediaPlayer.setOnCompletionListener(PlayListDetaildViewActivity.this);
+                        }
+                    }
+                }
+            }
+        }, 30000);
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                if (mediaPlayer != null)
+                    mediaPlayer.stop();
+                random = (int) (Math.random() * adsCount + 1);
+                random = random - 1;
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        if (active) {
+                            dialog.show();
+
+                            Glide.with(PlayListDetaildViewActivity.this).load(results.get(random).getImage()).into(dialogImage);
+                            dialogUrlButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(PlayListDetaildViewActivity.this, ActivityShowWebView.class);
+                                    intent.putExtra("url", results.get(random).getUrl());
+                                    startActivity(intent);
+                                }
+                            });
+                            dialogText1.setText(results.get(random).getText1());
+                            dialogText2.setText(results.get(random).getText2());
+
+                            if (results.get(random).getAudio().trim().isEmpty()) {
+                                dialog.setCancelable(true);
+                                dialog.setCanceledOnTouchOutside(true);
+                            } else {
+                                if (dialog.isShowing()) {
+                                    new PlayListDetaildViewActivity.PlayMainAdAsync().execute("https://archive.org/download/testmp3testfile/mpthreetest.mp3");
+                                    mediaPlayer.setOnBufferingUpdateListener(PlayListDetaildViewActivity.this);
+                                    mediaPlayer.setOnCompletionListener(PlayListDetaildViewActivity.this);
+                                }
+                            }
+
+                        }
+                    }
+                }, 30000);
+            }
+        }); // end of ads dialog in every 30 seconds
+    }
+
+    @Override
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        dialog.cancel();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        active = true;
+        showAds();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
+        dialog.cancel();
+    }
+
+    class PlayMainAdAsync extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*cancelDialog = Utility.showWaitDialog(DisplayBreakingNewsActivity.this);
+            cancelDialog.show();*/
+        }
+
+        @Override
+        protected String doInBackground(String... aurl) {
+
+            try {
+                mediaPlayer.setDataSource(aurl[0]);
+                mediaPlayer.prepare();
+            } catch (Exception e) {
+                Log.d("Exception is", e.toString());
+            }
+            return null;
+        }
+
+        protected void onProgressUpdate(String... progress) {
+            Log.d("ANDRO_ASYNC", progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            mediaPlayer.start();
+//            cancelDialog.cancel();
         }
     }
 

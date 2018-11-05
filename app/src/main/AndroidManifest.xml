@@ -72,7 +72,8 @@
         <activity
             android:name=".view.dashboard.SearchActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.dashboard.DisplayVideoActivity" />
+        <activity android:name=".view.dashboard.DisplayVideoActivity" >
+        </activity>
         <activity
             android:name=".view.ShowPlaylistActivtiy"
             android:screenOrientation="portrait" />
@@ -89,6 +90,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name=".view.playlist.PlayListDetaildViewActivity" />
+        <activity android:name=".view.ActivityShowWebView" />
     </application>
 
 </manifest>
