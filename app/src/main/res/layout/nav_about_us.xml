@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_black"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+    <LinearLayout
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/navImageItem"
+            android:layout_width="50dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="0dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@mipmap/about_us" />
+
+        <TextView
+            android:id="@+id/navItemTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="20dp"
+            android:text="About us"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <View
+        android:background="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+</LinearLayout>

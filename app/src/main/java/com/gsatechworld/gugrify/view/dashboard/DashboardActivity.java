@@ -52,13 +52,16 @@ import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
+import com.gsatechworld.gugrify.view.ReporterPostActivity;
 import com.gsatechworld.gugrify.view.ReporterProfile;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
+import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
 import java.io.BufferedInputStream;
@@ -97,6 +100,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     Dialog cancelDialog;
     File file;
     NewsSharedPreferences sharedPreferences;
+    ApiInterface apiService;
+    public static NewsCategories newsCategories;
+    RecyclerViewNavAdapter navAdapter;
+    DrawerLayout drawer_layout;
 
     private MediaPlayer mediaPlayer;
 
@@ -119,6 +126,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         setContentView(R.layout.activity_dashboard);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        newsCategories = new NewsCategories();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -130,6 +138,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         mainLayout = findViewById(R.id.drawer_layout);
         progressBar = findViewById(R.id.progressBar);
         sharedPreferences = NewsSharedPreferences.getInstance(this);
+        drawer_layout = findViewById(R.id.drawer_layout);
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -156,6 +165,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 if (drawer.isDrawerVisible(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 } else {
+                    if(newsCategories.getCategory() == null){
+                        getReporterCategories();
+                    }
                     drawer.openDrawer(GravityCompat.START);
                 }
             }
@@ -176,7 +188,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
 
         allSampleData = new ArrayList<>();
-
         createDummyData();
 
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -232,7 +243,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
         recycler_nav_item.setHasFixedSize(true);
-        RecyclerViewNavAdapter navAdapter = new RecyclerViewNavAdapter(navItemModelArrayList, this);
+        navAdapter = new RecyclerViewNavAdapter(newsCategories, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recycler_nav_item.setLayoutManager(layoutManager);
         recycler_nav_item.setAdapter(navAdapter);
@@ -433,7 +444,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
 
         if (id == R.id.action_avatar) {
-            startActivity(new Intent(DashboardActivity.this, ReporterProfile.class));
+            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+            intent.putExtra("role", "reporter");
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -565,8 +578,44 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
     }
 
-    public void writeFileOnInternalStorage(Context mcoContext, String sFileName, String sBody) {
+    public void getReporterCategories(){
 
+        drawer_layout.setAlpha(0.5f);
+        drawer_layout.setFocusable(false);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<NewsCategories> call = apiService.getCategoryList();
+
+        call.enqueue(new Callback<NewsCategories>() {
+            @Override
+            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    newsCategories = response.body();
+                    navAdapter.notifyDataSetChanged();
+
+                    drawer_layout.setAlpha(1f);
+                    drawer_layout.setFocusable(true);
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                    drawer_layout.setAlpha(1f);
+                    drawer_layout.setFocusable(true);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsCategories> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                drawer_layout.setAlpha(1f);
+                drawer_layout.setFocusable(true);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
 }

@@ -35,14 +35,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.SelectLanguageAndCities;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
+import com.gsatechworld.gugrify.model.retrofit.ReporterPost;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,6 +69,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ReporterPostActivity extends AppCompatActivity implements View.OnClickListener {
     List<String> languages, categories;
     LinearLayout twelveImages;
@@ -76,28 +89,44 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
     ImageView image0, image3, image4, image5, image6, image7, image8, image9, image10, image11, image12;
     EditText editText1, editText2, editText3, editText4, editText5, editText6, editText7, editText8, editText9, editText10, editText11, editText12;
     EditText newsHeadline, newsBrief, newsDescription, et_youtubeId;
+    NewsSharedPreferences sharedPreferences;
 
     //variables for post request
     String[] imageArray, textsArray;
     String mainImage;
-    String text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11, text12, headline, description, brief;
+    String text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11, text12, headline, description, brief, youtube_id;
 
     private Intent pictureActionIntent = null;
     Bitmap bitmap;
     String selectedImagePath, encodedBase64;
+    ApiInterface apiService;
+    ScrollView main_layout;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reporter_post);
 
+        main_layout = findViewById(R.id.main_layout);
+        progressBar = findViewById(R.id.progressBar);
+        et_youtubeId = findViewById(R.id.et_youtubeId);
+
+        sharedPreferences = NewsSharedPreferences.getInstance(ReporterPostActivity.this);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Gugrify");
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(toolbar);
 
+        //getting the categories if not already present
+        if (DashboardActivity.newsCategories.getCategory() == null) {
+            getReporterCategories();
+        }
+
         textsArray = new String[12];
-        imageArray = new String[11];
+        imageArray = new String[10];
+        mainImage = "";
         imagesPresent = new boolean[11];
 
         languages = new ArrayList<>();
@@ -215,11 +244,13 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                     if (!validateTexts()) {
                         return;
                     }
-                    if(!imagesPresent[0]){
+                    if (!imagesPresent[0]) {
                         Toast.makeText(ReporterPostActivity.this, "Please insert all the images.", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    makeANewsPost();
+                    ReporterPost post;
+                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", "",headline, brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    makeANewsPost(post);
                 } else {
                     for (int i = 0; i < imagesPresent.length; i++) {
                         if (!imagesPresent[i]) {
@@ -227,7 +258,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                             return;
                         }
                     }
-                    makeANewsPost();
+                    ReporterPost post;
+                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", "",headline, brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    makeANewsPost(post);
                 }
             }
         });//end of submitting news
@@ -326,8 +359,12 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                 Bitmap convertedImage = getResizedBitmap(thumbnail, 600);
 
                 //setting into image Array to make a post
-                imageArray[selectedImage] = getStringImage(convertedImage);
-                imagesPresent[selectedImage] = true;
+                if (selectedImage == 0) {
+                    mainImage = getStringImage(convertedImage);
+                } else {
+                    imageArray[selectedImage - 1] = getStringImage(convertedImage);
+                    imagesPresent[selectedImage] = true;
+                }
 
                 forEverywhereImage.setImageBitmap(convertedImage);
                 if (checkIfExternalStoragePresent())
@@ -481,6 +518,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
     }
 
     public boolean validateCommon() {
+        youtube_id = et_youtubeId.getText().toString();
         headline = newsHeadline.getText().toString();
         brief = newsBrief.getText().toString();
         description = newsDescription.getText().toString();
@@ -601,8 +639,68 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         return encodedImage;
     }
 
-    public void makeANewsPost(){
+    public void makeANewsPost(ReporterPost post) {
 
+        main_layout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ReporterPost> call = apiService.postReporterNews(post);
+
+        call.enqueue(new Callback<ReporterPost>() {
+            @Override
+            public void onResponse(Call<ReporterPost> call, Response<ReporterPost> response) {
+                ReporterPost responseOfPosting = null;
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    responseOfPosting = response.body();
+
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReporterPost> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                main_layout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
+    public void getReporterCategories() {
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<NewsCategories> call = apiService.getCategoryList();
+
+        call.enqueue(new Callback<NewsCategories>() {
+            @Override
+            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    DashboardActivity.newsCategories = response.body();
+
+                } else {
+                    Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsCategories> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+            }
+        });
+    }
 }

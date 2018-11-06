@@ -2,6 +2,7 @@ package com.gsatechworld.gugrify.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,18 +31,34 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
+import com.gsatechworld.gugrify.model.retrofit.ReporterPostById;
 import com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter;
+import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.dashboard.SearchActivity;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReporterProfile extends AppCompatActivity {
     FloatingActionButton addNewPost;
@@ -55,6 +73,11 @@ public class ReporterProfile extends AppCompatActivity {
     private CardView reporter_below_layout;
     private FloatingActionButton languageAndCityFloating;
     private SearchView searchView;
+    NewsSharedPreferences sharedPreferences;
+    ApiInterface apiService;
+    List<ReporterPostById.Result> results;
+    RelativeLayout main_layout;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,10 +86,12 @@ public class ReporterProfile extends AppCompatActivity {
        // getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
         setContentView(R.layout.activity_reporter_profile);
+        results = new ArrayList<>();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        sharedPreferences = NewsSharedPreferences.getInstance(ReporterProfile.this);
 
         setSearchtollbar();
 //        getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.actionbar_bg));
@@ -76,12 +101,62 @@ public class ReporterProfile extends AppCompatActivity {
         reporter_below_layout = (CardView)findViewById(R.id.reporter_below_layout);
         languageAndCityFloating =(FloatingActionButton) findViewById(R.id.languageAndCityFloating);
 
+        makePostRequest(sharedPreferences.getSharedPrefValue("reporterId"));
         RecyclerView recyclerView = findViewById(R.id.reporter_profile_recycler);
-        adapter = new ReporterProfileRecyclerAdapter(this, loadData());
+        adapter = new ReporterProfileRecyclerAdapter(this, results);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
 
+        CircleImageView reporterImage = findViewById(R.id.reporterImage);
+        TextView reporterName = findViewById(R.id.reporterName);
+        TextView tv_reporter_place = findViewById(R.id.tv_reporter_place);
+        TextView tv_total_ads = findViewById(R.id.tv_total_ads);
+        TextView tv_total_posts = findViewById(R.id.tv_total_posts);
+        ImageView reporter_sign_out = findViewById(R.id.reporter_sign_out);
+        ImageView contactUs = findViewById(R.id.iv_contactUs);
+        ImageView iv_home = findViewById(R.id.iv_home);
 
+        Glide.with(ReporterProfile.this).load(sharedPreferences.getSharedPrefValue("reporterPic")).into(reporterImage);
+        reporterName.setText(sharedPreferences.getSharedPrefValue("reporterName"));
+        tv_reporter_place.setText(sharedPreferences.getSharedPrefValue("reporterCity"));
+        String totalAds = sharedPreferences.getSharedPrefValue("reporterAdsCount");
+        String totalPosts = sharedPreferences.getSharedPrefValue("reporterPostsCount");
+        if(totalAds.length() == 1)
+            totalAds = "0"+totalAds;
+        if(totalPosts.length() == 1)
+            totalPosts = "0"+totalPosts;
+        tv_total_ads.setText(totalAds);
+        tv_total_posts.setText(totalPosts);
+
+        reporter_sign_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(ReporterProfile.this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Sign Out")
+                        .setMessage("Are you sure you want to sign out?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPreferences.setSharedPrefValueBoolean("reporterLoggedIn", false);
+                                finish();
+                            }
+
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+
+        iv_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ReporterProfile.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // clear FLAG_TRANSLUCENT_STATUS flag:
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -101,82 +176,6 @@ public class ReporterProfile extends AppCompatActivity {
                 startActivity(new Intent(ReporterProfile.this, ReporterPostActivity.class));
             }
         });
-    }
-
-    public ArrayList<PostsByCategory> loadData(){
-        posts = new ArrayList<>();
-        String image1 = "https://i2-prod.manchestereveningnews.co.uk/incoming/article13699191.ece/ALTERNATES/s615/unnamed-2.jpg";
-        String image2 = "http://blog.typeathought.com/wp-content/uploads/2018/06/football.jpg";
-        String image3 = "https://cdn-triplem.scadigital.io/media/46306/cricket-australia.jpg?preset=MainImage";
-
-        String head1 = "Football news 1";
-        String head2 = "Football news 2";
-        String head3 = "Cricket news 3";
-
-        String desc1 = "Kane played 573 minutes at the World Cup this summer, picking up six goals and the Golden Boot along the way.";
-        String desc2 = "Southgate said: \"Harry falls in the category in which we have several players where we have to watch how much they play.\"";
-        String desc3 = "After the two-and-a-half-day disaster at The Lord's last month, Virat Kohli's boys are now staring at another humiliation at the other end of London, The Oval.";
-
-        String view1 = "15";
-        String view2 = "19";
-        String view3 = "25";
-
-        String likes1 = "10";
-        String likes2 = "15";
-        String likes3 = "20";
-
-        ArrayList<String> comments1 = new ArrayList<>();
-        ArrayList<String> comments2 = new ArrayList<>();
-        ArrayList<String> comments3 = new ArrayList<>();
-
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up");
-
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up!!");
-
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up!!");
-
-        ArrayList<String> text1 = new ArrayList<>();
-        ArrayList<String> text2 = new ArrayList<>();
-        ArrayList<String> text3 = new ArrayList<>();
-
-        text1.add("Breaking News");
-        text1.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text1.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text1.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
-
-        text2.add("Breaking News");
-        text2.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text2.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text2.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
-
-        text3.add("Breaking News");
-        text3.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text3.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
-
-        PostsByCategory p1 = new PostsByCategory("0", image1, head1, desc1, view1, likes1, comments1, text1);
-        PostsByCategory p2 = new PostsByCategory("1", image2, head2, desc2, view2, likes2, comments2, text2);
-        PostsByCategory p3 = new PostsByCategory("2", image3, head3, desc3, view3, likes3, comments3, text3);
-
-        posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
-
-        posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
-
-        posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
-
-        return posts;
     }
 
     private void setSearchtollbar() {
@@ -288,11 +287,11 @@ public class ReporterProfile extends AppCompatActivity {
                 //Do searching
                 Log.i("query", "" + query);
 
-                List<PostsByCategory> temp = new ArrayList();
-                for(PostsByCategory d: posts){
+                List<ReporterPostById.Result> temp = new ArrayList();
+                for(ReporterPostById.Result d: results){
                     //or use .equal(text) with you want equal match
                     //use .toLowerCase() for better matches
-                    if(d.getNews_headlines().toLowerCase().contains(query.toLowerCase())){
+                    if(d.getPostHeading().toLowerCase().contains(query.toLowerCase())){
                         temp.add(d);
                     }
                 }
@@ -300,7 +299,6 @@ public class ReporterProfile extends AppCompatActivity {
                 adapter.updateList(temp);
             }
         });
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -348,7 +346,6 @@ public class ReporterProfile extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
@@ -375,17 +372,42 @@ public class ReporterProfile extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed()
-//    {
-//        item_search.collapseActionView();
-//        linearLayoutPost.setVisibility(View.VISIBLE);
-//        linearLayoutProfile.setVisibility(View.VISIBLE);
-//        languageAndCityFloating.setVisibility(View.VISIBLE);
-//        reporter_below_layout.setVisibility(View.VISIBLE);
-//
-//        if(!searchView.isFocused()){
-//            finish();
-//        }
-//    }
+    public void makePostRequest(String reporterId){
+
+        main_layout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ReporterPostById> call = apiService.getReporterPostById(reporterId);
+
+        call.enqueue(new Callback<ReporterPostById>() {
+            @Override
+            public void onResponse(Call<ReporterPostById> call, Response<ReporterPostById> response) {
+                ReporterPostById reporterProfile = null;
+                if (response.isSuccessful()) {
+                    reporterProfile = response.body();
+                    results = reporterProfile.getResult();
+                    Log.d("Reached here", "true");
+                    adapter.notifyDataSetChanged();
+
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_SHORT);
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReporterPostById> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_SHORT);
+                main_layout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
 }

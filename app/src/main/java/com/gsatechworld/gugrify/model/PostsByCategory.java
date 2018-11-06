@@ -6,6 +6,7 @@ public class PostsByCategory {
     String image;
     String news_headlines;
     String news_description;
+    String new_date_time;
     String views;
     String likes;
 

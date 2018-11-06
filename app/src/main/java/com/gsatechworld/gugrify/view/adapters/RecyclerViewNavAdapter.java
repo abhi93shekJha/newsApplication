@@ -13,19 +13,20 @@ import android.widget.TextView;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.NavItemModel;
+import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 
 import java.util.ArrayList;
 
 public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNavAdapter.ItemRowHolder> {
 
-    private ArrayList<NavItemModel> dataList;
+    private NewsCategories newsCategories;
     private Context mContext;
     private RecyclerView.RecycledViewPool recycledViewPool;
     NewsSharedPreferences sharedPreferences;
 
-    public RecyclerViewNavAdapter(ArrayList<NavItemModel> dataList, Context mContext) {
-        this.dataList = dataList;
+    public RecyclerViewNavAdapter(NewsCategories dataList, Context mContext) {
+        this.newsCategories = dataList;
         this.mContext = mContext;
         recycledViewPool = new RecyclerView.RecycledViewPool();
         sharedPreferences = NewsSharedPreferences.getInstance(mContext);
@@ -35,8 +36,10 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
     @Override
     public int getItemViewType(int position) {
         int viewType = 0; //Default is 1
-        if (position == dataList.size()) viewType = 1; //if zero, it will be a header view
-        if (position > dataList.size()) viewType = 2;
+        if (position == newsCategories.getCategory().size()) viewType = 1; //if zero, it will be a header view
+        if (position == newsCategories.getCategory().size()+1) viewType = 2;
+        if (position == newsCategories.getCategory().size()+2) viewType = 3;
+        if (position == newsCategories.getCategory().size()+3) viewType = 4;
         return viewType;
     }
 
@@ -55,9 +58,19 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                         .inflate(R.layout.nav_other_item, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
-            default:
+            case  2:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.nav_sign_out, parent, false);
+                rowHolder = new ItemRowHolder(v);
+                return rowHolder;
+            case  3:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.nav_about_us, parent, false);
+                rowHolder = new ItemRowHolder(v);
+                return rowHolder;
+            default:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.nav_contact_us, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
         }
@@ -65,10 +78,10 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
     @Override
     public void onBindViewHolder(ItemRowHolder holder, int position) {
-        if (position < dataList.size()) {
-            final String sectionName = dataList.get(position).getNavItemName();
+        if (position < newsCategories.getCategory().size()) {
+            final String sectionName = newsCategories.getCategory().get(position);
             holder.navItemTitle.setText(sectionName);
-        } else if (position == dataList.size()) {
+        } else if (position == newsCategories.getCategory().size()) {
 
         } else {
             if(sharedPreferences.getIsLoggedIn()){
@@ -82,7 +95,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
     @Override
     public int getItemCount() {
-        return (null != dataList ? dataList.size() + 2 : 0);
+        return (null != newsCategories ? newsCategories.getCategory().size() + 4 : 0);
     }
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {

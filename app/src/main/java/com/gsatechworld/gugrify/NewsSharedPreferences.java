@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+
 public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     private SharedPreferences androidPref;
@@ -62,12 +64,35 @@ public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferen
 
     public void setLoggedIn(boolean value){
         editor = androidPref.edit();
-        editor.putBoolean("login", false);
+        editor.putBoolean("login", value);
         editor.commit();
     }
 
     public boolean getIsLoggedIn(){
         return androidPref.getBoolean("login", false);
     }
+
+
+    public void setSharedPrefValue(String key, String value){
+        editor = androidPref.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public String getSharedPrefValue(String key){
+        return androidPref.getString(key, "");
+    }
+
+    public void setSharedPrefValueBoolean(String key, boolean value){
+        editor = androidPref.edit();
+        editor.putBoolean(key, value);
+        editor.commit();
+    }
+
+    public Boolean getSharedPrefValueBoolean(String key){
+        return androidPref.getBoolean(key, false);
+    }
+
+
 
 }

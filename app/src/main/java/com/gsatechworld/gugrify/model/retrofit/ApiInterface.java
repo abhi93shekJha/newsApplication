@@ -18,7 +18,7 @@ public interface ApiInterface {
     Call<LanguageResponse> getLatestNews(@Query("city") String city);
 
     @POST("gugrify_news/API/post_news.php")
-    Call<ReporterPost> getLatestNews(@Body ReporterPost post);
+    Call<ReporterPost> postReporterNews(@Body ReporterPost post);
 
     @GET("gugrify_news/API/get_audio.php")
     Call<GetMainAdvertisement> getMainAdvertisement();
@@ -26,4 +26,12 @@ public interface ApiInterface {
     @GET("gugrify_news/API/get_ads.php")
     Call<CityWiseAdvertisement> getReporterAdvertisement(@Query("city") String city);
 
+    @GET("gugrify_news/API/reporter_login")
+    Call<ReporterLogin> reporterLogin(@Query("username") String username, @Query("password") String password, @Query("role") String role);
+
+    @GET("gugrify_news/API/post_news.php")
+    Call<ReporterPostById> getReporterPostById(@Query("reporter_id") String reporter_id);
+
+    @GET("gugrify_news/API/get_category_list.php")
+    Call<NewsCategories> getCategoryList();
 }

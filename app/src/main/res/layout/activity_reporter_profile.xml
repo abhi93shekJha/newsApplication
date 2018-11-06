@@ -4,6 +4,21 @@
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:indeterminate="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:indeterminateDrawable="@drawable/custom_progress_dialog"
+        android:visibility="gone" />
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <include layout="@layout/toolbar"/>
     <include layout="@layout/search_toolbar"
         android:visibility="gone"/>
@@ -51,6 +66,7 @@
                     android:layout_marginRight="8dp"
                     android:src="@drawable/place_icon"/>
                 <TextView
+                    android:id="@+id/tv_reporter_place"
                     android:layout_marginLeft="3dp"
                     android:layout_width="wrap_content"
                     android:text="Bangalore"
@@ -74,13 +90,15 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <TextView
+                android:id="@+id/tv_total_posts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="23"
                 android:textColor="@color/colorWhite"
-                android:textStyle="bold"
                 android:textSize="21sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
             <TextView
                 android:text="My Posts"
                 android:textSize="16sp"
@@ -100,6 +118,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/tv_total_ads"
                 android:text="05"
                 android:textSize="21sp"
                 android:textStyle="bold"
@@ -134,19 +153,23 @@
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:orientation="horizontal">
+
         <ImageView
-            android:src="@drawable/home_icon"
-            android:padding="7dp"
-            android:layout_weight="1"
+            android:id="@+id/iv_home"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="7dp"
+            android:src="@drawable/home_icon" />
         <ImageView
+            android:id="@+id/iv_contactUs"
             android:padding="7dp"
             android:layout_weight="1"
             android:src="@drawable/contact_us"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <ImageView
+            android:id="@+id/reporter_sign_out"
             android:padding="7dp"
             android:src="@drawable/logout"
             android:layout_weight="1"
@@ -165,4 +188,5 @@
         android:visibility="visible"
         app:backgroundTint="@color/profile_pic_background"
         app:srcCompat="@drawable/plus" />
+    </RelativeLayout>
 </RelativeLayout>

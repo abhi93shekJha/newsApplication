@@ -200,23 +200,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);*/
                 break;
-            case R.id.btn_login:
-                userName = etLoginUserName.getText().toString();
-                String password = etLoginPassword.getText().toString();
-                password = etLoginPassword.getText().toString();
-
-              /*  if (!userName.equals("") && userName != null && !password.equals("") && password != null) {
-                    userLogin(userName, password);
-                }
-                else {
-
-                    CustomSnackBarUtil customSnackBarUtil = new CustomSnackBarUtil(LoginActivity.this);
-                    customSnackBarUtil.showSnackBar(rl_login_main, getString(R.string.please_enter_the_credentials),
-                            getResources().getColor(R.color.md_red_400),
-                            getResources().getColor(R.color.colorWhite));
-                }*/
-
-                break;
 
             case R.id.tvSignUp:
                 Intent intent = new Intent(LoginActivity.this,RegistrationActivity.class);

@@ -19,6 +19,8 @@ public class ReporterPost {
         this.reporter_id = reporter_id;
         this.image = image;
         this.selection = selection;
+        this.text_array = text_array;
+        this.image_array = image_array;
         this.news_title = news_title;
         this.news_headline = news_headline;
         this.news_brief = news_brief;
@@ -26,8 +28,6 @@ public class ReporterPost {
         this.youtube_link = youtube_link;
         this.category = category;
         this.language = language;
-        this.text_array = text_array;
-        this.image_array = image_array;
         this.city = city;
     }
 
