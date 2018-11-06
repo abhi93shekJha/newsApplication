@@ -36,6 +36,7 @@ public class ReporterLoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reporter_login);
+        sharedPreferences = NewsSharedPreferences.getInstance(this);
         if(sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")){
             Intent intent = new Intent(ReporterLoginActivity.this, ReporterProfile.class);
             startActivity(intent);

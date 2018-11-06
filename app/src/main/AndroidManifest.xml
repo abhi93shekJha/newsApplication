@@ -91,6 +91,7 @@
 
         <activity android:name=".view.playlist.PlayListDetaildViewActivity" />
         <activity android:name=".view.ActivityShowWebView" />
+        <activity android:name=".view.authentication.ReporterLoginActivity" />
     </application>
 
 </manifest>

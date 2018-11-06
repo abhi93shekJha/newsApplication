@@ -53,6 +53,7 @@ import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
+import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
@@ -62,6 +63,7 @@ import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
+import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 
 import java.io.BufferedInputStream;
@@ -444,8 +446,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
 
         if (id == R.id.action_avatar) {
-            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-            intent.putExtra("role", "reporter");
+            Intent intent = new Intent(DashboardActivity.this, ReporterLoginActivity.class);
             startActivity(intent);
             return true;
         }

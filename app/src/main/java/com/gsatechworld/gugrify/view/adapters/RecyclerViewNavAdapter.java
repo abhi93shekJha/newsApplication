@@ -95,7 +95,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
     @Override
     public int getItemCount() {
-        return (null != newsCategories ? newsCategories.getCategory().size() + 4 : 0);
+        return (null != newsCategories.getCategory() ? newsCategories.getCategory().size() + 4 : 0);
     }
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {
