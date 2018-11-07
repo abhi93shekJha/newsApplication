@@ -44,9 +44,6 @@ public class ReporterPostById {
         @SerializedName("views")
         @Expose
         private String views;
-        @SerializedName("likes")
-        @Expose
-        private String likes;
 
         public String getResponse() {
             return response;
@@ -100,10 +97,6 @@ public class ReporterPostById {
             return views;
         }
 
-
-        public String getLikes() {
-            return likes;
-        }
 
     }
 

@@ -1,5 +1,7 @@
 package com.gsatechworld.gugrify.model.retrofit;
 
+import com.gsatechworld.gugrify.model.PostsByCategory;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -34,4 +36,13 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/get_category_list.php")
     Call<NewsCategories> getCategoryList();
+
+    @GET("gugrify_news/API/get_post_category_limit.php")
+    Call<CategoryPosts> getPostByCategory(@Query("category") String category);
+
+    @GET("gugrify_news/API/get_post_details.php")
+    Call<PostDetailPojo> getPostDetails(@Query("post_id") String post_id);
+
+    @GET("gugrify_news/API/get_post_category_limit.php")
+    Call<TwentyPostsByCategory> getTwentyPostsByCategory(@Query("category") String category);
 }

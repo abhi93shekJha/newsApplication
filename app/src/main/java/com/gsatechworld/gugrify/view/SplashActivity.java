@@ -159,14 +159,14 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
                         DashboardActivity.result = advertisement;
 
                     } else {
-                        Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                        Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<GetMainAdvertisement> call, Throwable t) {
                     // Log error here since request failed
-                    Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                    Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
                 }
             });
 

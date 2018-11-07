@@ -33,8 +33,8 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     FloatingActionButton actionButton;
     Animation animation;
     RelativeLayout relativeLayout;
-    boolean b=false;
-    boolean once=false;
+    boolean b = false;
+    boolean once = false;
     View temp;
     NewsSharedPreferences sharedPreferences;
     ArrayList<Integer> selectedItem = new ArrayList<>();
@@ -53,6 +53,8 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
             public void onClick(View view) {
                 Intent intent = new Intent(context, DashboardActivity.class);
                 context.startActivity(intent);
+                if (context instanceof SelectLanguageAndCities)
+                    ((SelectLanguageAndCities) context).finish();
             }
         });
     }
@@ -68,23 +70,23 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
 
-         if (cities.get(position).isSelected() == true){
+        if (cities.get(position).isSelected() == true) {
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.brown));
             holder.tvBrown.setVisibility(View.GONE);
             holder.tvWhite.setVisibility(View.VISIBLE);
             actionButton.setVisibility(View.VISIBLE);
-             relativeLayout.invalidate();
-            if(!once) {
+            relativeLayout.invalidate();
+            if (!once) {
                 animation = AnimationUtils.loadAnimation(context,
                         R.anim.slide_left);
                 actionButton.startAnimation(animation);
-                once=true;
+                once = true;
             }
         } else {
             holder.mainLayout.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
             holder.tvBrown.setVisibility(View.VISIBLE);
             holder.tvWhite.setVisibility(View.GONE);
-            if(selectedItem.size() == 0) {
+            if (selectedItem.size() == 0) {
                 actionButton.setVisibility(View.GONE);
                 once = false;
             }
@@ -97,13 +99,13 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
                 sharedPreferences.setCitySelected(cities.get(position).getCityName());
                 Intent intent = new Intent(context, DashboardActivity.class);
                 context.startActivity(intent);
-                if(context instanceof SelectLanguageAndCities)
+                if (context instanceof SelectLanguageAndCities)
                     ((SelectLanguageAndCities) context).finish();
             }
         });
 
-         holder.tvWhite.setText(cities.get(position).getCityName());
-         holder.tvBrown.setText(cities.get(position).getCityName());
+        holder.tvWhite.setText(cities.get(position).getCityName());
+        holder.tvBrown.setText(cities.get(position).getCityName());
     }
 
     @Override
@@ -112,7 +114,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     }
 
 
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder{
+    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
         public TextView tvBrown;
         public TextView tvWhite;
         public ImageView image;
@@ -131,18 +133,18 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
                 @Override
                 public void onClick(View view) {
 
-                        if(!b){
-                            actionButton.setVisibility(View.VISIBLE);
-                            animation = AnimationUtils.loadAnimation(context,
-                                    R.anim.slide_left);
-                            actionButton.startAnimation(animation);
-                            b=true;
-                        }
+                    if (!b) {
+                        actionButton.setVisibility(View.VISIBLE);
+                        animation = AnimationUtils.loadAnimation(context,
+                                R.anim.slide_left);
+                        actionButton.startAnimation(animation);
+                        b = true;
+                    }
 
-                        if(!cities.get(getAdapterPosition()).isSelected()){
+                    if (!cities.get(getAdapterPosition()).isSelected()) {
                         cities.get(getAdapterPosition()).setSelected(true);
 
-                        if(selectedItem.size() != 0){
+                        if (selectedItem.size() != 0) {
                             cities.get(selectedItem.get(0)).setSelected(false);
                             notifyItemChanged(selectedItem.get(0));
                             selectedItem.clear();
@@ -153,11 +155,10 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
                             notifyItemChanged(getAdapterPosition());
                             //notifyDataSetChanged();
                         }
-                    }
-                    else{
+                    } else {
                         cities.get(getAdapterPosition()).setSelected(false);
-                            selectedItem.clear();
-                            notifyItemChanged(getAdapterPosition());
+                        selectedItem.clear();
+                        notifyItemChanged(getAdapterPosition());
                     }
 
                 }

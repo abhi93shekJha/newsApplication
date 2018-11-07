@@ -6,7 +6,6 @@ public class PostsByCategory {
     String image;
     String news_headlines;
     String news_description;
-    String new_date_time;
     String views;
     String likes;
 
@@ -20,11 +19,10 @@ public class PostsByCategory {
 
     String postId;
     ArrayList<String> comments;
-    ArrayList<String> texts;
 
 
     public PostsByCategory(String postId, String image, String news_headlines, String news_description, String views, String likes,
-                           ArrayList<String> comments, ArrayList<String> texts) {
+                           ArrayList<String> comments) {
         this.postId = postId;
         this.image = image;
         this.news_headlines = news_headlines;
@@ -32,7 +30,7 @@ public class PostsByCategory {
         this.views = views;
         this.likes = likes;
         this.comments = comments;
-        this.texts = texts;
+
     }
 
     public String getImage() {
@@ -59,8 +57,5 @@ public class PostsByCategory {
         return comments;
     }
 
-    public ArrayList<String> getTexts() {
-        return texts;
-    }
 
 }

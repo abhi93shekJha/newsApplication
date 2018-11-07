@@ -46,10 +46,13 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.PostsForLandscape;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.CityWiseAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.PostDetailPojo;
+import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
@@ -91,6 +94,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     TextView dialogText1, dialogText2;
     Button dialogUrlButton;
     public boolean active = false;
+    String postId = "", category="";
+    public static PostDetailPojo postDetails = null;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +149,10 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         if (mAdView != null)
             mAdView.loadAd(adRequest);
         //end of AdMob
+
+        //getting postCategory and postId from previous activity
+        category = getIntent().getStringExtra("category");
+        postId = getIntent().getStringExtra("postId");
 
         mHandler = new Handler();
 
@@ -226,8 +236,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         }
 
 
-        //this will fetch the data from server.
-        loadData();
+        //this will fetch 20 posts by category from database
+        lodaDataByCategory();
 
 
         //this block of code is for pausing and play the visible animations (for text animations)
@@ -313,18 +323,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             });
 
         }
-
-
-        if (recycler != null) {
-            FragmentImage fragment1 = new FragmentImage();
-            FragmentLayout fragment2 = new FragmentLayout();
-            loadFragment(fragment1, fragment2, sharedPreferences.getClickedPosition());
-
-            adapter = new BreakingNewsRecyclerAdapter(DisplayBreakingNewsActivity.this, posts);
-            recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            recycler.setAdapter(adapter);
-        }
-
 
         //pausing and playing the animation (for textviews)
         pause = findViewById(R.id.pauseButton);
@@ -469,104 +467,118 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
     }
 
-    public void loadFragment(Fragment fragment1, Fragment fragment2, int position) {
-        // create a FragmentManager
-        FragmentManager fm = getFragmentManager();
-// create a FragmentTransaction to begin the transaction and replace the Fragment
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-// replace the FragmentLayout with new Fragment
+    public void loadFragment(Fragment fragment1, Fragment fragment2, String postId) {
 
-        Bundle bundle = new Bundle();
-        bundle.putString("post_id", posts.get(position).getPostId());
-        fragment1.setArguments(bundle);
+        loadData(fragment1, fragment2);
 
-        ArrayList<String> list = new ArrayList<>();
-        list.add(posts.get(position).getViews());
-        list.add(posts.get(position).getLikes());
-        list.add(String.valueOf(posts.get(position).getComments().size()));
-
-        bundle.putStringArrayList("forLinearLayout", list);
-        fragment2.setArguments(bundle);
-
-        fragmentTransaction.replace(R.id.frame2, fragment2);
-//        fragmentTransaction.commit();
-        fragmentTransaction.replace(R.id.frame1, fragment1);
-        fragmentTransaction.commit(); // save the changes
     }
 
-    public void loadData() {
-        sharedPreferences.setClickedPosition(0);
+    public void loadData(final Fragment fragment1, final Fragment fragment2) {
 
-        String image1 = "https://i2-prod.manchestereveningnews.co.uk/incoming/article13699191.ece/ALTERNATES/s615/unnamed-2.jpg";
-        String image2 = "http://blog.typeathought.com/wp-content/uploads/2018/06/football.jpg";
-        String image3 = "https://cdn-triplem.scadigital.io/media/46306/cricket-australia.jpg?preset=MainImage";
+        final FrameLayout frame1 = findViewById(R.id.frame1);
+        final FrameLayout frame2 = findViewById(R.id.frame2);
+        breaking_ll1 = findViewById(R.id.breaking_ll1);
+        progressBar = findViewById(R.id.progressBar);
 
-        String head1 = "Football news 1";
-        String head2 = "Football news 2";
-        String head3 = "Cricket news 3";
+        frame1.setVisibility(View.GONE);
+        frame2.setVisibility(View.GONE);
+        breaking_ll1.setVisibility(View.GONE);
+        recycler.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
-        String desc1 = "Kane played 573 minutes at the World Cup this summer, picking up six goals and the Golden Boot along the way.";
-        String desc2 = "Southgate said: \"Harry falls in the category in which we have several players where we have to watch how much they play.\"";
-        String desc3 = "After the two-and-a-half-day disaster at The Lord's last month, Virat Kohli's boys are now staring at another humiliation at the other end of London, The Oval.";
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<PostDetailPojo> call = apiService.getPostDetails(postId);
 
-        String view1 = "15";
-        String view2 = "19";
-        String view3 = "25";
+        call.enqueue(new Callback<PostDetailPojo>() {
+            @Override
+            public void onResponse(Call<PostDetailPojo> call, Response<PostDetailPojo> response) {
 
-        String likes1 = "10";
-        String likes2 = "15";
-        String likes3 = "20";
+                if (response.isSuccessful()) {
 
-        ArrayList<String> comments1 = new ArrayList<>();
-        ArrayList<String> comments2 = new ArrayList<>();
-        ArrayList<String> comments3 = new ArrayList<>();
+                    Log.d("Reached to", "postDetails");
+                    postDetails = response.body();
 
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up");
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
 
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up!!");
+                    PostsByCategory post = null;
 
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up!!");
+                    String id = postDetails.getResult().get(0).getPostId();
+                    String image = postDetails.getResult().get(0).getImage();
+                    String headlines = postDetails.getResult().get(0).getNewsHeadline();
+                    String description = postDetails.getResult().get(0).getNewsDescription();
+                    String views = postDetails.getResult().get(0).getViews();
+                    String likes = postDetails.getResult().get(0).getLikes();
+                    ArrayList<String> comments = (ArrayList<String>) postDetails.getResult().get(0).getComments();
+                    String selection = postDetails.getResult().get(0).getSelection();
+                    ArrayList<String> array = (ArrayList<String>) postDetails.getResult().get(0).getImageArray();
 
-        ArrayList<String> text1 = new ArrayList<>();
-        ArrayList<String> text2 = new ArrayList<>();
-        ArrayList<String> text3 = new ArrayList<>();
+                    PostsForLandscape posts = new PostsForLandscape();
+                    posts.setArray(array);
+                    posts.setComments(comments);
+                    posts.setSelection(selection);
+                    posts.setHeadlines(headlines);
+                    posts.setImage(image);
+                    posts.setId(id);
+                    posts.setDescription(description);
+                    posts.setLikes(likes);
 
-        text1.add("Breaking News");
-        text1.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text1.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text1.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
+                    // create a FragmentManager
+                    FragmentManager fm = getFragmentManager();
+// create a FragmentTransaction to begin the transaction and replace the Fragment
+                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
+// replace the FragmentLayout with new Fragment
 
-        text2.add("Breaking News");
-        text2.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text2.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text2.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", id);
+                    bundle.putString("image", image);
+                    bundle.putString("headlines", headlines);
+                    bundle.putString("description", description);
+                    bundle.putString("selection", selection);
+                    bundle.putStringArrayList("array", array);
 
-        text3.add("Breaking News");
-        text3.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text3.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
+                    fragment1.setArguments(bundle);
 
-        PostsByCategory p1 = new PostsByCategory("0", image1, head1, desc1, view1, likes1, comments1, text1);
-        PostsByCategory p2 = new PostsByCategory("1", image2, head2, desc2, view2, likes2, comments2, text2);
-        PostsByCategory p3 = new PostsByCategory("2", image3, head3, desc3, view3, likes3, comments3, text3);
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add(views);
+                    list.add(likes);
 
-        posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
+                    bundle.putStringArrayList("forLinearLayout", list);
+                    bundle.putStringArrayList("comments", comments);
+                    fragment2.setArguments(bundle);
 
-        posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
+                    fragmentTransaction.replace(R.id.frame2, fragment2);
+//        fragmentTransaction.commit();
+                    fragmentTransaction.replace(R.id.frame1, fragment1);
+                    fragmentTransaction.commit(); // save the changes
 
-        posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
+                } else {
+                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostDetailPojo> call, Throwable t) {
+                // Log error here since request failed
+                frame1.setVisibility(View.VISIBLE);
+                frame2.setVisibility(View.VISIBLE);
+                breaking_ll1.setVisibility(View.VISIBLE);
+                recycler.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+            }
+        });
+        //end of getting ads
     }
 
 
@@ -598,7 +610,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             adapter.clicked[adapter.previous] = false;
             adapter.clicked[adapter.previous + 1] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, adapter.previous + 1);
+            loadFragment(fragment1, fragment2, posts.get(adapter.previous + 1).getPostId());
             sharedPreferences.setClickedPosition(adapter.previous + 1);
 
             recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
@@ -616,7 +628,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         if (adapter.previous == 0) {
             adapter.clicked[(adapter.getItemCount() - 1) - 1] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, (adapter.getItemCount() - 1) - 1);
+            loadFragment(fragment1, fragment2, posts.get((adapter.getItemCount() - 1) - 1).getPostId());
             sharedPreferences.setClickedPosition((adapter.getItemCount() - 1) - 1);
 
             adapter.clicked[adapter.previous] = false;
@@ -625,7 +637,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         } else {
             adapter.clicked[adapter.previous - 1] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, (adapter.previous - 1));
+            loadFragment(fragment1, fragment2, posts.get((adapter.previous - 1)).getPostId());
             sharedPreferences.setClickedPosition((adapter.previous - 1));
 
             adapter.clicked[adapter.previous] = false;
@@ -787,6 +799,84 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             mediaPlayer.start();
 //            cancelDialog.cancel();
         }
+    }
+
+    public void lodaDataByCategory(){
+
+        final FrameLayout frame1 = findViewById(R.id.frame1);
+        final FrameLayout frame2 = findViewById(R.id.frame2);
+        breaking_ll1 = findViewById(R.id.breaking_ll1);
+        progressBar = findViewById(R.id.progressBar);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<TwentyPostsByCategory> call = apiService.getTwentyPostsByCategory(category);
+
+        call.enqueue(new Callback<TwentyPostsByCategory>() {
+
+            @Override
+            public void onResponse(Call<TwentyPostsByCategory> call, Response<TwentyPostsByCategory> response) {
+
+                TwentyPostsByCategory postsByCat = null;
+                if (response.isSuccessful()) {
+
+                    Log.d("Reached to", "getTwentyPostsByCategory");
+                    postsByCat = response.body();
+
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    PostsByCategory post = null;
+                    if(postsByCat != null) {
+                        for (int i = 0; i < postsByCat.getResult().size(); i++) {
+                            String id = postsByCat.getResult().get(0).getPostId();
+                            String image = postsByCat.getResult().get(0).getImage();
+                            String headlines = postsByCat.getResult().get(0).getNewsHeadline();
+                            String description = postsByCat.getResult().get(0).getNewsDescription();
+                            String views = postsByCat.getResult().get(0).getViews();
+                            String likes = postsByCat.getResult().get(0).getLikes();
+                            ArrayList<String> comments = (ArrayList<String>) postDetails.getResult().get(0).getComments();
+
+                            post = new PostsByCategory(id, image, headlines, description, views, likes, comments);
+                            posts.add(post);
+                        }
+                    }
+
+                    if (recycler != null) {
+                        FragmentImage fragment1 = new FragmentImage();
+                        FragmentLayout fragment2 = new FragmentLayout();
+                        loadFragment(fragment1, fragment2, postId);
+
+                        adapter = new BreakingNewsRecyclerAdapter(DisplayBreakingNewsActivity.this, posts);
+                        recycler.setLayoutManager(new LinearLayoutManager(DisplayBreakingNewsActivity.this, LinearLayoutManager.VERTICAL, false));
+                        recycler.setAdapter(adapter);
+                    }
+
+                } else {
+                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_LONG).show();
+
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TwentyPostsByCategory> call, Throwable t) {
+                // Log error here since request failed
+                frame1.setVisibility(View.VISIBLE);
+                frame2.setVisibility(View.VISIBLE);
+                breaking_ll1.setVisibility(View.VISIBLE);
+                recycler.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_LONG);
+            }
+        });
     }
 
 }

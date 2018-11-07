@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.NavItemModel;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
+import com.gsatechworld.gugrify.view.PostByCategory;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 
 import java.util.ArrayList;
@@ -86,18 +88,59 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Intent intent = new Intent(mContext, PostByCategory.class);
+                    intent.putExtra("category", sectionName);
+                    mContext.startActivity(intent);
+                }
+            });
+        }
+
+        //for showing video
+        else if (position == newsCategories.getCategory().size()) {
+
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, DisplayVideoActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
+
+        }
+
+        //for sign in and sign out
+        else if (position == newsCategories.getCategory().size()+1){
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
                 }
             });
-        } else if (position == newsCategories.getCategory().size()) {
-
-        } else if (position == newsCategories.getCategory().size()+1){
             if(sharedPreferences.getIsLoggedIn()){
                 holder.navItemTitle.setText("Sign Out");
             }
             else {
                 holder.navItemTitle.setText("Sign In");
             }
+        }
+        //for about us
+        else if (position == newsCategories.getCategory().size()+2){
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "About us clicked", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        //for contact us
+        else {
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "Contact us clicked", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -114,17 +157,6 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             super(itemView);
             this.navItemTitle = itemView.findViewById(R.id.navItemTitle);
             this.nav_linearLayout = itemView.findViewById(R.id.nav_linearLayout);
-
-            nav_linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(navItemTitle.getText().toString().equalsIgnoreCase("news videos")){
-                        Intent intent = new Intent(mContext, DisplayVideoActivity.class);
-                        mContext.startActivity(intent);
-                    }
-
-                }
-            });
         }
     }
 }

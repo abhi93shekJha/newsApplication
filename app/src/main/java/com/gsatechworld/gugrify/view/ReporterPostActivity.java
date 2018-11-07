@@ -110,7 +110,6 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
         main_layout = findViewById(R.id.main_layout);
         progressBar = findViewById(R.id.progressBar);
-        et_youtubeId = findViewById(R.id.et_youtubeId);
 
         sharedPreferences = NewsSharedPreferences.getInstance(ReporterPostActivity.this);
 
@@ -249,7 +248,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                         return;
                     }
                     ReporterPost post;
-                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", "",headline, brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", headline, "", brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
                     makeANewsPost(post);
                 } else {
                     for (int i = 0; i < imagesPresent.length; i++) {
@@ -259,7 +258,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                         }
                     }
                     ReporterPost post;
-                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", "",headline, brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "image_arrays", headline, "", brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    for (String image : imageArray)
+                        Log.d("Total images are", image);
                     makeANewsPost(post);
                 }
             }
@@ -274,9 +275,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
         categories.add("Education");
         categories.add("Select");*/
 
-       for(int i=0; i<DashboardActivity.newsCategories.getCategory().size(); i++){
-           categories.add(DashboardActivity.newsCategories.getCategory().get(i));
-       }
+        for (int i = 0; i < DashboardActivity.newsCategories.getCategory().size(); i++) {
+            categories.add(DashboardActivity.newsCategories.getCategory().get(i));
+        }
         categories.add("Select news category");
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories) {
 
@@ -395,8 +396,13 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                     Bitmap convertedImage = getResizedBitmap(bitmap, 600);
 
                     //setting into image Array to make a post
-                    imageArray[selectedImage] = getStringImage(convertedImage);
-                    imagesPresent[selectedImage] = true;
+                    if (selectedImage == 0) {
+                        mainImage = getStringImage(convertedImage);
+                        imagesPresent[selectedImage] = true;
+                    } else {
+                        imageArray[selectedImage - 1] = getStringImage(convertedImage);
+                        imagesPresent[selectedImage] = true;
+                    }
 
 //                    String path = saveImage(bitmap);
                     Toast.makeText(ReporterPostActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();

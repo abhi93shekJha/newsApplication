@@ -37,7 +37,7 @@ import java.util.List;
 
 public class FragmentImage extends Fragment {
     TextView animatedTextView;
-    String post_id;
+    String id, image, headlines, description, selection, array;
     Animation zoomIn, animFadeIn, animFadeOut, animFadeIn1, animFadeOut1;
     Handler mHandler, animateHandler;
     AutoScrollViewPager viewPager;

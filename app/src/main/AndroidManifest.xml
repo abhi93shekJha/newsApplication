@@ -92,6 +92,7 @@
         <activity android:name=".view.playlist.PlayListDetaildViewActivity" />
         <activity android:name=".view.ActivityShowWebView" />
         <activity android:name=".view.authentication.ReporterLoginActivity" />
+        <activity android:name=".view.PostByCategory" />
     </application>
 
 </manifest>

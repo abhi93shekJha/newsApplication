@@ -1,121 +1,90 @@
 package com.gsatechworld.gugrify.view.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.fragment.FragmentImage;
+import com.gsatechworld.gugrify.fragment.FragmentLayout;
+import com.gsatechworld.gugrify.model.retrofit.CategoryPosts;
 import com.gsatechworld.gugrify.model.retrofit.ReporterPostById;
+import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
+import com.gsatechworld.gugrify.view.PostByCategory;
 
 import java.util.Calendar;
 import java.util.List;
 
-public class PostsByCategoryAdapter {
-        Context context;
-        Calendar rightNow = Calendar.getInstance();
+public class PostsByCategoryAdapter extends RecyclerView.Adapter<PostsByCategoryAdapter.ReporterViewHolder> {
 
+    Context context;
+    CategoryPosts posts;
 
-        List<ReporterPostById.Result> posts;
+    public PostsByCategoryAdapter(Context context, CategoryPosts posts) {
+        this.posts = posts;
+        this.context = context;
+    }
 
-        public ReporterProfileRecyclerAdapter(Context context, List<ReporterPostById.Result> result) {
-            this.context = context;
-            posts = result;
-        }
+    public class ReporterViewHolder extends RecyclerView.ViewHolder {
 
-        public void updateList(List<ReporterPostById.Result> newList) {
-            posts = newList;
-            notifyDataSetChanged();
-        }
+        private TextView headline, description, views, likes;
+        private CardView cardView;
+        private ImageView image;
 
-        public class ReporterViewHolder extends RecyclerView.ViewHolder {
-            ImageView video_thumbnail_image_view;
-            TextView textViewname, text1, textTime, textLike;
-
-            public ReporterViewHolder(View view) {
-                super(view);
-                video_thumbnail_image_view = view.findViewById(R.id.video_thumbnail_image_view);
-                textViewname = view.findViewById(R.id.textViewname);
-                text1 = view.findViewById(R.id.text1);
-                textTime = view.findViewById(R.id.text2);
-                textLike = view.findViewById(R.id.text3);
-            }
-        }
-
-        @NonNull
-        @Override
-        public com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter.ReporterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            View view = inflater.inflate(R.layout.reporter_profile_recycler_item, parent, false);
-            return new com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter.ReporterViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter.ReporterViewHolder holder, int position) {
-            Glide.with(context).load(posts.get(position)).into(holder.video_thumbnail_image_view);
-            holder.textViewname.setText(posts.get(position).getPostHeading());
-            holder.textLike.setText(posts.get(position).getLikes());
-            holder.text1.setText(posts.get(position).getViews() + " views");
-
-            String day = "" + rightNow.get(Calendar.DATE);
-            if (day.length() == 1) {
-                day = "0" + day;
-            }
-
-            String month = "" + rightNow.get(Calendar.MONTH);
-            if (month.length() == 1) {
-                month = "0" + month;
-            }
-            String year = "" + rightNow.get(Calendar.YEAR);
-
-            String date = year + "-" + month + "-" + day;
-
-            if (date.equalsIgnoreCase(posts.get(position).getPostDate())) {
-
-                int hour = rightNow.get(Calendar.HOUR);
-                int minutes = rightNow.get(Calendar.MINUTE);
-                int seconds = rightNow.get(Calendar.SECOND);
-                String amOrPm = rightNow.get(Calendar.AM_PM) == 0 ? "AM" : "PM";
-
-                String time = posts.get(position).getPostTime();
-                int Hour = Integer.parseInt(time.substring(0, 2));
-                int Minutes = Integer.parseInt(time.substring(3, 5));
-                int Seconds = Integer.parseInt(time.substring(6, 8));
-                String AMORPM = time.substring(9);
-
-                int hourDiff = 0;
-                int minutesDiff = 0;
-
-                if (AMORPM.equalsIgnoreCase(amOrPm)) {
-                    hourDiff = hour - Hour;
-                    if (minutes < Minutes) {
-                        hourDiff = hourDiff - 1;
-                        minutesDiff = (60 - Minutes) + minutes;
-                    } else {
-                        minutesDiff = Minutes - minutes;
-                    }
-                } else {
-                    if(AMORPM.equalsIgnoreCase("AM") && amOrPm.equalsIgnoreCase("PM")){
-                        hourDiff = hour + 12 - Hour;
-                        minutesDiff = minutes + (60 - Minutes);
-                    }
-                }
-                holder.textTime.setText(hourDiff+" hours "+minutesDiff+" minutes ago");
-            } else {
-                holder.textTime.setText(date);
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return posts.size();
+        public ReporterViewHolder(View view) {
+            super(view);
+            cardView = view.findViewById(R.id.youtube_row_card_view);
+            image = view.findViewById(R.id.video_thumbnail_image_view);
+            headline = view.findViewById(R.id.textViewname);
+            description = view.findViewById(R.id.textViewdescription);
+            views = view.findViewById(R.id.text1);
+            likes = view.findViewById(R.id.text2);
         }
     }
 
+    @NonNull
+    @Override
+    public ReporterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.activity_playlist, parent, false);
 
+        return new ReporterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ReporterViewHolder holder, final int position) {
+        Glide.with(context).load(posts.getResult().get(position).getImage()).into(holder.image);
+        holder.headline.setText(posts.getResult().get(position).getNewsHeadline());
+        holder.description.setText(posts.getResult().get(position).getNewsDescription());
+        holder.likes.setText(posts.getResult().get(position).getLikes());
+        holder.views.setText(posts.getResult().get(position).getViews());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DisplayBreakingNewsActivity.class);
+                intent.putExtra("postId", posts.getResult().get(position).getPostId());
+                context.startActivity(intent);
+                if (context instanceof PostByCategory)
+                    ((PostByCategory) context).finish();
+            }
+        });
+    }
+
+
+    @Override
+    public int getItemCount() {
+        if (posts.getResult() == null)
+            return 0;
+        else
+            return posts.getResult().size();
+    }
+}
