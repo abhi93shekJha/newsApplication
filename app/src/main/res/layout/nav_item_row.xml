@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_black"
+    android:id="@+id/nav_linearLayout"
     android:gravity="center_vertical"
     android:orientation="vertical">
     <LinearLayout

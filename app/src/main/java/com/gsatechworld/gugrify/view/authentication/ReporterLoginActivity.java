@@ -84,26 +84,32 @@ public class ReporterLoginActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Log.d("Reached here", "true");
                     reporterDetail = response.body();
-                    sharedPreferences.setSharedPrefValue("reporterId", reporterDetail.getReporter_id());
-                    sharedPreferences.setSharedPrefValue("reporterLanguage", reporterDetail.getLanguage());
-                    sharedPreferences.setSharedPrefValue("reporterCity", reporterDetail.getReporter_place());
-                    sharedPreferences.setSharedPrefValue("reporterName", reporterDetail.getReporter_name());
-                    sharedPreferences.setSharedPrefValue("reporterPic", reporterDetail.getReporter_pic());
-                    sharedPreferences.setSharedPrefValue("reporterAdsCount", reporterDetail.getTotal_ads_count());
-                    sharedPreferences.setSharedPrefValue("reporterPostsCount", reporterDetail.getTotal_posts_count());
-                    Intent intent = new Intent(ReporterLoginActivity.this, ReporterProfile.class);
-                    sharedPreferences.setSharedPrefValueBoolean("reporterLoggedIn", true);
-                    startActivity(intent);
-                    finish();
+                    if(reporterDetail.getResponse() != null && reporterDetail.getResponse().equalsIgnoreCase("Failed")){
+                        Toast.makeText(ReporterLoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Log.d("id is", reporterDetail.getReporter_id() + reporterDetail.getLanguage());
+                        sharedPreferences.setSharedPrefValue("reporterId", reporterDetail.getReporter_id());
+                        sharedPreferences.setSharedPrefValue("reporterLanguage", reporterDetail.getLanguage());
+                        sharedPreferences.setSharedPrefValue("reporterCity", reporterDetail.getReporter_place());
+                        sharedPreferences.setSharedPrefValue("reporterName", reporterDetail.getReporter_name());
+                        sharedPreferences.setSharedPrefValue("reporterPic", reporterDetail.getReporter_pic());
+                        sharedPreferences.setSharedPrefValue("reporterAdsCount", reporterDetail.getTotal_ads_count());
+                        sharedPreferences.setSharedPrefValue("reporterPostsCount", reporterDetail.getTotal_posts_count());
+                        Intent intent = new Intent(ReporterLoginActivity.this, ReporterProfile.class);
+                        sharedPreferences.setSharedPrefValueBoolean("reporterLoggedIn", true);
+                        startActivity(intent);
+                        finish();
+                    }
                 } else {
-                    Toast.makeText(ReporterLoginActivity.this, "Invalid credentials!!", Toast.LENGTH_SHORT);
+                    Toast.makeText(ReporterLoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG);
                 }
             }
 
             @Override
             public void onFailure(Call<ReporterLogin> call, Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(ReporterLoginActivity.this, "Server error!! Try again.", Toast.LENGTH_SHORT);
+                Toast.makeText(ReporterLoginActivity.this, "Server error!! Try again.", Toast.LENGTH_LONG);
             }
         });
 

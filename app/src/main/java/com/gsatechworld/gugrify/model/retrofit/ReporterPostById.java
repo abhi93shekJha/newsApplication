@@ -43,10 +43,10 @@ public class ReporterPostById {
         private String postTime;
         @SerializedName("views")
         @Expose
-        private Integer views;
+        private String views;
         @SerializedName("likes")
         @Expose
-        private Integer likes;
+        private String likes;
 
         public String getResponse() {
             return response;
@@ -96,21 +96,15 @@ public class ReporterPostById {
             this.postTime = postTime;
         }
 
-        public Integer getViews() {
+        public String getViews() {
             return views;
         }
 
-        public void setViews(Integer views) {
-            this.views = views;
-        }
 
-        public Integer getLikes() {
+        public String getLikes() {
             return likes;
         }
 
-        public void setLikes(Integer likes) {
-            this.likes = likes;
-        }
     }
 
 }

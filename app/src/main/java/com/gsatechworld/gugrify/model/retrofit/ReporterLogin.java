@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class ReporterLogin {
 
+    public String getResponse() {
+        return response;
+    }
+
+    @SerializedName("response")
+    String response;
     @SerializedName("message")
     String message;
     @SerializedName("reporter_id")

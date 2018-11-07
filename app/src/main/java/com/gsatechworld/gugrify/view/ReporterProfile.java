@@ -87,6 +87,8 @@ public class ReporterProfile extends AppCompatActivity {
 
         setContentView(R.layout.activity_reporter_profile);
         results = new ArrayList<>();
+        main_layout = findViewById(R.id.main_layout);
+        progressBar = findViewById(R.id.progressBar);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,10 +104,6 @@ public class ReporterProfile extends AppCompatActivity {
         languageAndCityFloating =(FloatingActionButton) findViewById(R.id.languageAndCityFloating);
 
         makePostRequest(sharedPreferences.getSharedPrefValue("reporterId"));
-        RecyclerView recyclerView = findViewById(R.id.reporter_profile_recycler);
-        adapter = new ReporterProfileRecyclerAdapter(this, results);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
 
         CircleImageView reporterImage = findViewById(R.id.reporterImage);
         TextView reporterName = findViewById(R.id.reporterName);
@@ -152,8 +150,6 @@ public class ReporterProfile extends AppCompatActivity {
         iv_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ReporterProfile.this, DashboardActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
@@ -387,14 +383,17 @@ public class ReporterProfile extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     reporterProfile = response.body();
                     results = reporterProfile.getResult();
-                    Log.d("Reached here", "true");
-                    adapter.notifyDataSetChanged();
+                    Log.d("Reached here", "to getting posts");
+                    RecyclerView recyclerView = findViewById(R.id.reporter_profile_recycler);
+                    adapter = new ReporterProfileRecyclerAdapter(ReporterProfile.this, results);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(ReporterProfile.this, LinearLayoutManager.VERTICAL, false));
+                    recyclerView.setAdapter(adapter);
 
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
                 } else {
-                    Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_SHORT);
+                    Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
@@ -403,7 +402,7 @@ public class ReporterProfile extends AppCompatActivity {
             @Override
             public void onFailure(Call<ReporterPostById> call, Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_SHORT);
+                Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
                 main_layout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }

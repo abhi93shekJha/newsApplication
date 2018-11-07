@@ -42,6 +42,9 @@ public class ActivityShowWebView extends AppCompatActivity implements SwipeRefre
         swipe.setOnRefreshListener(this);
         currentURL = getIntent().getStringExtra("url");
         w.loadUrl(currentURL);
+        w.getSettings().setLoadsImagesAutomatically(true);
+        w.getSettings().setJavaScriptEnabled(true);
+        w.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         w.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {

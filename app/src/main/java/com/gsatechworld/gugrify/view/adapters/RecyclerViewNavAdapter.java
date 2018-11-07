@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gsatechworld.gugrify.NewsSharedPreferences;
@@ -81,9 +82,16 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
         if (position < newsCategories.getCategory().size()) {
             final String sectionName = newsCategories.getCategory().get(position);
             holder.navItemTitle.setText(sectionName);
+
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
         } else if (position == newsCategories.getCategory().size()) {
 
-        } else {
+        } else if (position == newsCategories.getCategory().size()+1){
             if(sharedPreferences.getIsLoggedIn()){
                 holder.navItemTitle.setText("Sign Out");
             }
@@ -100,18 +108,21 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         protected TextView navItemTitle;
+        protected LinearLayout nav_linearLayout;
 
         public ItemRowHolder(View itemView) {
             super(itemView);
             this.navItemTitle = itemView.findViewById(R.id.navItemTitle);
+            this.nav_linearLayout = itemView.findViewById(R.id.nav_linearLayout);
 
-            navItemTitle.setOnClickListener(new View.OnClickListener() {
+            nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(navItemTitle.getText().toString().equalsIgnoreCase("news videos")){
                         Intent intent = new Intent(mContext, DisplayVideoActivity.class);
                         mContext.startActivity(intent);
                     }
+
                 }
             });
         }

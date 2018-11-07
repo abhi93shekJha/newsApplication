@@ -267,12 +267,17 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
         //Spinner for category (has to be fetched from API)
         Spinner categoriesSpinner = findViewById(R.id.categorySelectionSpinner);
-        categories.add("Sports");
+       /* categories.add("Sports");
         categories.add("Business");
         categories.add("Arts and Culture");
         categories.add("Entertainment");
         categories.add("Education");
-        categories.add("Select");
+        categories.add("Select");*/
+
+       for(int i=0; i<DashboardActivity.newsCategories.getCategory().size(); i++){
+           categories.add(DashboardActivity.newsCategories.getCategory().get(i));
+       }
+        categories.add("Select news category");
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories) {
 
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -361,6 +366,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                 //setting into image Array to make a post
                 if (selectedImage == 0) {
                     mainImage = getStringImage(convertedImage);
+                    imagesPresent[selectedImage] = true;
                 } else {
                     imageArray[selectedImage - 1] = getStringImage(convertedImage);
                     imagesPresent[selectedImage] = true;
@@ -652,8 +658,9 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call<ReporterPost> call, Response<ReporterPost> response) {
                 ReporterPost responseOfPosting = null;
                 if (response.isSuccessful()) {
-                    Log.d("Reached here", "true");
                     responseOfPosting = response.body();
+
+                    Toast.makeText(ReporterPostActivity.this, "News successfully posted!!!", Toast.LENGTH_LONG).show();
 
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);

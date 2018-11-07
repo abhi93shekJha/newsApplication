@@ -105,7 +105,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     ApiInterface apiService;
     public static NewsCategories newsCategories;
     RecyclerViewNavAdapter navAdapter;
-    DrawerLayout drawer_layout;
+    RecyclerView my_recycler_view;
 
     private MediaPlayer mediaPlayer;
 
@@ -137,10 +137,15 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             View view = getSupportActionBar().getCustomView();
         }
 
-        mainLayout = findViewById(R.id.drawer_layout);
         progressBar = findViewById(R.id.progressBar);
         sharedPreferences = NewsSharedPreferences.getInstance(this);
-        drawer_layout = findViewById(R.id.drawer_layout);
+        my_recycler_view = findViewById(R.id.my_recycler_view);
+
+        //filling navigation bar
+        if(newsCategories.getCategory() == null){
+            getReporterCategories();
+        }
+
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -167,9 +172,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 if (drawer.isDrawerVisible(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 } else {
-                    if(newsCategories.getCategory() == null){
-                        getReporterCategories();
-                    }
+                    Log.d("Yes it is", "toggeling");
                     drawer.openDrawer(GravityCompat.START);
                 }
             }
@@ -243,13 +246,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // create nav item list
         ArrayList<NavItemModel> navItemModelArrayList = getNavItemList();
 
-        RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
-        recycler_nav_item.setHasFixedSize(true);
-        navAdapter = new RecyclerViewNavAdapter(newsCategories, this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recycler_nav_item.setLayoutManager(layoutManager);
-        recycler_nav_item.setAdapter(navAdapter);
-        ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
 
@@ -581,8 +577,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     public void getReporterCategories(){
 
-        drawer_layout.setAlpha(0.5f);
-        drawer_layout.setFocusable(false);
+        my_recycler_view.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -593,17 +588,21 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
 
                 if (response.isSuccessful()) {
-                    Log.d("Reached here", "true");
+                    Log.d("Reached here", "to dashboard");
                     newsCategories = response.body();
-                    navAdapter.notifyDataSetChanged();
+                    RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
+                    recycler_nav_item.setHasFixedSize(true);
+                    navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                    recycler_nav_item.setLayoutManager(layoutManager);
+                    recycler_nav_item.setAdapter(navAdapter);
+                    ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
 
-                    drawer_layout.setAlpha(1f);
-                    drawer_layout.setFocusable(true);
+                    my_recycler_view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT);
-                    drawer_layout.setAlpha(1f);
-                    drawer_layout.setFocusable(true);
+                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -611,9 +610,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             @Override
             public void onFailure(Call<NewsCategories> call, Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT);
-                drawer_layout.setAlpha(1f);
-                drawer_layout.setFocusable(true);
+                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                my_recycler_view.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }
         });
