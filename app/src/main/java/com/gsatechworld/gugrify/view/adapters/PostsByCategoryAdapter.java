@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,12 @@ public class PostsByCategoryAdapter extends RecyclerView.Adapter<PostsByCategory
 
     Context context;
     CategoryPosts posts;
+    String category;
 
-    public PostsByCategoryAdapter(Context context, CategoryPosts posts) {
+    public PostsByCategoryAdapter(Context context, CategoryPosts posts, String category) {
         this.posts = posts;
         this.context = context;
+        this.category = category;
     }
 
     public class ReporterViewHolder extends RecyclerView.ViewHolder {
@@ -72,6 +75,8 @@ public class PostsByCategoryAdapter extends RecyclerView.Adapter<PostsByCategory
             public void onClick(View view) {
                 Intent intent = new Intent(context, DisplayBreakingNewsActivity.class);
                 intent.putExtra("postId", posts.getResult().get(position).getPostId());
+                Log.d("Entered Post id is", posts.getResult().get(position).getPostId());
+                intent.putExtra("category", category);
                 context.startActivity(intent);
                 if (context instanceof PostByCategory)
                     ((PostByCategory) context).finish();

@@ -88,7 +88,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                     if(context instanceof DisplayBreakingNewsActivity){
                         sharedPreferences.setClickedPosition(position-1);
                         notifyItemChanged(position);
-                        ((DisplayBreakingNewsActivity) context).loadFragment(fragment1, fragment2, posts.get(position).getPostId());
+                        ((DisplayBreakingNewsActivity) context).loadFragment(fragment1, fragment2, posts.get(position-1).getPostId());
                     }
                 }
             });

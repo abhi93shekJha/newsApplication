@@ -50,32 +50,20 @@ public class FragmentImage extends Fragment {
     NewsSharedPreferences sharedPreferences;
     RelativeLayout postDetailFragmentImage;
     private ImageView dots[];
-    boolean first = true;
     int i=0;
-    InterstitialAd mInterstitialAd;
+    List<String> texts;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.display_breaking_news_image_fragment, container, false);
-        post_id = getArguments().getString("post_id");
-        Log.d("Post id is:", post_id);
-        final ArrayList<String> texts = (ArrayList<String>) getPostDetailsFromServer(post_id);
         animateHandler = new Handler();
 
 
-        //interstitial advertisement
-        mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-        });//end of advertisement
-
+        //getting the texts from postDetails
+        texts = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getImageArray();
+        selection = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getSelection();
 
         postDetailFragmentImage = view.findViewById(R.id.fragment_image_layout);
         animatedTextView = view.findViewById(R.id.breakingNewstextWithAnimation);
@@ -159,44 +147,47 @@ public class FragmentImage extends Fragment {
 
         if(animatedTextView != null) {
 
-            animatedTextView.setTypeface(fontBold);
+            if(!selection.equalsIgnoreCase("images_arary")) {
 
-            zoomIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.zoom_in);
-            animatedTextView.setText(texts.get(0));
-            animatedTextView.setAnimation(zoomIn);
+                animatedTextView.setTypeface(fontBold);
 
-            zoomIn.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
+                zoomIn = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.zoom_in);
+                animatedTextView.setText(texts.get(i));
+                animatedTextView.setAnimation(zoomIn);
 
-                }
+                zoomIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    zoomIn = animation;
-                    Log.d("Reached on end ", "true");
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("Inside", "postDelayed"+String.valueOf(i));
-                            if(i >= 2)
-                                i=-1;
-                            animatedTextView.setText(texts.get(++i));
-                            animatedTextView.startAnimation(zoomIn);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        zoomIn = animation;
+                        Log.d("Reached on end ", "true");
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("Inside", "postDelayed" + String.valueOf(i));
+                                if (i >= 11)
+                                    i = -1;
+                                animatedTextView.setText(texts.get(++i));
+                                animatedTextView.startAnimation(zoomIn);
 //                            animatedTextView.setText(texts.get(i++));
-                            //start your activity here
-                        }
+                                //start your activity here
+                            }
 
-                    }, 3000L);
+                        }, 3000L);
 
-                }
+                    }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
 
-                    Log.d("Reached on repeat ", "true");
-                }
-            });
+                        Log.d("Reached on repeat ", "true");
+                    }
+                });
+            }
 
         } // till here I have set the text animation
 
@@ -212,19 +203,16 @@ public class FragmentImage extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mHandler.removeCallbacksAndMessages(null);
-                animatedTextView.setVisibility(View.GONE);
+                if(selection.equalsIgnoreCase("images_arary")) {
 
-                view.setVisibility(View.GONE);
-                play.setVisibility(View.VISIBLE);
+                    mHandler.removeCallbacksAndMessages(null);
+                    animatedTextView.setVisibility(View.GONE);
 
-                animateHandler.removeCallbacksAndMessages(null);
-                pausePlayLayout.setVisibility(View.VISIBLE);
+                    view.setVisibility(View.GONE);
+                    play.setVisibility(View.VISIBLE);
 
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                    animateHandler.removeCallbacksAndMessages(null);
+                    pausePlayLayout.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -234,16 +222,18 @@ public class FragmentImage extends Fragment {
             @Override
             public void onClick(View view) {
 
-                animatedTextView.setVisibility(View.VISIBLE);
-                if(i == 2)
-                    i = -1;
-                animatedTextView.setText(texts.get(++i));
-                animatedTextView.startAnimation(zoomIn);
+                if(selection.equalsIgnoreCase("images_arary")) {
+                    animatedTextView.setVisibility(View.VISIBLE);
+                    if (i == 11)
+                        i = -1;
+                    animatedTextView.setText(texts.get(++i));
+                    animatedTextView.startAnimation(zoomIn);
 
-                view.setVisibility(View.GONE);
-                pause.setVisibility(View.VISIBLE);
+                    view.setVisibility(View.GONE);
+                    pause.setVisibility(View.VISIBLE);
 
-                pausePlayLayout.startAnimation(animFadeOut);
+                    pausePlayLayout.startAnimation(animFadeOut);
+                }
             }
         }); // pausing and playing stops here
 
@@ -257,8 +247,8 @@ public class FragmentImage extends Fragment {
         viewPager.setCycle(true);
         viewPager.setStopScrollWhenTouch(true);
 
-        //here I am setting the visibility of viewPage and textAnimations according to item selected
-        if(sharedPreferences.getClickedPosition()%2 == 0){
+        //here I am setting the visibility of viewPager and textAnimations according to item selected
+        if(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getSelection().equalsIgnoreCase("images_arary")){
             frameLayoutTextAnimation.setVisibility(View.VISIBLE);
             frameLayoutViewPager.setVisibility(View.GONE);
         }
@@ -267,7 +257,7 @@ public class FragmentImage extends Fragment {
             frameLayoutViewPager.setVisibility(View.VISIBLE);
         }
 
-        b = new BreakingNewsViewPagerAdapter(getActivity().getApplicationContext());
+        b = new BreakingNewsViewPagerAdapter(getActivity().getApplicationContext(), DisplayBreakingNewsActivity.postDetails.getResult().get(0).getImageArray());
         viewPager.setAdapter(b);
         dotscount = b.getCount();
         dots = new ImageView[dotscount];
@@ -350,11 +340,6 @@ public class FragmentImage extends Fragment {
                 b.animateHandler.removeCallbacksAndMessages(null);
                 pausePlayLayout1.setVisibility(View.VISIBLE);
 
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
 
             }
         });

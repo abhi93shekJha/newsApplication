@@ -11,9 +11,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 
+import java.util.List;
 import java.util.logging.Handler;
 
 import static com.gsatechworld.gugrify.fragment.FragmentImage.pausePlayLayout1;
@@ -22,25 +24,18 @@ public class BreakingNewsViewPagerAdapter extends PagerAdapter {
 
     Animation animFadeIn1, animFadeOut1;
     public android.os.Handler animateHandler;
-    private Integer[] images = {  R.mipmap.road1,
-            R.mipmap.road2,
-            R.mipmap.road6,
-            R.mipmap.road1,
-            R.mipmap.road2,
-            R.mipmap.road2,
-            R.mipmap.road6,
-            R.mipmap.road1,
-            R.mipmap.road2, R.mipmap.road2};
+    List<String> imageArray;
 
     Context context;
-    public BreakingNewsViewPagerAdapter(Context context){
+    public BreakingNewsViewPagerAdapter(Context context, List<String> arr){
         this.context = context;
+        imageArray = arr;
         animateHandler = new android.os.Handler();
     }
 
     @Override
     public int getCount() {
-        return 10;
+        return imageArray.size();
     }
 
     @Override
@@ -49,7 +44,7 @@ public class BreakingNewsViewPagerAdapter extends PagerAdapter {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.breaking_news_view_pager_item, null);
         ImageView image = view.findViewById(R.id.view_pager_image_item);
-        image.setImageResource(images[position]);
+        Glide.with(context).load(imageArray.get(position)).into(image);
 
         animFadeOut1 = AnimationUtils.loadAnimation(context, R.anim.fade_out);
         animFadeIn1 = AnimationUtils.loadAnimation(context, R.anim.pause_play_fade_in);

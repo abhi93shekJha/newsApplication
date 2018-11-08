@@ -96,6 +96,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     public boolean active = false;
     String postId = "", category="";
     public static PostDetailPojo postDetails = null;
+    PostsForLandscape landscapePosts;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +182,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 frameLayoutTextAnimation.setVisibility(View.GONE);
                 frameLayoutViewPager.setVisibility(View.VISIBLE);
             }
-            b = new BreakingNewsViewPagerAdapter(DisplayBreakingNewsActivity.this);
+            b = new BreakingNewsViewPagerAdapter(DisplayBreakingNewsActivity.this, postDetails.getResult().get(0).getImageArray());
             viewPager.setAdapter(b);
             dotscount = b.getCount();
             dots = new ImageView[dotscount];
@@ -287,7 +288,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             textView.setTypeface(fontBold);
 
             zoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
-            textView.setText(posts.get(0).getTexts().get(i++));
+            textView.setText(postDetails.getResult().get(0).getImageArray().get(i++));
 //            zoomIn.setRepeatCount(Animation.INFINITE);
             textView.setAnimation(zoomIn);
 
@@ -305,10 +306,10 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                         @Override
                         public void run() {
                             Log.d("Inside", "postDelayed" + String.valueOf(i));
-                            if (i == 3)
+                            if (i == 12)
                                 i = 0;
                             textView.startAnimation(zoomIn);
-                            textView.setText(posts.get(sharedPreferences.getClickedPosition()).getTexts().get(i++));
+                            textView.setText(postDetails.getResult().get(0).getImageArray().get(i++));
                             //start your activity here
                         }
 
@@ -351,9 +352,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 public void onClick(View view) {
 
                     textView.setVisibility(View.VISIBLE);
-                    if (i == 3)
+                    if (i == 12)
                         i = 0;
-                    textView.setText(posts.get(sharedPreferences.getClickedPosition()).getTexts().get(i++));
+                    textView.setText(postDetails.getResult().get(0).getImageArray().get(i++));
                     textView.startAnimation(zoomIn);
 
                     view.setVisibility(View.GONE);
@@ -469,11 +470,11 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
     public void loadFragment(Fragment fragment1, Fragment fragment2, String postId) {
 
-        loadData(fragment1, fragment2);
+        loadData(fragment1, fragment2, postId);
 
     }
 
-    public void loadData(final Fragment fragment1, final Fragment fragment2) {
+    public void loadData(final Fragment fragment1, final Fragment fragment2, String postId) {
 
         final FrameLayout frame1 = findViewById(R.id.frame1);
         final FrameLayout frame2 = findViewById(R.id.frame2);
@@ -486,7 +487,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         recycler.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<PostDetailPojo> call = apiService.getPostDetails(postId);
 
         call.enqueue(new Callback<PostDetailPojo>() {
@@ -495,7 +496,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                 if (response.isSuccessful()) {
 
-                    Log.d("Reached to", "postDetails");
+                    Log.d("Reached to", "loadFragment");
                     postDetails = response.body();
 
                     frame1.setVisibility(View.VISIBLE);
@@ -515,16 +516,20 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     ArrayList<String> comments = (ArrayList<String>) postDetails.getResult().get(0).getComments();
                     String selection = postDetails.getResult().get(0).getSelection();
                     ArrayList<String> array = (ArrayList<String>) postDetails.getResult().get(0).getImageArray();
+                    String newsBrief = postDetails.getResult().get(0).getNewsBrief();
+                    String postTime = postDetails.getResult().get(0).getTimeOfPost();
 
-                    PostsForLandscape posts = new PostsForLandscape();
-                    posts.setArray(array);
-                    posts.setComments(comments);
-                    posts.setSelection(selection);
-                    posts.setHeadlines(headlines);
-                    posts.setImage(image);
-                    posts.setId(id);
-                    posts.setDescription(description);
-                    posts.setLikes(likes);
+                    landscapePosts = new PostsForLandscape();
+                    landscapePosts.setArray(array);
+                    landscapePosts.setComments(comments);
+                    landscapePosts.setSelection(selection);
+                    landscapePosts.setHeadlines(headlines);
+                    landscapePosts.setImage(image);
+                    landscapePosts.setId(id);
+                    landscapePosts.setDescription(description);
+                    landscapePosts.setLikes(likes);
+                    landscapePosts.setBrief(newsBrief);
+                    landscapePosts.setPostTime(postTime);
 
                     // create a FragmentManager
                     FragmentManager fm = getFragmentManager();
@@ -533,12 +538,14 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 // replace the FragmentLayout with new Fragment
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("id", id);
+                    /*bundle.putString("id", id);
                     bundle.putString("image", image);
                     bundle.putString("headlines", headlines);
                     bundle.putString("description", description);
                     bundle.putString("selection", selection);
                     bundle.putStringArrayList("array", array);
+                    bundle.putString("brief", newsBrief);
+                    bundle.putString("");*/
 
                     fragment1.setArguments(bundle);
 
@@ -600,7 +607,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         if (adapter.previous == (adapter.getItemCount() - 1) - 1) {
             adapter.clicked[0] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, 0);
+            loadFragment(fragment1, fragment2, posts.get(0).getPostId());
             sharedPreferences.setClickedPosition(0);
 
             adapter.clicked[(adapter.getItemCount() - 1) - 1] = false;
@@ -837,9 +844,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                             String description = postsByCat.getResult().get(0).getNewsDescription();
                             String views = postsByCat.getResult().get(0).getViews();
                             String likes = postsByCat.getResult().get(0).getLikes();
-                            ArrayList<String> comments = (ArrayList<String>) postDetails.getResult().get(0).getComments();
 
-                            post = new PostsByCategory(id, image, headlines, description, views, likes, comments);
+                            post = new PostsByCategory(id, image, headlines, description, views, likes);
                             posts.add(post);
                         }
                     }
@@ -874,7 +880,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 recycler.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
 
-                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_LONG);
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_LONG).show();
             }
         });
     }

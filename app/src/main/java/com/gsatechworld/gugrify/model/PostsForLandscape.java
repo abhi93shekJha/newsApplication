@@ -10,6 +10,26 @@ public class PostsForLandscape {
     String description;
     String views;
     String likes;
+
+    public String getPostTime() {
+        return postTime;
+    }
+
+    public void setPostTime(String postTime) {
+        this.postTime = postTime;
+    }
+
+    String postTime;
+
+    public String getBrief() {
+        return brief;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
+    }
+
+    String brief;
     ArrayList<String> comments = new ArrayList<>();
     String selection;
     ArrayList<String> array;

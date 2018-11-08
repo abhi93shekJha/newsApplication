@@ -58,7 +58,7 @@ public class PostByCategory extends AppCompatActivity {
 
                     Log.d("Reached here", "to getting postsByCategory");
                     posts = response.body();
-                    PostsByCategoryAdapter adapter = new PostsByCategoryAdapter(PostByCategory.this, posts);
+                    PostsByCategoryAdapter adapter = new PostsByCategoryAdapter(PostByCategory.this, posts, category);
                     post_by_category_recycler.setLayoutManager(new LinearLayoutManager(PostByCategory.this));
                     post_by_category_recycler.setAdapter(adapter);
 
