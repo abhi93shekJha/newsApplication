@@ -7,6 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gsatechworld.gugrify.R;
@@ -28,11 +31,16 @@ public class PostByCategory extends AppCompatActivity {
     Toolbar toolbar;
     ApiInterface apiService;
     String category;
+    ProgressBar progressBar;
+    TextView noNewsTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_by_category);
+
+        progressBar = findViewById(R.id. progressBar);
+        noNewsTextView = findViewById(R.id.noNewsTextView);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Gugrify");
@@ -47,6 +55,10 @@ public class PostByCategory extends AppCompatActivity {
     }
 
     void makeGetRequest(){
+
+        post_by_category_recycler.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
         apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CategoryPosts> call = apiService.getPostByCategory(category);
 
@@ -62,8 +74,17 @@ public class PostByCategory extends AppCompatActivity {
                     post_by_category_recycler.setLayoutManager(new LinearLayoutManager(PostByCategory.this));
                     post_by_category_recycler.setAdapter(adapter);
 
+                    post_by_category_recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    if(posts.getResult() == null){
+                        noNewsTextView.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     Toast.makeText(PostByCategory.this, "Server error!!", Toast.LENGTH_LONG).show();
+                    post_by_category_recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
@@ -71,6 +92,8 @@ public class PostByCategory extends AppCompatActivity {
             public void onFailure(Call<CategoryPosts> call, Throwable t) {
                 // Log error here since request failed
                 Toast.makeText(PostByCategory.this, "Server error!!", Toast.LENGTH_LONG).show();
+                post_by_category_recycler.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

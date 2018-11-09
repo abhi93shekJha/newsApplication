@@ -92,12 +92,6 @@
                 android:padding="5sp"
                 android:src="@drawable/share" />
 
-            <TextView
-                android:id="@+id/shareText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="152" />
         </LinearLayout>
 
         <LinearLayout

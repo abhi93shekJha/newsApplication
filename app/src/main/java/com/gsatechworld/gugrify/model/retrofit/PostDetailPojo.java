@@ -63,15 +63,15 @@ public class PostDetailPojo {
         @SerializedName("reporter_pic")
         @Expose
         private String reporterPic;
-        @SerializedName("comments")
-        @Expose
-        private List<String> comments = null;
         @SerializedName("likes")
         @Expose
-        private String likes;
+        private Integer likes;
         @SerializedName("views")
         @Expose
         private String views;
+        @SerializedName("comments")
+        @Expose
+        private List<Comment> comments = null;
         @SerializedName("image_array")
         @Expose
         private List<String> imageArray = null;
@@ -188,19 +188,11 @@ public class PostDetailPojo {
             this.reporterPic = reporterPic;
         }
 
-        public List<String> getComments() {
-            return comments;
-        }
-
-        public void setComments(List<String> comments) {
-            this.comments = comments;
-        }
-
-        public String getLikes() {
+        public Integer getLikes() {
             return likes;
         }
 
-        public void setLikes(String likes) {
+        public void setLikes(Integer likes) {
             this.likes = likes;
         }
 
@@ -210,6 +202,14 @@ public class PostDetailPojo {
 
         public void setViews(String views) {
             this.views = views;
+        }
+
+        public List<Comment> getComments() {
+            return comments;
+        }
+
+        public void setComments(List<Comment> comments) {
+            this.comments = comments;
         }
 
         public List<String> getImageArray() {
@@ -222,4 +222,30 @@ public class PostDetailPojo {
 
     }
 
+    public class Comment {
+
+        @SerializedName("user_name")
+        @Expose
+        private String userName;
+        @SerializedName("comments")
+        @Expose
+        private String comments;
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public String getComments() {
+            return comments;
+        }
+
+        public void setComments(String comments) {
+            this.comments = comments;
+        }
+
+    }
 }

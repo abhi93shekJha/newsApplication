@@ -1,5 +1,6 @@
 package com.gsatechworld.gugrify.view;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -71,7 +72,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     Animation zoomIn, animFadeIn, animFadeOut, animFadeIn1;
     AutoScrollViewPager viewPager;
     BreakingNewsRecyclerAdapter adapter;
-    RecyclerView recycler;
+    RecyclerView recycler,comments_recycler;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
     ImageView pause, play, pauseView, playView;
     public static LinearLayout pausePlayLayout;
@@ -86,17 +87,18 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     int i = 0, adCounter = 0;
     Handler mHandler, animateHandler;
     AdView mAdView;
-    ProgressBar progressBar;
+    ProgressBar progressBar, fragmentprogressBar;
     Dialog dialog, cancelDialog;
     int adsCount = 0, random = 0;
     MediaPlayer mediaPlayer;
     ImageView dialogImage;
-    TextView dialogText1, dialogText2;
+    TextView dialogText1, dialogText2, tv_comments;
     Button dialogUrlButton;
-    public boolean active = false;
-    String postId = "", category="";
+    public boolean active = true;
+    String postId = "", category = "";
     public static PostDetailPojo postDetails = null;
     PostsForLandscape landscapePosts;
+    static String selection;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,27 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         // finally change the color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
+        }
+
+
+        //for setting comments
+        tv_comments = findViewById(R.id.tv_comments);
+        comments_recycler = findViewById(R.id.comments_recycler);
+        if(tv_comments != null && comments_recycler != null){
+            tv_comments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    List<PostDetailPojo.Comment> comments = postDetails.getResult().get(0).getComments();
+                    TextView noComments_title = findViewById(R.id.noComments_title);
+                    if(comments.size() == 0){
+                        noComments_title.setVisibility(View.VISIBLE);
+                        comments_recycler.setVisibility(View.GONE);
+                    }
+                    else{
+
+                    }
+                }
+            });
         }
 
         animateHandler = new Handler();
@@ -157,16 +180,24 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
         mHandler = new Handler();
 
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
-
         recycler = findViewById(R.id.posts_recycler);
         frameLayoutTextAnimation = findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = findViewById(R.id.view_pager_frame_layout);
 
+        //load data for the first time
+        FragmentImage fragmentImage = new FragmentImage();
+        FragmentLayout frameLayout = new FragmentLayout();
+        if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            loadData(fragmentImage, frameLayout, postId);
+        else
+            active = false;
+
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
+
         //setting autoscroll viewpager for the landscape mode
         viewPager = findViewById(R.id.image_view_pager);
-        if (viewPager != null) {
+        if (viewPager != null && postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
 
             viewPager = findViewById(R.id.image_view_pager);
             viewPager.startAutoScroll();
@@ -174,8 +205,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             viewPager.setCycle(true);
             viewPager.setStopScrollWhenTouch(true);
 
-            //chaning the landscape mode to either animation or viewpager mode.
-            if (sharedPreferences.getClickedPosition() % 2 == 0) {
+            //here I am setting the visibility of viewPager and textAnimations according to item selected
+            if (!selection.equalsIgnoreCase("image_arrays")) {
                 frameLayoutTextAnimation.setVisibility(View.VISIBLE);
                 frameLayoutViewPager.setVisibility(View.GONE);
             } else {
@@ -237,10 +268,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         }
 
 
-        //this will fetch 20 posts by category from database
-        lodaDataByCategory();
-
-
         //this block of code is for pausing and play the visible animations (for text animations)
         pausePlayLayout = findViewById(R.id.pausePlayNextPreviousLayout);
         animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pause_play_fade_in);
@@ -283,9 +310,18 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         textView = findViewById(R.id.breakingNewstext);
 
-        if (textView != null) {
+        if (textView != null && !postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
 
             textView.setTypeface(fontBold);
+
+            //here I am setting the visibility of viewPager and textAnimations according to item selected
+            if (!selection.equalsIgnoreCase("image_arrays")) {
+                frameLayoutTextAnimation.setVisibility(View.VISIBLE);
+                frameLayoutViewPager.setVisibility(View.GONE);
+            } else {
+                frameLayoutTextAnimation.setVisibility(View.GONE);
+                frameLayoutViewPager.setVisibility(View.VISIBLE);
+            }
 
             zoomIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom_in);
             textView.setText(postDetails.getResult().get(0).getImageArray().get(i++));
@@ -406,65 +442,68 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         final FrameLayout frame2 = findViewById(R.id.frame2);
         breaking_ll1 = findViewById(R.id.breaking_ll1);
         progressBar = findViewById(R.id.progressBar);
-        if (results == null) {
-            frame1.setVisibility(View.GONE);
-            frame2.setVisibility(View.GONE);
-            breaking_ll1.setVisibility(View.GONE);
-            recycler.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
 
-            apiService = ApiClient.getClient().create(ApiInterface.class);
-            Log.d("selected city is", sharedPreferences.getCitySelected());
-            Call<CityWiseAdvertisement> call = apiService.getReporterAdvertisement(sharedPreferences.getCitySelected().toLowerCase());
+        if (frame1 != null) {
+            if (results == null) {
+                frame1.setVisibility(View.GONE);
+                frame2.setVisibility(View.GONE);
+                breaking_ll1.setVisibility(View.GONE);
+                recycler.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
 
-            call.enqueue(new Callback<CityWiseAdvertisement>() {
-                @Override
-                public void onResponse(Call<CityWiseAdvertisement> call, Response<CityWiseAdvertisement> response) {
-                    CityWiseAdvertisement advertisement = null;
-                    if (response.isSuccessful()) {
+                apiService = ApiClient.getClient().create(ApiInterface.class);
+                Log.d("selected city is", sharedPreferences.getCitySelected());
+                Call<CityWiseAdvertisement> call = apiService.getReporterAdvertisement(sharedPreferences.getCitySelected().toLowerCase());
 
-                        Log.d("Reached here", "true");
-                        advertisement = response.body();
-                        results = advertisement.getResult();
+                call.enqueue(new Callback<CityWiseAdvertisement>() {
+                    @Override
+                    public void onResponse(Call<CityWiseAdvertisement> call, Response<CityWiseAdvertisement> response) {
+                        CityWiseAdvertisement advertisement = null;
+                        if (response.isSuccessful()) {
 
-                        if (results.size() > 7)
-                            adsCount = 7;
-                        else
-                            adsCount = results.size();
+                            Log.d("Reached here", "true");
+                            advertisement = response.body();
+                            results = advertisement.getResult();
 
-                        showAds();
-                        Log.d("Result is", results.get(0).getCity());
-                        Log.d("Result is", results.get(0).getImage());
+                            if (results.size() > 7)
+                                adsCount = 7;
+                            else
+                                adsCount = results.size();
 
-                        frame1.setVisibility(View.VISIBLE);
-                        frame2.setVisibility(View.VISIBLE);
-                        breaking_ll1.setVisibility(View.VISIBLE);
-                        recycler.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                            showAds();
+                            Log.d("Result is", results.get(0).getCity());
+                            Log.d("Result is", results.get(0).getImage());
 
-                        frame1.setVisibility(View.VISIBLE);
-                        frame2.setVisibility(View.VISIBLE);
-                        breaking_ll1.setVisibility(View.VISIBLE);
-                        recycler.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
+                            frame1.setVisibility(View.VISIBLE);
+                            frame2.setVisibility(View.VISIBLE);
+                            breaking_ll1.setVisibility(View.VISIBLE);
+                            recycler.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                        } else {
+                            Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                            frame1.setVisibility(View.VISIBLE);
+                            frame2.setVisibility(View.VISIBLE);
+                            breaking_ll1.setVisibility(View.VISIBLE);
+                            recycler.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<CityWiseAdvertisement> call, Throwable t) {
-                    // Log error here since request failed
-                    frame1.setVisibility(View.VISIBLE);
-                    frame2.setVisibility(View.VISIBLE);
-                    breaking_ll1.setVisibility(View.VISIBLE);
-                    recycler.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
+                    @Override
+                    public void onFailure(Call<CityWiseAdvertisement> call, Throwable t) {
+                        // Log error here since request failed
+                        frame1.setVisibility(View.VISIBLE);
+                        frame2.setVisibility(View.VISIBLE);
+                        breaking_ll1.setVisibility(View.VISIBLE);
+                        recycler.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
-                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
-                }
-            });
-        }//end of getting ads
+                        Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                    }
+                });
+            }//end of getting ads
+        }
 
     }
 
@@ -480,12 +519,17 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         final FrameLayout frame2 = findViewById(R.id.frame2);
         breaking_ll1 = findViewById(R.id.breaking_ll1);
         progressBar = findViewById(R.id.progressBar);
+        fragmentprogressBar = findViewById(R.id.fragmentprogressBar);
 
-        frame1.setVisibility(View.GONE);
-        frame2.setVisibility(View.GONE);
-        breaking_ll1.setVisibility(View.GONE);
-        recycler.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        if (posts.size() == 0) {
+            frame1.setVisibility(View.GONE);
+            frame2.setVisibility(View.GONE);
+            breaking_ll1.setVisibility(View.GONE);
+            recycler.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            fragmentprogressBar.setVisibility(View.VISIBLE);
+        }
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<PostDetailPojo> call = apiService.getPostDetails(postId);
@@ -499,29 +543,38 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     Log.d("Reached to", "loadFragment");
                     postDetails = response.body();
 
-                    frame1.setVisibility(View.VISIBLE);
-                    frame2.setVisibility(View.VISIBLE);
-                    breaking_ll1.setVisibility(View.VISIBLE);
-                    recycler.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
+                    if (posts.size() == 0) {
+                        frame1.setVisibility(View.VISIBLE);
+                        frame2.setVisibility(View.VISIBLE);
+                        breaking_ll1.setVisibility(View.VISIBLE);
+                        recycler.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    } else
+                        fragmentprogressBar.setVisibility(View.VISIBLE);
 
                     PostsByCategory post = null;
 
+                    selection = postDetails.getResult().get(0).getSelection();
                     String id = postDetails.getResult().get(0).getPostId();
                     String image = postDetails.getResult().get(0).getImage();
                     String headlines = postDetails.getResult().get(0).getNewsHeadline();
                     String description = postDetails.getResult().get(0).getNewsDescription();
                     String views = postDetails.getResult().get(0).getViews();
-                    String likes = postDetails.getResult().get(0).getLikes();
-                    ArrayList<String> comments = (ArrayList<String>) postDetails.getResult().get(0).getComments();
+                    String likes = "" + postDetails.getResult().get(0).getLikes();
+                    List<PostDetailPojo.Comment> comments = postDetails.getResult().get(0).getComments();
                     String selection = postDetails.getResult().get(0).getSelection();
                     ArrayList<String> array = (ArrayList<String>) postDetails.getResult().get(0).getImageArray();
                     String newsBrief = postDetails.getResult().get(0).getNewsBrief();
                     String postTime = postDetails.getResult().get(0).getTimeOfPost();
 
+                    if (posts.size() == 0) {
+                        PostsByCategory category = new PostsByCategory(id, image, headlines, description, views, likes);
+                        posts.add(category);
+                    }
+
                     landscapePosts = new PostsForLandscape();
                     landscapePosts.setArray(array);
-                    landscapePosts.setComments(comments);
+//                    landscapePosts.setComments(comments);
                     landscapePosts.setSelection(selection);
                     landscapePosts.setHeadlines(headlines);
                     landscapePosts.setImage(image);
@@ -554,13 +607,19 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     list.add(likes);
 
                     bundle.putStringArrayList("forLinearLayout", list);
-                    bundle.putStringArrayList("comments", comments);
+//                    bundle.putStringArrayList("comments", comments);
                     fragment2.setArguments(bundle);
 
                     fragmentTransaction.replace(R.id.frame2, fragment2);
 //        fragmentTransaction.commit();
                     fragmentTransaction.replace(R.id.frame1, fragment1);
                     fragmentTransaction.commit(); // save the changes
+
+                    //this will fetch 20 posts by category from database
+                    if (posts.size() == 1)
+                        lodaDataByCategory();
+                    if (posts.size() > 1)
+                        adapter.notifyDataSetChanged();
 
                 } else {
                     Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
@@ -570,6 +629,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     breaking_ll1.setVisibility(View.VISIBLE);
                     recycler.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
+                    fragmentprogressBar.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -581,13 +641,13 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 breaking_ll1.setVisibility(View.VISIBLE);
                 recycler.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
+                fragmentprogressBar.setVisibility(View.VISIBLE);
 
                 Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
             }
         });
         //end of getting ads
     }
-
 
     @Override
     public void onBackPressed() {
@@ -763,7 +823,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     @Override
     protected void onResume() {
         super.onResume();
-        active = true;
         showAds();
     }
 
@@ -808,7 +867,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         }
     }
 
-    public void lodaDataByCategory(){
+    public void lodaDataByCategory() {
 
         final FrameLayout frame1 = findViewById(R.id.frame1);
         final FrameLayout frame2 = findViewById(R.id.frame2);
@@ -836,7 +895,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     progressBar.setVisibility(View.GONE);
 
                     PostsByCategory post = null;
-                    if(postsByCat != null) {
+                    if (postsByCat != null) {
                         for (int i = 0; i < postsByCat.getResult().size(); i++) {
                             String id = postsByCat.getResult().get(0).getPostId();
                             String image = postsByCat.getResult().get(0).getImage();
@@ -851,10 +910,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     }
 
                     if (recycler != null) {
-                        FragmentImage fragment1 = new FragmentImage();
-                        FragmentLayout fragment2 = new FragmentLayout();
-                        loadFragment(fragment1, fragment2, postId);
-
                         adapter = new BreakingNewsRecyclerAdapter(DisplayBreakingNewsActivity.this, posts);
                         recycler.setLayoutManager(new LinearLayoutManager(DisplayBreakingNewsActivity.this, LinearLayoutManager.VERTICAL, false));
                         recycler.setAdapter(adapter);

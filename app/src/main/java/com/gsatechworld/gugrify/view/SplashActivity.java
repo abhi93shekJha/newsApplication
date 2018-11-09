@@ -2,6 +2,7 @@ package com.gsatechworld.gugrify.view;
 /**
  * Created by Karthik's on 27-02-2016.
  */
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -35,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SplashActivity extends Activity implements Animation.AnimationListener{
+public class SplashActivity extends Activity implements Animation.AnimationListener {
 
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 6000;
@@ -85,7 +86,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
             @Override
             public void run() {
-                boolean b = Utility.checkInternet(SplashActivity.this);
+               /* boolean b = Utility.checkInternet(SplashActivity.this);
                 if(!b){
                     dialog = new Dialog(SplashActivity.this, R.style.NewDialog);//android.R.style.Theme_Dialog //android.R.style.Theme_Black_NoTitleBar_Fullscreen
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -100,12 +101,12 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 //        ImageView iv_close = (ImageView)dialog.findViewById(R.id.iv_close);
                     dialog.show();
 
-                }
-                else {
-                    Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
-                    startActivity(i);
-                    finish();
-                }
+                }*/
+
+                Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
+                startActivity(i);
+                finish();
+
             }
         }, SPLASH_TIME_OUT);
     }
@@ -134,12 +135,12 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
     }
 
-    private class AsyncCaller extends AsyncTask<Void, Void, Void>
-    {
+    private class AsyncCaller extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
+
         @Override
         protected Void doInBackground(Void... params) {
 

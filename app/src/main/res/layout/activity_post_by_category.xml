@@ -23,6 +23,17 @@
         android:layout_gravity="center_vertical"
         android:indeterminateDrawable="@drawable/custom_progress_dialog"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/noNewsTextView"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:layout_below="@+id/toolbar"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:text="No news available with selected category."/>
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/toolbar"
         android:id="@+id/post_by_category_recycler"

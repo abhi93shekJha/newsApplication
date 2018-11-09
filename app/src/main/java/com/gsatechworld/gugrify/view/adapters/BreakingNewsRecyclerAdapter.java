@@ -53,7 +53,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
             return new MyViewHolder(view);
         }
         else {
-            view = view = LayoutInflater.from(context).inflate(R.layout.activity_playlist, null, false);
+            view = LayoutInflater.from(context).inflate(R.layout.activity_playlist, null, false);
             return new MyViewHolder(view);
         }
     }
@@ -100,7 +100,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
         }
 
         else {
-            if (holder.linearLayout != null)
+            if (holder.linearLayout != null) {
                 holder.linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -116,6 +116,9 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                             b = false;
                         } else {
                             holder.l.setVisibility(View.VISIBLE);
+                            holder.newsBriefTitle.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getNewsBrief());
+                            holder.newsBodyText.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getNewsDescription());
+                            holder.text_published.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPublishedDate());
                             Animation animation = AnimationUtils.loadAnimation(context,
                                     R.anim.news_slide_down);
                             holder.l.startAnimation(animation);
@@ -129,6 +132,11 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                         }
                     }
                 });
+            }
+            holder.textView.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getNewsTitle());
+            holder.tv_location.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getReporterLocation());
+            holder.tv_reporterName.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getReporterName());
+            Glide.with(context).load(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getReporterPic()).into(holder.reporter_circular_image);
         }
     }
 
@@ -148,10 +156,10 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView textView, headline, description, views, likes;
+        private TextView textView, headline, description, views, likes, tv_reporterName, tv_location, newsBriefTitle, newsBodyText, text_published;
         private LinearLayout linearLayout, l;
         private com.github.aakira.expandablelayout.ExpandableLinearLayout expandableLinearLayout;
-        private de.hdodenhof.circleimageview.CircleImageView imageView;
+        private de.hdodenhof.circleimageview.CircleImageView reporter_circular_image;
         private CardView cardView;
         private ImageView image, arrow;
         MyViewHolder(View view){
@@ -159,7 +167,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
             expandableLinearLayout = view.findViewById(R.id.expandableLayout);
             linearLayout = view.findViewById(R.id.expandable_ll);
             textView = view.findViewById(R.id.news_headline_text);
-            imageView = view.findViewById(R.id.reporter_circular_image);
+            reporter_circular_image = view.findViewById(R.id.reporter_circular_image);
             l = view.findViewById(R.id.hiddenLinearLayout);
             cardView = view.findViewById(R.id.youtube_row_card_view);
             image = view.findViewById(R.id.video_thumbnail_image_view);
@@ -168,6 +176,11 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
             views = view.findViewById(R.id.text1);
             likes = view.findViewById(R.id.text2);
             arrow = view.findViewById(R.id.dropImage);
+            tv_reporterName = view.findViewById(R.id.tv_reporterName);
+            tv_location = view.findViewById(R.id.tv_location);
+            newsBriefTitle = view.findViewById(R.id.newsBriefTitle);
+            newsBodyText = view.findViewById(R.id.newsBodyText);
+            text_published = view.findViewById(R.id.text_published);
         }
     }
 }
