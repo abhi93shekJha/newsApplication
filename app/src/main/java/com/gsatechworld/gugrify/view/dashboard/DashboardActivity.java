@@ -46,6 +46,7 @@ import com.gsatechworld.gugrify.model.LatestNewItemModel;
 import com.gsatechworld.gugrify.model.NavItemModel;
 import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
+import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.model.SectionDataModel;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
@@ -54,11 +55,13 @@ import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
 import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
+import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.ReporterPostActivity;
 import com.gsatechworld.gugrify.view.ReporterProfile;
+import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
@@ -605,6 +608,52 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
                     my_recycler_view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
+
+//                    getLatestNews();
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsCategories> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                my_recycler_view.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void getLatestNews(){
+
+        my_recycler_view.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<NewsCategories> call = apiService.getCategoryList();
+
+        call.enqueue(new Callback<NewsCategories>() {
+            @Override
+            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "to dashboard");
+                    newsCategories = response.body();
+                    RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
+                    recycler_nav_item.setHasFixedSize(true);
+                    navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                    recycler_nav_item.setLayoutManager(layoutManager);
+                    recycler_nav_item.setAdapter(navAdapter);
+                    ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
+
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    getLatestNews();
                 } else {
                     Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
                     my_recycler_view.setVisibility(View.VISIBLE);

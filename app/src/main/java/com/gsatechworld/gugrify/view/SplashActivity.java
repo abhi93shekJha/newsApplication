@@ -6,10 +6,14 @@ package com.gsatechworld.gugrify.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -32,6 +36,9 @@ import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,7 +57,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
         //running in background
         new AsyncCaller().execute();
 
@@ -102,7 +108,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
                     dialog.show();
 
                 }*/
-
                 Intent i = new Intent(SplashActivity.this, WelcomeActivity.class);
                 startActivity(i);
                 finish();

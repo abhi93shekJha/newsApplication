@@ -109,6 +109,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
         }
 
         else if(position == getItemCount()-1){
+            holder.tv_commentsTitle.performClick();
             holder.tv_commentsTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

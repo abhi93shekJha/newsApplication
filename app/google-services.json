@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "215109387576",
+    "firebase_url": "https://gugrify-news-app-1541845922835.firebaseio.com",
+    "project_id": "gugrify-news-app-1541845922835",
+    "storage_bucket": "gugrify-news-app-1541845922835.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215109387576:android:df3a4f9a3c4ed6cb",
+        "android_client_info": {
+          "package_name": "com.gsatechworld.gugrify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215109387576-3tk68cfi1plv9f5k0l5ia1563kug61ch.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARiGHZtrs5XBNvBIBYuBTHejha5shXb5U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

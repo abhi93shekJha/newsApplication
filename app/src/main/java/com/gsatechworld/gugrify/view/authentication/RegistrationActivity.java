@@ -51,15 +51,12 @@ public class RegistrationActivity extends AppCompatActivity {
     Button btn_register;
     private RelativeLayout rl_register_main;
 
-
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private ImageView ivImage;
     private String userChoosenTask, ImageInBase64;
     private LinearLayout ll_takePic;
-
     Bitmap bm, thumbnail;
     FileOutputStream fo = null;
-
 
 
     @Override
@@ -88,21 +85,20 @@ public class RegistrationActivity extends AppCompatActivity {
                         && !email.toString().trim().equalsIgnoreCase("")
                         && !mobile.toString().trim().equalsIgnoreCase("")
                         && !city.toString().trim().equalsIgnoreCase("")
-                        && !ivImage.toString().trim().equalsIgnoreCase("")
                         && !password.toString().trim().equalsIgnoreCase("")
                         && !confirmPassword.toString().trim().equalsIgnoreCase("")) {
 
                     if (thumbnail != null) {
-                        thumbnail = getResizedBitmap(thumbnail, 400);
+                        thumbnail = getResizedBitmap(thumbnail, 600);
                         ImageInBase64 = getStringImage(thumbnail);
                         Log.d("From camera is", ImageInBase64);
-                        // userRegister();
+                        userRegister();
                         startActivity(new Intent(RegistrationActivity.this, DashboardActivity.class));
                     } else if (bm != null) {
-                        bm = getResizedBitmap(bm, 400);
+                        bm = getResizedBitmap(bm, 600);
                         ImageInBase64 = getStringImage(bm);
                         Log.d("From gallery", ImageInBase64);
-                       // userRegister();
+                        userRegister();
                         startActivity(new Intent(RegistrationActivity.this, DashboardActivity.class));
                     } else {
                         Toast.makeText(getApplicationContext(), "Please Select Image", Toast.LENGTH_SHORT).show();
@@ -112,6 +108,11 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void userRegister(){
+
+
     }
 
 

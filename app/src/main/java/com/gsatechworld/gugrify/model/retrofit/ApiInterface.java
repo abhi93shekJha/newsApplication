@@ -1,5 +1,6 @@
 package com.gsatechworld.gugrify.model.retrofit;
 
+import com.gsatechworld.gugrify.model.CommentsPostPojo;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.view.authentication.LoginPojo;
 
@@ -49,4 +50,8 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/user_login")
     Call<LoginPojo> userLogin(@Query("user_id") String username, @Query("password") String password);
+
+    @POST("gugrify_news/API/post_comments.php")
+    Call<CommentsPostPojo> postComments(@Body CommentsPostPojo post);
+
 }

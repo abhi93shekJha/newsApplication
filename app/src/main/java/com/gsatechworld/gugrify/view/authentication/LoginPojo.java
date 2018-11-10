@@ -8,8 +8,23 @@ public class LoginPojo {
         return result;
     }
 
-    @SerializedName("result")
 
+
+    @SerializedName("response")
+    String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    @SerializedName("message")
+    String message;
+
+    @SerializedName("result")
     Result result;
 
     public class Result {

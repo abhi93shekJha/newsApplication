@@ -230,7 +230,6 @@
 <!-- New Design Here -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_login_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -305,12 +304,13 @@
                             android:layout_marginRight="7dp"
                             android:padding="3dp"
                             android:src="@drawable/user" />
+
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:layout_margin="0dp"
                             android:textColor="@color/colorWhite"
                             android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
@@ -352,26 +352,26 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:layout_margin="0dp"
                             android:textColor="@color/colorWhite"
                             android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
-                        <EditText
-                            android:id="@+id/etLoginPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
-                            android:backgroundTint="@color/colorWhite"
-                            android:hint="Password"
-                            android:inputType="textPassword"
-                            android:singleLine="true"
-                            android:maxLength="6"
-                            android:textColor="@color/colorWhite"
-                            android:textColorHint="@color/colorWhite" />
+                            <EditText
+                                android:id="@+id/etLoginPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="0dp"
+                                android:backgroundTint="@color/colorWhite"
+                                android:hint="Password"
+                                android:inputType="textPassword"
+                                android:maxLength="6"
+                                android:singleLine="true"
+                                android:textColor="@color/colorWhite"
+                                android:textColorHint="@color/colorWhite" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -391,9 +391,9 @@
                             android:padding="10dp"
                             android:paddingLeft="0dp"
                             android:paddingRight="0dp"
-                            android:textStyle="bold"
                             android:text="@string/action_sign_in"
-                            android:textColor="@color/colorWhite" />
+                            android:textColor="@color/colorWhite"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_signUp"
@@ -422,33 +422,21 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:weightSum="1">
 
-                        <LinearLayout
-                            android:id="@+id/ll_fb"
+                        <com.facebook.login.widget.LoginButton
+                            android:id="@+id/btn_fb"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <com.facebook.login.widget.LoginButton
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center"
-                                android:paddingTop="11dp"
-                                android:paddingBottom="11dp"
-                                android:text="Facebook"
-                                android:textAllCaps="false"
-                                android:textColor="@color/colorWhite"
-                                android:textSize="12sp" />
-
-                        </LinearLayout>
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:paddingTop="11dp"
+                            android:paddingBottom="11dp"
+                            android:layout_weight="0.5" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -463,12 +451,10 @@
                                 android:layout_marginLeft="10dp"
                                 android:backgroundTint="@color/red_color"
                                 android:drawableLeft="@drawable/ic_google"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="20dp"
-                                android:textSize="14sp"
                                 android:text="Google"
                                 android:textAllCaps="false"
-                                android:textColor="@color/colorWhite" />
+                                android:textColor="@color/colorWhite"
+                                android:textSize="14sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -478,38 +464,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/linear"
-                android:gravity="bottom"
                 android:layout_gravity="bottom"
                 android:layout_margin="@dimen/dimen_20"
+                android:gravity="bottom"
                 android:orientation="horizontal"
                 android:weightSum="1">
 
 
-                    <TextView
-                        android:id="@+id/tvSignUp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="0.5"
-                        android:gravity="left"
-                        android:text="Sign up"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="17sp"
-                        android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/tvSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="0.5"
+                    android:gravity="left"
+                    android:text="Sign up"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tvTerms"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="0.5"
-                        android:gravity="right"
-                        android:text="Terms"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="17sp" />
+                <TextView
+                    android:id="@+id/tvTerms"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="0.5"
+                    android:gravity="right"
+                    android:text="Terms"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
         </LinearLayout>

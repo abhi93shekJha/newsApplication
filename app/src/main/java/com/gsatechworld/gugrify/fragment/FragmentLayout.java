@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdListener;
@@ -22,15 +24,26 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
+import com.gsatechworld.gugrify.model.CommentsPostPojo;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FragmentLayout extends Fragment {
 
     String comment = "";
     NewsSharedPreferences sharedPreferences;
+    ApiInterface apiService;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,7 +99,6 @@ public class FragmentLayout extends Fragment {
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT);
                     input.setLayoutParams(lp);
-                    input.setPadding(10, 0, 10, 0);
                     alertDialog.setView(input);
                     alertDialog.setIcon(R.mipmap.comments_icon);
 
@@ -94,7 +106,8 @@ public class FragmentLayout extends Fragment {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     comment = input.getText().toString();
-                                    makeCommentPostRequest(comment);
+                                    CommentsPostPojo postPojo = new CommentsPostPojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("user_id"), comment);
+                                    makeCommentPostRequest(postPojo);
                                 }
                             });
 
@@ -114,8 +127,32 @@ public class FragmentLayout extends Fragment {
             }
         });
 
-
-
         return view;
+    }
+
+    void makeCommentPostRequest(CommentsPostPojo pojo){
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CommentsPostPojo> call = apiService.postComments(pojo);
+
+        call.enqueue(new Callback<CommentsPostPojo>() {
+            @Override
+            public void onResponse(Call<CommentsPostPojo> call, Response<CommentsPostPojo> response) {
+                CommentsPostPojo commentsResponse = null;
+                if (response.isSuccessful()) {
+                    commentsResponse = response.body();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<CommentsPostPojo>call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(getActivity(), "Server error!!", Toast.LENGTH_SHORT).show();
+                Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
+            }
+        });
     }
 }

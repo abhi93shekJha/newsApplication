@@ -5,6 +5,10 @@
         "Material is the metaphor.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">1868560446553054</string>
+    <string name="fb_login_protocol_scheme">fb1868560446553054</string>
+    <string name="server_client_id">215109387576-66dr837hg6d9q0qbn154u2a8grnifsob.apps.googleusercontent.com</string>
+
 
     <string name="title_activity_login">LoginActivity</string>
     <string name="dummy_button">Dummy Button</string>
