@@ -125,27 +125,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
         }
 
-
-        //for setting comments
-        tv_comments = findViewById(R.id.tv_comments);
-        comments_recycler = findViewById(R.id.comments_recycler);
-        if(tv_comments != null && comments_recycler != null){
-            tv_comments.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    List<PostDetailPojo.Comment> comments = postDetails.getResult().get(0).getComments();
-                    TextView noComments_title = findViewById(R.id.noComments_title);
-                    if(comments.size() == 0){
-                        noComments_title.setVisibility(View.VISIBLE);
-                        comments_recycler.setVisibility(View.GONE);
-                    }
-                    else{
-
-                    }
-                }
-            });
-        }
-
         animateHandler = new Handler();
         animFadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
         animFadeOut.setAnimationListener(new Animation.AnimationListener() {
@@ -762,7 +741,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     }
                 }
             }
-        }, 30000);
+        }, 28000);
 
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override

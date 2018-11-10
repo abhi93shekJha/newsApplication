@@ -102,14 +102,14 @@ public class ReporterLoginActivity extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    Toast.makeText(ReporterLoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG);
+                    Toast.makeText(ReporterLoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ReporterLogin> call, Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(ReporterLoginActivity.this, "Server error!! Try again.", Toast.LENGTH_LONG);
+                Toast.makeText(ReporterLoginActivity.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
             }
         });
 

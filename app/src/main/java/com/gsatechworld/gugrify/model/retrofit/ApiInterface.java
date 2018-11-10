@@ -1,6 +1,7 @@
 package com.gsatechworld.gugrify.model.retrofit;
 
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.view.authentication.LoginPojo;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -45,4 +46,7 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/get_post_category_limit.php")
     Call<TwentyPostsByCategory> getTwentyPostsByCategory(@Query("category") String category);
+
+    @GET("gugrify_news/API/user_login")
+    Call<LoginPojo> userLogin(@Query("user_id") String username, @Query("password") String password);
 }

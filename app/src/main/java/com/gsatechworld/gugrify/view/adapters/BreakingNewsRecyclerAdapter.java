@@ -1,8 +1,10 @@
 package com.gsatechworld.gugrify.view.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +24,11 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.retrofit.PostDetailPojo;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNewsRecyclerAdapter.MyViewHolder>{
 
@@ -34,6 +38,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
     NewsSharedPreferences sharedPreferences;
     public Boolean[] clicked;
     public int previous=0;
+    boolean onceComment = true;
 
     public BreakingNewsRecyclerAdapter(Context context, ArrayList<PostsByCategory> posts){
         this.context = context;
@@ -52,8 +57,12 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
             view = LayoutInflater.from(context).inflate(R.layout.reporter_detail_item, null, false);
             return new MyViewHolder(view);
         }
-        else {
+        else if(viewType == 1){
             view = LayoutInflater.from(context).inflate(R.layout.activity_playlist, null, false);
+            return new MyViewHolder(view);
+        }
+        else{
+            view = LayoutInflater.from(context).inflate(R.layout.post_details_comment, null, false);
             return new MyViewHolder(view);
         }
     }
@@ -64,7 +73,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
 //        holder.setIsRecyclable(false);
 //        holder.expandableLinearLayout.setInRecyclerView(true);
 
-        if(position > 0){
+        if(position > 0 && position < getItemCount()-1){
             Glide.with(context).load(posts.get(position-1).getImage()).into(holder.image);
             holder.headline.setText(posts.get(position-1).getNews_headlines());
             holder.description.setText(posts.get(position-1).getNews_description());
@@ -97,6 +106,33 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                 holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.ststusbar_color));
             else
                 holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+        }
+
+        else if(position == getItemCount()-1){
+            holder.tv_commentsTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    List<PostDetailPojo.Comment> comments = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getComments();
+                    if(comments.size() == 0){
+                        holder.recycler_comments.setVisibility(View.GONE);
+                        holder.tv_noCommentsTitle.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        if(onceComment) {
+                            onceComment = false;
+                            holder.recycler_comments.setVisibility(View.VISIBLE);
+                            holder.tv_noCommentsTitle.setVisibility(View.GONE);
+                            CommentsAdapter adapter = new CommentsAdapter(comments);
+                            holder.recycler_comments.setLayoutManager(new LinearLayoutManager(context));
+                            holder.recycler_comments.setAdapter(adapter);
+                        }
+                        else {
+                            onceComment = true;
+                            holder.recycler_comments.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            });
         }
 
         else {
@@ -145,19 +181,22 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
         int viewType=0;
         if(position == 0)
             viewType = 0;
-        if (position > 0)
+        else if (position == getItemCount()-1)
+            viewType = 2;
+        else
             viewType = 1; //if zero, it will be a header view
         return viewType;
     }
 
     @Override
     public int getItemCount() {
-        return (posts.size()+1);
+        return (posts.size()+2);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView textView, headline, description, views, likes, tv_reporterName, tv_location, newsBriefTitle, newsBodyText, text_published;
+        private TextView textView, headline, description, views, likes, tv_reporterName, tv_location, newsBriefTitle, newsBodyText, text_published, tv_commentsTitle, tv_noCommentsTitle;
         private LinearLayout linearLayout, l;
+        RecyclerView recycler_comments;
         private com.github.aakira.expandablelayout.ExpandableLinearLayout expandableLinearLayout;
         private de.hdodenhof.circleimageview.CircleImageView reporter_circular_image;
         private CardView cardView;
@@ -181,6 +220,51 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
             newsBriefTitle = view.findViewById(R.id.newsBriefTitle);
             newsBodyText = view.findViewById(R.id.newsBodyText);
             text_published = view.findViewById(R.id.text_published);
+            recycler_comments = view.findViewById(R.id.recycler_comments);
+            tv_commentsTitle = view.findViewById(R.id.tv_commentsTitle);
+            tv_noCommentsTitle = view.findViewById(R.id.tv_noCommentsTitle);
         }
     }
+
+    public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>{
+
+        List<PostDetailPojo.Comment> comments;
+
+        public CommentsAdapter(List<PostDetailPojo.Comment> comments){
+            this.comments = comments;
+        }
+
+        @NonNull
+        @Override
+        public CommentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+            View view = LayoutInflater.from(context).inflate(R.layout.comments_recycler_item, null, false);
+            return new CommentsViewHolder(view);
+
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull CommentsViewHolder holder, int position) {
+
+            holder.tv_commentUserName.setText(comments.get(position).getUserName()+":");
+            holder.tv_comment.setText(comments.get(position).getComments());
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return comments.size();
+        }
+
+        class CommentsViewHolder extends RecyclerView.ViewHolder{
+
+            TextView tv_commentUserName, tv_comment;
+            public CommentsViewHolder(View itemView) {
+                super(itemView);
+                tv_comment = itemView.findViewById(R.id.tv_comment) ;
+                tv_commentUserName = itemView.findViewById(R.id.tv_commentUserName);
+            }
+        }
+    }
+
 }

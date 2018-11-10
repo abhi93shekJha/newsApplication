@@ -24,14 +24,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
 import com.gsatechworld.gugrify.utils.CustomSnackBarUtil;
 import com.gsatechworld.gugrify.utils.GugrifyProgressDialog;
 import com.gsatechworld.gugrify.utils.NetworkUtil;
@@ -50,127 +53,36 @@ import retrofit2.Response;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.gsatechworld.gugrify.view.ReporterProfile;
 
 import static com.gsatechworld.gugrify.utils.NetworkUtil.NO_INTERNET;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView tvSp2Login, tvSp4Register,tvSignUp;
+    TextView tvSignUp;
     Button btn_login;
     Button btn_googlePlus;
-  //  LoginButton btn_fb;
-    GugrifyProgressDialog progressView = null;
+
     EditText etLoginUserName,etLoginPassword;
-    ApiInterface apiInterface;
+    ApiInterface apiService;
     SharedPrefUtil sharedPrefUtil;
-    private RelativeLayout rl_login_main;
-    String token;
-
-    static final int RC_SIGN_IN = 1;
-    GoogleSignInAccount account;
-  //  CallbackManager callbackManager;
-
-    /*
-        GoogleSignInClient mGoogleSignInClient;
-        static final int RC_SIGN_IN = 1;
-        GoogleSignInAccount account;
-    */
-    String userName;
-    String password;
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
-
-
-    @BindView(R.id.ll_fb) LinearLayout ll_fb;
-
+    NewsSharedPreferences sharedPreferences;
+    String token, u, p;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
 
-       /// boolean loggedOut = AccessToken.getCurrentAccessToken() == null;
-       /// btn_fb = findViewById(R.id.btn_fb);
-
-        /*if (!loggedOut) {
-//            Picasso.with(this).load(Profile.getCurrentProfile().getProfilePictureUri(200, 200)).into(imageView);
-            Log.d("TAG", "Username is: " + Profile.getCurrentProfile().getName());
-
-            //Using Graph API
-            getUserProfile(AccessToken.getCurrentAccessToken());
-        }
-
-        btn_fb.setReadPermissions(Arrays.asList("email", "public_profile"));
-        callbackManager = CallbackManager.Factory.create();
-
-        btn_fb.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-                //loginResult.getAccessToken();
-                //loginResult.getRecentlyDeniedPermissions()
-                //loginResult.getRecentlyGrantedPermissions()
-                boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
-                Log.d("API123", loggedIn + " ??");
-
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-            }
-        });
-
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.server_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);*/
-
+        sharedPreferences = NewsSharedPreferences.getInstance(this);
 
         InitViews();
 
     }
 
-  /*  private void getUserProfile(AccessToken currentAccessToken) {
-        GraphRequest request = GraphRequest.newMeRequest(
-                currentAccessToken, new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.d("TAG", object.toString());
-                        try {
-                            String first_name = object.getString("first_name");
-                            String last_name = object.getString("last_name");
-                            String email = object.getString("email");
-                            String id = object.getString("id");
-                            String image_url = "https://graph.facebook.com/" + id + "/picture?type=normal";
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "first_name,last_name,email,id");
-        request.setParameters(parameters);
-        request.executeAsync();
-
-    }*/
-
 
     private void InitViews() {
-        rl_login_main = findViewById(R.id.rl_login_main);
         btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(this);
         etLoginUserName = findViewById(R.id.etLoginUserName);
@@ -180,137 +92,85 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sharedPrefUtil = SharedPrefUtil.getInstance(LoginActivity.this);
         btn_googlePlus = findViewById(R.id.btn_googlePlus);
         btn_googlePlus.setOnClickListener(this);
-        ll_fb.setOnClickListener(this);
         tvSignUp.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
 
             case R.id.ll_fb:
               //  btn_fb.performClick();
                 break;
             case R.id.btn_googlePlus:
-               /* account = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
-                if (account != null){
-                    token = account.getIdToken();
-                    return;
-                }
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);*/
+
                 break;
 
             case R.id.tvSignUp:
-                Intent intent = new Intent(LoginActivity.this,RegistrationActivity.class);
+                intent = new Intent(LoginActivity.this,RegistrationActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.btn_login:
+                u = etLoginUserName.getText().toString();
+                p = etLoginPassword.getText().toString();
+                if(validate()){
+                    makeLoginPost();
+                }
                 break;
         }
     }
 
-  /*  private void userLogin(final String userName, String password) {
+    public boolean validate(){
+        if(u.trim().isEmpty()){
+            etLoginUserName.setError("Empty");
+            etLoginUserName.setFocusable(true);
+            return false;
+        }
+        if(p.trim().isEmpty()){
+            etLoginPassword.setError("Empty");
+            etLoginPassword.setFocusable(true);
+            return false;
+        }
+        return true;
+    }
 
-        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+    public void makeLoginPost(){
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<LoginPojo> call = apiService.userLogin(u,p);
 
-        if(NetworkUtil.getInstance(LoginActivity.this).isConnectingToInternet()){
-
-            if (progressView == null) {
-                progressView = new GugrifyProgressDialog(LoginActivity.this);
-            }
-            progressView.showProgressView("Sending data to server", "Please wait...");
-
-            //LoginResponse user = new LoginResponse(userName, password);
-            Call<LoginResponse> call = apiInterface.getLoginDetails(userName,password);
-            call.enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    LoginResponse loginResponse = response.body();
-
-                    Log.e("LOGIN", "LOGIN Response--> " + loginResponse);
-                    progressView.closeProgressView();
-
-                    if (loginResponse.getResponse() != null &&
-                            loginResponse.getResponse().equalsIgnoreCase("Success")){
-
-                        String id = loginResponse.getResult().getId();
-                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                        editor.putString("userId", id);
-                        editor.apply();
-
-                        Intent intent1 = new Intent(LoginActivity.this, HomeActivity.class);
-                        intent1.putExtra("value", "0");
-                        startActivity(intent1);
-                        finish();
-                        sharedPrefUtil.setPrefrenceBoolean("LoginStatus",true);
-
-
-                    } else {
-                        CustomSnackBarUtil customSnackBarUtil = new CustomSnackBarUtil(LoginActivity.this);
-                        customSnackBarUtil.showSnackBar(rl_login_main, "Invalid Register Details \n Please try again",
-                                getResources().getColor(R.color.md_red_400),
-                                getResources().getColor(R.color.colorWhite));
+        call.enqueue(new Callback<LoginPojo>() {
+            @Override
+            public void onResponse(Call<LoginPojo> call, Response<LoginPojo> response) {
+                LoginPojo loginPojo = null;
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    loginPojo = response.body();
+                    if(loginPojo.getResult().getResponse() != null && loginPojo.getResult().getResponse().equalsIgnoreCase("Failed")){
+                        Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
                     }
+                    else {
+                        sharedPreferences.setSharedPrefValue("user_id", loginPojo.getResult().getUser_id());
+                        sharedPreferences.setSharedPrefValue("name", loginPojo.getResult().getName());
+                        sharedPreferences.setSharedPrefValue("email", loginPojo.getResult().getEmail());
+                        sharedPreferences.setSharedPrefValue("mobile_number", loginPojo.getResult().getMobileNumber());
+                        sharedPreferences.setSharedPrefValue("user_image", loginPojo.getResult().getUser_image());
+                        sharedPreferences.setSharedPrefValue("user_city", loginPojo.getResult().getUser_city());
+                        sharedPreferences.setLoggedIn(true);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    progressView.closeProgressView();
-                    CustomSnackBarUtil customSnackBarUtil = new CustomSnackBarUtil(LoginActivity.this);
-                    customSnackBarUtil.showSnackBar(rl_login_main, "On Failure",
-                            getResources().getColor(R.color.md_red_400),
-                            getResources().getColor(R.color.colorWhite));
-
-
-                }
-            });
-
-        } else {
-            CustomSnackBarUtil customSnackBarUtil = new CustomSnackBarUtil(this);
-            customSnackBarUtil.showSnackBar(rl_login_main, NO_INTERNET,
-                    getResources().getColor(R.color.md_red_400),
-                    getResources().getColor(R.color.colorWhite));
-        }
-    }*/
-
-
- /*   @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
+            @Override
+            public void onFailure(Call<LoginPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(LoginActivity.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w("Message", "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
-        }
-    }
-
-    public void updateUI(GoogleSignInAccount account) {
-        if (account == null){
-
-        }
-        else{
-            //make a post request here.
-            token = account.getIdToken();
-            Intent intent1 = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent1);
-        }
-    }*/
 
 }
