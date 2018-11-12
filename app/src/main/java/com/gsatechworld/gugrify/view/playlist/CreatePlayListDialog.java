@@ -4,37 +4,54 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.model.CommentsPostPojo;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.view.SplashActivity;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreatePlayListDialog {
     static String ROOT = CreatePlayListDialog.class.getSimpleName();
-    private  Activity mActivity;
     public Context mContext;
     public static CreatePlayListDialog instance;
     public Dialog dialog;
-    private ArrayList<String> playListExistingList;
+    List<String> playListExistingList;
     private LinearLayout ll_container_playlistList, ll_createPlayList;
+    EditText tv_ok;
+    TextView cancel;
+    ApiInterface apiService;
+    NewsSharedPreferences sharedPreferences;
 
-    public CreatePlayListDialog(Context context, Activity activity) {
+    public CreatePlayListDialog(Context context, List<String> playList) {
         this.mContext = context;
-        this.mActivity = activity;
-
+        playListExistingList = playList;
+        sharedPreferences = NewsSharedPreferences.getInstance(context);
     }
 
-    public static CreatePlayListDialog getInstance(Context context, Activity activity){
-        instance = new CreatePlayListDialog(context, activity);
-        //  }
+    public static CreatePlayListDialog getInstance(Context context, List<String> playList){
+        instance = new CreatePlayListDialog(context, playList);
         return instance;
     }
 
@@ -42,12 +59,6 @@ public class CreatePlayListDialog {
         if(dialog != null && dialog.isShowing()){
             dialog.dismiss();
         }
-
-        playListExistingList = new ArrayList<>();
-        playListExistingList.add("js");
-        playListExistingList.add("dsjh");
-        playListExistingList.add("cdsvfds");
-        playListExistingList.add("cdsafdwrew");
 
         dialog = new Dialog(mContext, R.style.DialogSlideAnim);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -69,7 +80,7 @@ public class CreatePlayListDialog {
         if(playListExistingList != null && playListExistingList != null) {
             for (int i = 0; i < playListExistingList.size(); i++) {
 
-                rowView = mActivity.getLayoutInflater().inflate(R.layout.dynaic_view_row_create_play_list, null);
+                rowView = LayoutInflater.from(mContext).inflate(R.layout.dynaic_view_row_create_play_list, null);
 
                 TextView tv_playListTitle = (TextView) rowView.findViewById(R.id.tv_playListTitle);
                 tv_playListTitle.setText(playListExistingList.get(i).toString());
@@ -81,7 +92,7 @@ public class CreatePlayListDialog {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Dialog dialog = new Dialog(mContext, R.style.DialogSlideAnim);
+                final Dialog dialog = new Dialog(mContext, R.style.DialogSlideAnim);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 //dialog.setCanceledOnTouchOutside(false);
@@ -94,9 +105,62 @@ public class CreatePlayListDialog {
                 layoutParams.gravity = Gravity.CENTER;
                 dialog.getWindow().setAttributes(layoutParams);
 
+                cancel = dialog.findViewById(R.id.cancel);
+                tv_ok = dialog.findViewById(R.id.tv_ok);
+
                 dialog.show();
+
+                tv_ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(tv_ok.getText().toString().trim().equalsIgnoreCase("")){
+                            tv_ok.setError("Empty");
+                            tv_ok.setFocusable(true);
+                        }
+                        else{
+                            CreatePlayListPojo post = new CreatePlayListPojo(tv_ok.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
+                            makeCommentPost(post);
+                        }
+                    }
+                });
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
+
             }
         });
+    }
+
+    public void makeCommentPost(CreatePlayListPojo pojo){
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CreatePlayListPojo> call = apiService.createPlaylist(pojo);
+
+        call.enqueue(new Callback<CreatePlayListPojo>() {
+            @Override
+            public void onResponse(Call<CreatePlayListPojo> call, Response<CreatePlayListPojo> response) {
+                CreatePlayListPojo playlistResponse = null;
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    playlistResponse = response.body();
+                    playListExistingList.add(playlistResponse.getResults().getPlaylist_name());
+                    Toast.makeText(mContext, "Playlist saved!!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatePlayListPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void show() {

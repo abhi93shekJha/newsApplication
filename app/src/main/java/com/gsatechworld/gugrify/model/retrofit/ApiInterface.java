@@ -3,6 +3,8 @@ package com.gsatechworld.gugrify.model.retrofit;
 import com.gsatechworld.gugrify.model.CommentsPostPojo;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.view.authentication.LoginPojo;
+import com.gsatechworld.gugrify.view.playlist.CreatePlayListPojo;
+import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -54,4 +56,18 @@ public interface ApiInterface {
     @POST("gugrify_news/API/post_comments.php")
     Call<CommentsPostPojo> postComments(@Body CommentsPostPojo post);
 
+    @GET("gugrify_news/API/latest_news.php")
+    Call<LatestNewsByCity> getLatestNewsByCity(@Query("city") String city);
+
+    @GET("gugrify_news/API/create_playlist.php")
+    Call<GetPlaylistsPojo> getPlaylists(@Query("user_id") String user_id);
+
+    @POST("gugrify_news/API/create_playlist.php")
+    Call<CreatePlayListPojo> createPlaylist(@Body CreatePlayListPojo post);
+
+    @GET("gugrify_news/API/get_active_posts.php")
+    Call<ActivePostsPojo> getActivePosts(@Query("more") Object more);
+
+    @POST("gugrify_news/API/user_signup.php")
+    Call<UserRegistrationPojo> createUserRegistration(@Body UserRegistrationPojo post);
 }

@@ -22,8 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.model.retrofit.CityResponse;
+import com.gsatechworld.gugrify.model.retrofit.UserRegistrationPojo;
 import com.gsatechworld.gugrify.utils.CustomSnackBarUtil;
 import com.gsatechworld.gugrify.utils.NetworkUtil;
 import com.gsatechworld.gugrify.utils.SharedPrefUtil;
@@ -35,6 +39,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,8 +51,8 @@ import static com.gsatechworld.gugrify.utils.NetworkUtil.NO_INTERNET;
 public class RegistrationActivity extends AppCompatActivity {
     ApiInterface apiInterface;
     SharedPrefUtil sharedPrefUtil;
-    EditText etUsername,etUserId,etEmail,etMobileNumber,etUserCity,etPassword,etConfirmPassword;
-    String Username="",user_id="",email = "",mobile="",city="", password="",confirmPassword="";
+    EditText etUsername, etUserId, etEmail, etMobileNumber, etUserCity, etPassword, etConfirmPassword;
+    String Username = "", user_id = "", email = "", mobile = "", city = "", password = "", confirmPassword = "";
     Button btn_register;
     private RelativeLayout rl_register_main;
 
@@ -89,17 +94,29 @@ public class RegistrationActivity extends AppCompatActivity {
                         && !confirmPassword.toString().trim().equalsIgnoreCase("")) {
 
                     if (thumbnail != null) {
-                        thumbnail = getResizedBitmap(thumbnail, 600);
-                        ImageInBase64 = getStringImage(thumbnail);
-                        Log.d("From camera is", ImageInBase64);
-                        userRegister();
-                        startActivity(new Intent(RegistrationActivity.this, DashboardActivity.class));
+                        if (!password.equals(confirmPassword)) {
+                            Toast.makeText(getApplicationContext(), "Enter matching passwords!!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            thumbnail = getResizedBitmap(thumbnail, 600);
+                            ImageInBase64 = getStringImage(thumbnail);
+                            Log.d("From camera is", ImageInBase64);
+                            UserRegistrationPojo pojo = new UserRegistrationPojo(Username, user_id, email, mobile, city, ImageInBase64, password);
+                            userRegister(pojo);
+                            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                            finish();
+                        }
                     } else if (bm != null) {
-                        bm = getResizedBitmap(bm, 600);
-                        ImageInBase64 = getStringImage(bm);
-                        Log.d("From gallery", ImageInBase64);
-                        userRegister();
-                        startActivity(new Intent(RegistrationActivity.this, DashboardActivity.class));
+                        if (!password.equals(confirmPassword)) {
+                            Toast.makeText(getApplicationContext(), "Enter matching passwords!!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            bm = getResizedBitmap(bm, 600);
+                            ImageInBase64 = getStringImage(bm);
+                            Log.d("From gallery", ImageInBase64);
+                            UserRegistrationPojo pojo = new UserRegistrationPojo(Username, user_id, email, mobile, city, ImageInBase64, password);
+                            userRegister(pojo);
+                            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                            finish();
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "Please Select Image", Toast.LENGTH_SHORT).show();
                     }
@@ -110,9 +127,37 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
-    public void userRegister(){
+    public void userRegister(UserRegistrationPojo pojo) {
 
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<UserRegistrationPojo> call = apiService.createUserRegistration(pojo);
+        call.enqueue(new Callback<UserRegistrationPojo>() {
+            @Override
+            public void onResponse(Call<UserRegistrationPojo> call, Response<UserRegistrationPojo> response) {
+                UserRegistrationPojo regResponse = null;
+                if (response.isSuccessful()) {
+                    regResponse = response.body();
+                    if (regResponse.getResult() instanceof String)
+                        Toast.makeText(RegistrationActivity.this, "Successfull loged in!!", Toast.LENGTH_SHORT).show();
 
+                    if (regResponse.getResult() instanceof ArrayList<?>) {
+                        ArrayList<String> result = (ArrayList<String>) regResponse.getResult();
+                        for(int i=0; i<result.size(); i++){
+                            Toast.makeText(RegistrationActivity.this, result.get(i), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                    Toast.makeText(RegistrationActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<UserRegistrationPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(RegistrationActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -252,7 +297,7 @@ public class RegistrationActivity extends AppCompatActivity {
         return encodedImage;
     }
 
-    private void initViews(){
+    private void initViews() {
         rl_register_main = findViewById(R.id.rl_register_main);
         sharedPrefUtil = SharedPrefUtil.getInstance(RegistrationActivity.this);
 
@@ -266,8 +311,8 @@ public class RegistrationActivity extends AppCompatActivity {
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
 
-        ll_takePic = (LinearLayout)findViewById(R.id.ll_takePic);
-        ivImage = (ImageView)findViewById(R.id.ivImage);
+        ll_takePic = (LinearLayout) findViewById(R.id.ll_takePic);
+        ivImage = (ImageView) findViewById(R.id.ivImage);
 
         ll_takePic.setOnClickListener(new View.OnClickListener() {
 
@@ -276,7 +321,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 selectImage();
             }
         });
-
 
 
     }

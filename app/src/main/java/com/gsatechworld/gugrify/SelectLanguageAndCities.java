@@ -82,6 +82,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         list = new ArrayList<>();
         lists = new ArrayList<>();
         languages = new ArrayList<>();
+        language = new LanguageResponse();
 
         rLayout = findViewById(R.id.selectCityMain);
         runOnce=false;
@@ -143,7 +144,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         call.enqueue(new Callback<CityResponse>() {
             @Override
             public void onResponse(Call<CityResponse> call, Response<CityResponse> response) {
-                CityResponse city = null;
+                CityResponse city = new CityResponse();
                     if (response.isSuccessful()) {
                         city = response.body();
                         lists = city.getResult();
@@ -159,7 +160,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
                         progressBar.setVisibility(View.GONE);
                     }
                     else {
-                        Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT);
+                        Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT).show();
                     }
 //                Log.d(TAG, "Number of movies received: " + movies.size());
             }
@@ -167,6 +168,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
             @Override
             public void onFailure(Call<CityResponse>call, Throwable t) {
                 // Log error here since request failed
+                Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT).show();
                 Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
             }
         });

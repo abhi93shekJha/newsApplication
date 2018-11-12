@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -48,11 +49,13 @@ import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.model.SectionDataModel;
+import com.gsatechworld.gugrify.model.retrofit.ActivePostsPojo;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.LatestNewsByCity;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
 import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
 import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
@@ -68,6 +71,7 @@ import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
+import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -95,7 +99,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private boolean isFinished = false;
     public static GetMainAdvertisement result;
     private DrawerLayout mainLayout;
-    int count = 0;
+    int count = 0, activePostCount = 10;
     private ImageView[] dots;
     private RecyclerViewDataAdapter adapter;
     private ImageView iv_place;
@@ -109,6 +113,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     public static NewsCategories newsCategories;
     RecyclerViewNavAdapter navAdapter;
     RecyclerView my_recycler_view;
+    GetPlaylistsPojo playlistsPojo;
+    LatestNewsByCity news;
+    ActivePostsPojo activePosts;
 
     private MediaPlayer mediaPlayer;
 
@@ -132,6 +139,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         newsCategories = new NewsCategories();
+        activePosts = new ActivePostsPojo();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -143,12 +151,16 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         progressBar = findViewById(R.id.progressBar);
         sharedPreferences = NewsSharedPreferences.getInstance(this);
         my_recycler_view = findViewById(R.id.my_recycler_view);
+        playlistsPojo = new GetPlaylistsPojo();
+        news = new LatestNewsByCity();
 
         //filling navigation bar
-        if(newsCategories.getCategory() == null){
+        if (newsCategories.getCategory() == null) {
             getReporterCategories();
         }
 
+        getAllActivePosts();
+//        getLatestNews();
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -198,30 +210,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         allSampleData = new ArrayList<>();
         createDummyData();
 
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        adapter = new RecyclerViewDataAdapter(allSampleData, this);
-        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
-//        adapter.addMoreContacts(allSampleData);
-        l = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(l);
-
-        recyclerView.setAdapter(adapter);
         showVideoDialog();
 //        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 
-        scrollListener = new EndlessScrollListener(l) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-//                if(page<3)
-//                    loadNextDataFromApi(page);
-            }
-        };
         // Adds the scroll listener to RecyclerView
-        recyclerView.addOnScrollListener(scrollListener);
 //        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         //adapter.setItems(allSampleData);
 
@@ -232,15 +224,19 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         //mListView.setAdapter(mAdapterSearch);
 
         //check if signed in
-        de.hdodenhof.circleimageview.CircleImageView profile_image= findViewById(R.id.profile_image);
-        TextView nav_header_title= findViewById(R.id.nav_header_title);
+        de.hdodenhof.circleimageview.CircleImageView profile_image = findViewById(R.id.profile_image);
+        TextView nav_header_title = findViewById(R.id.nav_header_title);
         LinearLayout ll_location = findViewById(R.id.ll_location);
+        TextView nav_header_sub_title = findViewById(R.id.nav_header_sub_title);
 
-        if(sharedPreferences.getIsLoggedIn()){
+        if (sharedPreferences.getIsLoggedIn()) {
             profile_image.setVisibility(View.VISIBLE);
             ll_location.setVisibility(View.VISIBLE);
-        }
-        else{
+            nav_header_title.setText(sharedPreferences.getSharedPrefValue("name"));
+            nav_header_sub_title.setText(sharedPreferences.getCitySelected());
+            Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("user_image")).into(profile_image);
+
+        } else {
             profile_image.setVisibility(View.INVISIBLE);
             ll_location.setVisibility(View.INVISIBLE);
             nav_header_title.setText("Welcome");
@@ -249,8 +245,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // create nav item list
         ArrayList<NavItemModel> navItemModelArrayList = getNavItemList();
 
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL));
 
     }
 
@@ -328,7 +322,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         dialog.show();
 
-        if(result != null) {
+        if (result != null) {
             Glide.with(DashboardActivity.this).load(result.getImage()).into(dialogImage);
             dialogUrlButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -340,8 +334,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             });
             dialogText1.setText(result.getText1());
             dialogText2.setText(result.getText2());
-        }
-        else{
+        } else {
             dialog.cancel();
         }
 
@@ -452,19 +445,27 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         if (id == R.id.action_avatar) {
             Intent intent = new Intent(DashboardActivity.this, ReporterLoginActivity.class);
             startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-        if(!isFinished) {
-            if(!dialog.isShowing()) {
+
+        if (playlistsPojo.getResult() == null) {
+            if (sharedPreferences.getIsLoggedIn())
+                getPlaylists();
+        }
+
+        if (!isFinished) {
+            if (!dialog.isShowing()) {
                 dialog.show();
-                mediaPlayer.seekTo(length);
-                mediaPlayer.start();
+                if (result != null) {
+                    mediaPlayer.seekTo(length);
+                    mediaPlayer.start();
+                }
             }
         }
     }
@@ -530,7 +531,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     public void onCompletion(MediaPlayer mediaPlayer) {
         Log.d("Media completed", "True");
         dialog.cancel();
-        isFinished = true;
+        if (result != null)
+            isFinished = true;
     }
 
     @Override
@@ -549,7 +551,201 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         mediaPlayer.stop();
     }
 
-    class PlayMainAdAsync extends AsyncTask<String, String, String> {
+    public void getReporterCategories() {
+
+        my_recycler_view.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<NewsCategories> call = apiService.getCategoryList();
+
+        call.enqueue(new Callback<NewsCategories>() {
+            @Override
+            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "to dashboard");
+                    newsCategories = response.body();
+                    RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
+                    recycler_nav_item.setHasFixedSize(true);
+                    navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                    recycler_nav_item.setLayoutManager(layoutManager);
+                    recycler_nav_item.setAdapter(navAdapter);
+                    ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
+
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsCategories> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                my_recycler_view.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void getLatestNews() {
+
+        my_recycler_view.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<LatestNewsByCity> call = apiService.getLatestNewsByCity(sharedPreferences.getCitySelected());
+
+        call.enqueue(new Callback<LatestNewsByCity>() {
+            @Override
+            public void onResponse(Call<LatestNewsByCity> call, Response<LatestNewsByCity> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "to latestNewsByCity");
+                    news = response.body();
+
+                    String category = news.getResult().get(0).getCategory();
+                    Log.d("catergory", category);
+
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    my_recycler_view.setHasFixedSize(true);
+                    adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
+                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+//        adapter.addMoreContacts(allSampleData);
+                    l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                    my_recycler_view.setLayoutManager(l);
+
+                    my_recycler_view.setAdapter(adapter);
+                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, DividerItemDecoration.VERTICAL));
+
+                    scrollListener = new EndlessScrollListener(l) {
+                        @Override
+                        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                            // Triggered only when new data needs to be appended to the list
+                            // Add whatever code is needed to append new items to the bottom of the list
+                            Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+//                if(page<3)
+//                    loadNextDataFromApi(page);
+                        }
+                    };
+                    my_recycler_view.addOnScrollListener(scrollListener);
+
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LatestNewsByCity> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                my_recycler_view.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void getPlaylists() {
+
+        my_recycler_view.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<GetPlaylistsPojo> call = apiService.getPlaylists(sharedPreferences.getSharedPrefValue("user_id"));
+
+        call.enqueue(new Callback<GetPlaylistsPojo>() {
+            @Override
+            public void onResponse(Call<GetPlaylistsPojo> call, Response<GetPlaylistsPojo> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "to gettig playlist");
+                    playlistsPojo = response.body();
+
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    my_recycler_view.setHasFixedSize(true);
+                    adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
+                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+//        adapter.addMoreContacts(allSampleData);
+                    l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                    my_recycler_view.setLayoutManager(l);
+
+                    my_recycler_view.setAdapter(adapter);
+
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetPlaylistsPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                my_recycler_view.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void getAllActivePosts() {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        activePostCount = 10;
+        Call<ActivePostsPojo> call = apiService.getActivePosts("2");
+
+        call.enqueue(new Callback<ActivePostsPojo>() {
+            @Override
+            public void onResponse(Call<ActivePostsPojo> call, Response<ActivePostsPojo> response) {
+
+                if (response.isSuccessful()) {
+
+                    Log.d("Reached here", "to gettig playlist");
+                    activePosts = response.body();
+
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    my_recycler_view.setHasFixedSize(true);
+                    adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
+                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+//        adapter.addMoreContacts(allSampleData);
+                    l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                    my_recycler_view.setLayoutManager(l);
+
+                    my_recycler_view.setAdapter(adapter);
+
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Server error1!!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ActivePostsPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DashboardActivity.this, "Server error2!!", Toast.LENGTH_SHORT).show();
+                my_recycler_view.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private class PlayMainAdAsync extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -581,94 +777,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             mediaPlayer.start();
             cancelDialog.cancel();
         }
-    }
 
-    public void getReporterCategories(){
-
-        my_recycler_view.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<NewsCategories> call = apiService.getCategoryList();
-
-        call.enqueue(new Callback<NewsCategories>() {
-            @Override
-            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
-
-                if (response.isSuccessful()) {
-                    Log.d("Reached here", "to dashboard");
-                    newsCategories = response.body();
-                    RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
-                    recycler_nav_item.setHasFixedSize(true);
-                    navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
-                    recycler_nav_item.setLayoutManager(layoutManager);
-                    recycler_nav_item.setAdapter(navAdapter);
-                    ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
-
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-
-//                    getLatestNews();
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<NewsCategories> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                my_recycler_view.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    public void getLatestNews(){
-
-        my_recycler_view.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<NewsCategories> call = apiService.getCategoryList();
-
-        call.enqueue(new Callback<NewsCategories>() {
-            @Override
-            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
-
-                if (response.isSuccessful()) {
-                    Log.d("Reached here", "to dashboard");
-                    newsCategories = response.body();
-                    RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
-                    recycler_nav_item.setHasFixedSize(true);
-                    navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
-                    recycler_nav_item.setLayoutManager(layoutManager);
-                    recycler_nav_item.setAdapter(navAdapter);
-                    ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
-
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-
-                    getLatestNews();
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<NewsCategories> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                my_recycler_view.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
     }
 
 }
+
+

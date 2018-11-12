@@ -24,6 +24,9 @@ public class PostDetailPojo {
         @SerializedName("response")
         @Expose
         private String response;
+        @SerializedName("category")
+        @Expose
+        private String category;
         @SerializedName("selection")
         @Expose
         private String selection;
@@ -219,6 +222,15 @@ public class PostDetailPojo {
         public void setImageArray(List<String> imageArray) {
             this.imageArray = imageArray;
         }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
 
     }
 

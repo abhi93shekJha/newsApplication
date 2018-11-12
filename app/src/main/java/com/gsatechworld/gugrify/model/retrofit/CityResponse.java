@@ -6,11 +6,6 @@ import java.util.List;
 
 public class CityResponse {
 
-    public CityResponse(List<city> result, String response) {
-        this.result = result;
-        this.response = response;
-    }
-
     public List<city> getResult() {
         return result;
     }

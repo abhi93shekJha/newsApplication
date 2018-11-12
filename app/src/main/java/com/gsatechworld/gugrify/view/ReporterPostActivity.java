@@ -672,7 +672,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                     progressBar.setVisibility(View.GONE);
 
                 } else {
-                    Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                    Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
 
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
@@ -682,7 +682,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onFailure(Call<ReporterPost> call, Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
 
                 main_layout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);

@@ -34,6 +34,7 @@
                 android:layout_gravity="bottom"
                 android:gravity="bottom|start"
                 android:padding="5dp"
+                android:singleLine="true"
                 android:text="Sample Title"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />

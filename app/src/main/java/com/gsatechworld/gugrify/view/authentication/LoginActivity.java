@@ -280,11 +280,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.tv_signUp:
                 intent = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(intent);
+                finish();
                 break;
 
             case R.id.tvSignUp:
                 intent = new Intent(LoginActivity.this, RegistrationActivity.class);
                 startActivity(intent);
+                finish();
                 break;
 
             case R.id.btn_login:
@@ -326,6 +328,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (loginPojo.getResponse() != null && loginPojo.getResponse().equalsIgnoreCase("Failed")) {
                         Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
                     } else {
+                        Toast.makeText(LoginActivity.this, "Successfully Loged in!!", Toast.LENGTH_LONG).show();
                         sharedPreferences.setSharedPrefValue("user_id", loginPojo.getResult().getUser_id());
                         sharedPreferences.setSharedPrefValue("name", loginPojo.getResult().getName());
                         sharedPreferences.setSharedPrefValue("email", loginPojo.getResult().getEmail());

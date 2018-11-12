@@ -14,9 +14,14 @@ import android.widget.Toast;
 
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.NavItemModel;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
+import com.gsatechworld.gugrify.view.ActivityContactUs;
+import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.PostByCategory;
+import com.gsatechworld.gugrify.view.authentication.LoginActivity;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 
 import java.util.ArrayList;
@@ -43,6 +48,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
         if (position == newsCategories.getCategory().size()+1) viewType = 2;
         if (position == newsCategories.getCategory().size()+2) viewType = 3;
         if (position == newsCategories.getCategory().size()+3) viewType = 4;
+        if (position == newsCategories.getCategory().size()+4) viewType = 5;
         return viewType;
     }
 
@@ -71,16 +77,21 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                         .inflate(R.layout.nav_about_us, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
-            default:
+            case  4:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.nav_contact_us, parent, false);
+                rowHolder = new ItemRowHolder(v);
+                return rowHolder;
+            default:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.nav_settings, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
         }
     }
 
     @Override
-    public void onBindViewHolder(ItemRowHolder holder, int position) {
+    public void onBindViewHolder(final ItemRowHolder holder, int position) {
         if (position < newsCategories.getCategory().size()) {
             final String sectionName = newsCategories.getCategory().get(position);
             holder.navItemTitle.setText(sectionName);
@@ -113,7 +124,15 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    if(holder.navItemTitle.getText().toString().equalsIgnoreCase("Sign In")){
+                        Intent intent = new Intent(mContext, LoginActivity.class);
+                        mContext.startActivity(intent);
+                    }
+                    else{
+                        sharedPreferences.setLoggedIn(false);
+                        if(mContext instanceof DashboardActivity)
+                            ((DashboardActivity) mContext).recreate();
+                    }
                 }
             });
             if(sharedPreferences.getIsLoggedIn()){
@@ -128,17 +147,30 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext, "About us clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(mContext, ActivityShowWebView.class);
+                    intent.putExtra("url", "www.gugrify.com/about-us.php");
+                    mContext.startActivity(intent);
                 }
             });
         }
 
         //for contact us
-        else {
+        else if (position == newsCategories.getCategory().size()+3){
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext, "Contact us clicked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(mContext, ActivityContactUs.class);
+                    mContext.startActivity(intent);
+                }
+            });
+        }
+        else{
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, SelectLanguageAndCities.class);
+                    if(mContext instanceof DashboardActivity)
+                        ((DashboardActivity) mContext).finish();
                 }
             });
         }
@@ -146,7 +178,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
     @Override
     public int getItemCount() {
-        return (null != newsCategories.getCategory() ? newsCategories.getCategory().size() + 4 : 0);
+        return (null != newsCategories.getCategory() ? newsCategories.getCategory().size() + 5 : 0);
     }
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {

@@ -166,8 +166,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         //load data for the first time
         FragmentImage fragmentImage = new FragmentImage();
         FragmentLayout frameLayout = new FragmentLayout();
-        if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             loadData(fragmentImage, frameLayout, postId);
+        }
         else
             active = false;
 
@@ -176,7 +177,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
         //setting autoscroll viewpager for the landscape mode
         viewPager = findViewById(R.id.image_view_pager);
-        if (viewPager != null && postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
+        if (viewPager != null && postDetails.getResult() != null && postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
 
             viewPager = findViewById(R.id.image_view_pager);
             viewPager.startAutoScroll();
@@ -289,7 +290,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         textView = findViewById(R.id.breakingNewstext);
 
-        if (textView != null && !postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
+        if (textView != null && postDetails.getResult()!= null && !postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
 
             textView.setTypeface(fontBold);
 
@@ -444,12 +445,15 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                             advertisement = response.body();
                             results = advertisement.getResult();
 
-                            if (results.size() > 7)
-                                adsCount = 7;
-                            else
-                                adsCount = results.size();
+                            if(results != null) {
 
-                            showAds();
+                                if (results.size() > 7)
+                                    adsCount = 7;
+                                else
+                                    adsCount = results.size();
+
+                                showAds();
+                            }
                             Log.d("Result is", results.get(0).getCity());
                             Log.d("Result is", results.get(0).getImage());
 
@@ -533,72 +537,60 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                     PostsByCategory post = null;
 
-                    selection = postDetails.getResult().get(0).getSelection();
-                    String id = postDetails.getResult().get(0).getPostId();
-                    String image = postDetails.getResult().get(0).getImage();
-                    String headlines = postDetails.getResult().get(0).getNewsHeadline();
-                    String description = postDetails.getResult().get(0).getNewsDescription();
-                    String views = postDetails.getResult().get(0).getViews();
-                    String likes = "" + postDetails.getResult().get(0).getLikes();
-                    List<PostDetailPojo.Comment> comments = postDetails.getResult().get(0).getComments();
-                    String selection = postDetails.getResult().get(0).getSelection();
-                    ArrayList<String> array = (ArrayList<String>) postDetails.getResult().get(0).getImageArray();
-                    String newsBrief = postDetails.getResult().get(0).getNewsBrief();
-                    String postTime = postDetails.getResult().get(0).getTimeOfPost();
+                    if(postDetails.getResult() != null) {
+                        selection = postDetails.getResult().get(0).getSelection();
+                        String id = postDetails.getResult().get(0).getPostId();
+                        String image = postDetails.getResult().get(0).getImage();
+                        String headlines = postDetails.getResult().get(0).getNewsHeadline();
+                        String description = postDetails.getResult().get(0).getNewsDescription();
+                        String views = postDetails.getResult().get(0).getViews();
+                        String likes = "" + postDetails.getResult().get(0).getLikes();
+                        List<PostDetailPojo.Comment> comments = postDetails.getResult().get(0).getComments();
+                        String selection = postDetails.getResult().get(0).getSelection();
+                        ArrayList<String> array = (ArrayList<String>) postDetails.getResult().get(0).getImageArray();
+                        String newsBrief = postDetails.getResult().get(0).getNewsBrief();
+                        String postTime = postDetails.getResult().get(0).getTimeOfPost();
 
-                    if (posts.size() == 0) {
-                        PostsByCategory category = new PostsByCategory(id, image, headlines, description, views, likes);
-                        posts.add(category);
+                        if (posts.size() == 0) {
+                            PostsByCategory category = new PostsByCategory(id, image, headlines, description, views, likes);
+                            posts.add(category);
+                        }
+
+
+                        landscapePosts = new PostsForLandscape();
+                        landscapePosts.setArray(array);
+                        landscapePosts.setSelection(selection);
+                        landscapePosts.setHeadlines(headlines);
+                        landscapePosts.setImage(image);
+                        landscapePosts.setId(id);
+                        landscapePosts.setDescription(description);
+                        landscapePosts.setLikes(likes);
+                        landscapePosts.setBrief(newsBrief);
+                        landscapePosts.setPostTime(postTime);
+
+                        FragmentManager fm = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                        Bundle bundle = new Bundle();
+                        fragment1.setArguments(bundle);
+
+                        ArrayList<String> list = new ArrayList<>();
+                        list.add(views);
+                        list.add(likes);
+
+                        bundle.putStringArrayList("forLinearLayout", list);
+                        fragment2.setArguments(bundle);
+
+                        fragmentTransaction.replace(R.id.frame2, fragment2);
+                        fragmentTransaction.replace(R.id.frame1, fragment1);
+                        fragmentTransaction.commit(); // save the changes
+
+                        //this will fetch 20 posts by category from database
+                        if (posts.size() == 1)
+                            lodaDataByCategory();
+                        if (posts.size() > 1)
+                            adapter.notifyDataSetChanged();
                     }
 
-                    landscapePosts = new PostsForLandscape();
-                    landscapePosts.setArray(array);
-//                    landscapePosts.setComments(comments);
-                    landscapePosts.setSelection(selection);
-                    landscapePosts.setHeadlines(headlines);
-                    landscapePosts.setImage(image);
-                    landscapePosts.setId(id);
-                    landscapePosts.setDescription(description);
-                    landscapePosts.setLikes(likes);
-                    landscapePosts.setBrief(newsBrief);
-                    landscapePosts.setPostTime(postTime);
-
-                    // create a FragmentManager
-                    FragmentManager fm = getFragmentManager();
-// create a FragmentTransaction to begin the transaction and replace the Fragment
-                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
-// replace the FragmentLayout with new Fragment
-
-                    Bundle bundle = new Bundle();
-                    /*bundle.putString("id", id);
-                    bundle.putString("image", image);
-                    bundle.putString("headlines", headlines);
-                    bundle.putString("description", description);
-                    bundle.putString("selection", selection);
-                    bundle.putStringArrayList("array", array);
-                    bundle.putString("brief", newsBrief);
-                    bundle.putString("");*/
-
-                    fragment1.setArguments(bundle);
-
-                    ArrayList<String> list = new ArrayList<>();
-                    list.add(views);
-                    list.add(likes);
-
-                    bundle.putStringArrayList("forLinearLayout", list);
-//                    bundle.putStringArrayList("comments", comments);
-                    fragment2.setArguments(bundle);
-
-                    fragmentTransaction.replace(R.id.frame2, fragment2);
-//        fragmentTransaction.commit();
-                    fragmentTransaction.replace(R.id.frame1, fragment1);
-                    fragmentTransaction.commit(); // save the changes
-
-                    //this will fetch 20 posts by category from database
-                    if (posts.size() == 1)
-                        lodaDataByCategory();
-                    if (posts.size() > 1)
-                        adapter.notifyDataSetChanged();
 
                 } else {
                     Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
@@ -854,6 +846,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         progressBar = findViewById(R.id.progressBar);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
+        category = postDetails.getResult().get(0).getCategory();
         Call<TwentyPostsByCategory> call = apiService.getTwentyPostsByCategory(category);
 
         call.enqueue(new Callback<TwentyPostsByCategory>() {
@@ -861,7 +854,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             @Override
             public void onResponse(Call<TwentyPostsByCategory> call, Response<TwentyPostsByCategory> response) {
 
-                TwentyPostsByCategory postsByCat = null;
+                TwentyPostsByCategory postsByCat = new TwentyPostsByCategory();
                 if (response.isSuccessful()) {
 
                     Log.d("Reached to", "getTwentyPostsByCategory");
