@@ -160,7 +160,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
 
         getAllActivePosts();
-//        getLatestNews();
+        getLatestNews();
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -702,9 +702,11 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
     public void getAllActivePosts() {
 
+        my_recycler_view.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        activePostCount = 10;
-        Call<ActivePostsPojo> call = apiService.getActivePosts("2");
+        Call<ActivePostsPojo> call = apiService.getActivePosts("0","12");
 
         call.enqueue(new Callback<ActivePostsPojo>() {
             @Override
@@ -737,7 +739,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             @Override
             public void onFailure(Call<ActivePostsPojo> call, Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error2!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DashboardActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
                 my_recycler_view.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }

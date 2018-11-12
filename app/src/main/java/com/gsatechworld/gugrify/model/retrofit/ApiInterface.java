@@ -66,8 +66,17 @@ public interface ApiInterface {
     Call<CreatePlayListPojo> createPlaylist(@Body CreatePlayListPojo post);
 
     @GET("gugrify_news/API/get_active_posts.php")
-    Call<ActivePostsPojo> getActivePosts(@Query("more") Object more);
+    Call<ActivePostsPojo> getActivePosts(@Query("first") String first, @Query("last") String last);
 
     @POST("gugrify_news/API/user_signup.php")
     Call<UserRegistrationPojo> createUserRegistration(@Body UserRegistrationPojo post);
+
+    @GET("gugrify_news/API/get_playlist_data.php")
+    Call<GetPostsByPlaylistId> getPostsByPlaylistId(@Query("user_id") String user_id, @Query("playlist_id") String playlist_id);
+
+    @GET("gugrify_news/API/get_scrolling_news.php")
+    Call<GetScrollNewsAndBNPojo> getscrollingNews();
+
+    @GET("gugrify_news/API/get_search.php")
+    Call<HeadlineSearchPojo> getSearchedHeadlines(@Query("search") String search);
 }

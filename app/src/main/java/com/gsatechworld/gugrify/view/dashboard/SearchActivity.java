@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,22 +15,36 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.NewsListHolder;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.model.retrofit.CityResponse;
+import com.gsatechworld.gugrify.model.retrofit.HeadlineSearchPojo;
 import com.gsatechworld.gugrify.view.adapters.SearchRecyclerAdapter;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SearchActivity extends AppCompatActivity {
     Toolbar mToolbar;
-    ArrayList<NewsListHolder> arrayList = new ArrayList<>();
     SearchRecyclerAdapter adapter;
     RecyclerView rView;
-    String reporterId = "";
-//    ImageView iv_back;
+    HeadlineSearchPojo headlines;
+    ProgressBar progressBar;
+    TextView noPostsTitle;
+    SearchView mSearchView;
+    NewsSharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +53,19 @@ public class SearchActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        noPostsTitle = findViewById(R.id.noPostsTitle);
+        progressBar = findViewById(R.id.progressBar);
+        sharedPreferences = NewsSharedPreferences.getInstance(SearchActivity.this);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         rView = (RecyclerView) findViewById(R.id.searchNewsList);
-        setData();
-        adapter = new SearchRecyclerAdapter(arrayList, SearchActivity.this);
-        LinearLayoutManager l = new LinearLayoutManager(this);
+        adapter = new SearchRecyclerAdapter(headlines, SearchActivity.this);
+        LinearLayoutManager l = new LinearLayoutManager(SearchActivity.this);
         rView.setLayoutManager(l);
         rView.setAdapter(adapter);
+
+        headlines = new HeadlineSearchPojo();
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 //
 //        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -71,7 +91,7 @@ public class SearchActivity extends AppCompatActivity {
 
         menu.findItem(R.id.action_search1).expandActionView();
 
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView = (SearchView) mSearch.getActionView();
         mSearchView.setQueryHint("Search");
 
         MenuItemCompat.setOnActionExpandListener(mSearch, new MenuItemCompat.OnActionExpandListener() {
@@ -90,13 +110,16 @@ public class SearchActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                getSearchedResult(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                adapter.getFilter().filter(newText);
+                Log.d("came here", "to query");
+                if(newText.trim().length() == 3){
+                    getSearchedResult(newText.trim());
+                }
                 return true;
             }
         });
@@ -116,20 +139,52 @@ public class SearchActivity extends AppCompatActivity {
         return true;
     }
 
-    private void setData(){
-        NewsListHolder holder = new NewsListHolder();
-        holder.setImage("https://i.ytimg.com/vi/icqDxNab3Do/maxresdefault.jpg");
-        holder.setPostHeading("News Post Headlines goes here");
-        holder.setDescription("In broadcasting, News Reporters are filmed or recorded presenting the news. They may be recorded in a studio or in the field, depending on the story. They usually read off of a script, but also must be knowledgeable about the topic that they are reporting on.");
-        holder.setLikes("29");
-        holder.setViews("18 views");
-        arrayList.add(holder);
-        arrayList.add(holder);
-        arrayList.add(holder);
-        arrayList.add(holder);
-        arrayList.add(holder);
-        arrayList.add(holder);
-        arrayList.add(holder);
-        arrayList.add(holder);
+    public void getSearchedResult(String query){
+
+        rView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        mSearchView.setFocusable(false);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<HeadlineSearchPojo> call = apiService.getSearchedHeadlines(query);
+
+        call.enqueue(new Callback<HeadlineSearchPojo>() {
+            @Override
+            public void onResponse(Call<HeadlineSearchPojo> call, Response<HeadlineSearchPojo> response) {
+                if (response.isSuccessful()) {
+                    headlines = response.body();
+                    if(headlines.getResult() == null){
+                        noPostsTitle.setVisibility(View.VISIBLE);
+                        rView.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                    else {
+                        noPostsTitle.setVisibility(View.GONE);
+                        rView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        adapter = new SearchRecyclerAdapter(headlines, SearchActivity.this);
+                        LinearLayoutManager l = new LinearLayoutManager(SearchActivity.this);
+                        rView.setLayoutManager(l);
+                        rView.setAdapter(adapter);
+                    }
+                    mSearchView.setFocusable(true);
+                }
+                else {
+                    noPostsTitle.setVisibility(View.GONE);
+                    rView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    mSearchView.setFocusable(true);
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<HeadlineSearchPojo> call, Throwable t) {
+                noPostsTitle.setVisibility(View.GONE);
+                rView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                mSearchView.setFocusable(true);
+            }
+        });
     }
 }

@@ -4,214 +4,251 @@
     android:layout_height="match_parent"
     android:background="@drawable/news_background">
 
-    <ImageView
-        android:id="@+id/place"
-        android:layout_width="90dp"
-        android:layout_height="21dp"
-        android:layout_marginTop="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/place" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/custom_progress_dialog"
+        android:visibility="gone" />
 
-    <FrameLayout
-        android:id="@+id/animated_text_frame"
+    <RelativeLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/breaking_news_frameLayout"
-        android:layout_below="@+id/place"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="460dp"
-            android:layout_height="210dp"
-            android:layout_gravity="center"
-            android:background="@color/breaking_news_transparent" />
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/breakingNewstext"
-            android:layout_width="330dp"
-            android:layout_height="210dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
+            android:id="@+id/place"
+            android:layout_width="90dp"
+            android:layout_height="21dp"
+            android:background="@color/brown"
+            android:gravity="center_horizontal"
+            android:paddingTop="5dp"
+            android:text="Place"
             android:textColor="@color/colorWhite"
-            android:textSize="25sp" />
-
-        <LinearLayout
-            android:id="@+id/pausePlayNextPreviousLayout"
-            android:layout_width="460dp"
-            android:layout_height="210dp"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="3">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/pauseButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/pause"
-                    android:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/playButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/play"
-                    android:visibility="gone" />
-            </FrameLayout>
-
-        </LinearLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/view_pager_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/breaking_news_frameLayout"
-        android:layout_below="@+id/place"
-        android:visibility="visible">
-
-        <ImageView
-            android:layout_width="403dp"
-            android:layout_height="215dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/view_pager" />
-
-        <com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager
-            android:id="@+id/image_view_pager"
-            android:layout_width="398dp"
-            android:layout_height="206.5dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="0dp"
-            android:layout_marginBottom="8.5dp"></com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager>
-
-        <LinearLayout
-            android:id="@+id/viewPagerDots"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/image_view_pager"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="35dp"
-            android:gravity="end|bottom"
-            android:orientation="horizontal" />
-
-        <ImageView
-            android:id="@+id/place_holder_image"
-            android:layout_width="85dp"
-            android:layout_height="80dp"
-            android:layout_gravity="end|bottom"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="70dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/place_holder" />
-
-        <LinearLayout
-            android:id="@+id/pausePlayNextPreviousLayout1"
-            android:layout_width="460dp"
-            android:layout_height="210dp"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="3">
-
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/pauseButton1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/pause"
-                    android:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/playButton1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/play"
-                    android:visibility="gone" />
-            </FrameLayout>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-
-    <FrameLayout
-        android:id="@+id/breaking_news_frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_above="@+id/bottomLinearLayout">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/mid_band" />
-
-        <ImageView
-            android:layout_width="68dp"
-            android:layout_height="75dp"
-            android:layout_gravity="left"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/news_logo" />
-
-        <ImageView
-            android:layout_width="88dp"
-            android:layout_height="43dp"
-            android:layout_gravity="right|center"
-            android:layout_marginTop="9dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/time" />
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/bottomLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="3dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/newsLine"
-            android:layout_width="100dp"
-            android:layout_height="25dp"
-            android:src="@drawable/news_line" />
+            android:textSize="10dp" />
 
         <FrameLayout
+            android:id="@+id/animated_text_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/scrolling_line">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/breaking_news_frameLayout"
+            android:layout_below="@+id/place"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="460dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center"
+                android:background="@color/breaking_news_transparent" />
 
             <TextView
-                android:id="@+id/scrolling_line"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_marginLeft="3dp"
-                android:ellipsize="marquee"
-                android:fadingEdge="horizontal"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:src="@drawable/scrolling_line"
-                android:text="@string/scrolling_line"
+                android:id="@+id/breakingNewstext"
+                android:layout_width="330dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="adfadsasdf sadfadsf sadfsadf sadfsdf sadsfadsfasdfadsf adsfdsaf adsfadsf asdfsdf sdfasd dsafadsf"
                 android:textColor="@color/colorWhite"
-                android:textSize="18sp" />
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:id="@+id/pausePlayNextPreviousLayout"
+                android:layout_width="460dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="3">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/pauseButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/pause"
+                        android:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/playButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/play"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+            </LinearLayout>
         </FrameLayout>
 
-    </LinearLayout>
+        <FrameLayout
+            android:id="@+id/view_pager_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/breaking_news_frameLayout"
+            android:layout_below="@+id/place"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="403dp"
+                android:layout_height="215dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/view_pager" />
+
+            <com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager
+                android:id="@+id/image_view_pager"
+                android:layout_width="398dp"
+                android:layout_height="206.5dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="0dp"
+                android:layout_marginBottom="8.5dp"></com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager>
+
+            <LinearLayout
+                android:id="@+id/viewPagerDots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_view_pager"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="35dp"
+                android:gravity="end|bottom"
+                android:orientation="horizontal" />
+
+            <ImageView
+                android:id="@+id/place_holder_image"
+                android:layout_width="85dp"
+                android:layout_height="80dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="70dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/place_holder" />
+
+            <LinearLayout
+                android:id="@+id/pausePlayNextPreviousLayout1"
+                android:layout_width="460dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="3">
+
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/pauseButton1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/pause"
+                        android:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/playButton1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/play"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/breaking_news_frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_above="@+id/bottomLinearLayout">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/mid_band" />
+
+            <ImageView
+                android:layout_width="68dp"
+                android:layout_height="75dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/news_logo" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/back_grad">
+
+                <TextView
+                    android:id="@+id/tv_top_news"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:text="This is for breaking news."
+                    android:textColor="@color/black"
+                    android:textSize="22sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="88dp"
+                android:layout_height="43dp"
+                android:layout_gravity="right|center"
+                android:layout_marginTop="9dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/time" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="3dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/newsLine"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:src="@drawable/news_line" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/scrolling_line">
+
+                <TextView
+                    android:id="@+id/scrolling_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="3dp"
+                    android:ellipsize="marquee"
+                    android:fadingEdge="horizontal"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:src="@drawable/scrolling_line"
+                    android:text="@string/scrolling_line"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,14 +45,18 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.model.PostsForLandscape;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.CityWiseAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.GetScrollNewsAndBNPojo;
 import com.gsatechworld.gugrify.model.retrofit.PostDetailPojo;
 import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
 import com.gsatechworld.gugrify.utils.Utility;
@@ -72,7 +77,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     Animation zoomIn, animFadeIn, animFadeOut, animFadeIn1;
     AutoScrollViewPager viewPager;
     BreakingNewsRecyclerAdapter adapter;
-    RecyclerView recycler,comments_recycler;
+    RecyclerView recycler, comments_recycler;
     FrameLayout frameLayoutTextAnimation, frameLayoutViewPager;
     ImageView pause, play, pauseView, playView;
     public static LinearLayout pausePlayLayout;
@@ -85,7 +90,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     private LinearLayout linearLayout, pausePlayLayout1, breaking_ll1;
     private ImageView dots[];
     int i = 0, adCounter = 0;
-    Handler mHandler, animateHandler;
+    Handler mHandler, animateHandler, scrollHandler;
     AdView mAdView;
     ProgressBar progressBar, fragmentprogressBar;
     Dialog dialog, cancelDialog;
@@ -99,7 +104,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     public static PostDetailPojo postDetails = null;
     PostsForLandscape landscapePosts;
     static String selection;
-
+    GetScrollNewsAndBNPojo scrollNews;
+    int flag = 0;
+    List<String> topNewsString;
+    TextView tv_top_news, scroll_line;
+    Animation anim;
+    RelativeLayout main_layout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,11 +121,19 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         }
 
         setContentView(R.layout.activity_display_breaking_news);
+        scrollHandler = new Handler();
+        scroll_line = findViewById(R.id.scrolling_line);
 
         //if the screen is in portrait mode, make status bar black
         // clear FLAG_TRANSLUCENT_STATUS flag:
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         active = true;
+
+        //if run in landscape mode.
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+            if (scrollNews == null)
+                getLandscapeItems();
+        }
 
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -168,8 +186,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         FragmentLayout frameLayout = new FragmentLayout();
         if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             loadData(fragmentImage, frameLayout, postId);
-        }
-        else
+        } else
             active = false;
 
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -240,14 +257,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             });
         }// end of code for setting autoscroll viewpager
 
-        TextView scroll_line = findViewById(R.id.scrolling_line);
-        if (scroll_line != null) {
-            Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-            scroll_line.setTypeface(fontBold);
-            scroll_line.setSelected(true);
-        }
-
-
         //this block of code is for pausing and play the visible animations (for text animations)
         pausePlayLayout = findViewById(R.id.pausePlayNextPreviousLayout);
         animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.pause_play_fade_in);
@@ -290,7 +299,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
         textView = findViewById(R.id.breakingNewstext);
 
-        if (textView != null && postDetails.getResult()!= null && !postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
+        if (textView != null && postDetails.getResult() != null && !postDetails.getResult().get(0).getSelection().equalsIgnoreCase("image_arrays")) {
 
             textView.setTypeface(fontBold);
 
@@ -445,7 +454,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                             advertisement = response.body();
                             results = advertisement.getResult();
 
-                            if(results != null) {
+                            if (results != null) {
 
                                 if (results.size() > 7)
                                     adsCount = 7;
@@ -537,7 +546,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                     PostsByCategory post = null;
 
-                    if(postDetails.getResult() != null) {
+                    if (postDetails.getResult() != null) {
                         selection = postDetails.getResult().get(0).getSelection();
                         String id = postDetails.getResult().get(0).getPostId();
                         String image = postDetails.getResult().get(0).getImage();
@@ -591,7 +600,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                             adapter.notifyDataSetChanged();
                     }
 
-
                 } else {
                     Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
 
@@ -614,10 +622,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 progressBar.setVisibility(View.GONE);
                 fragmentprogressBar.setVisibility(View.VISIBLE);
 
-                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
             }
         });
-        //end of getting ads
     }
 
     @Override
@@ -908,6 +915,106 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 progressBar.setVisibility(View.GONE);
 
                 Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void getLandscapeItems() {
+        main_layout = findViewById(R.id.main_layout);
+        progressBar = findViewById(R.id.progressBar);
+
+        main_layout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<GetScrollNewsAndBNPojo> call = apiService.getscrollingNews();
+
+        call.enqueue(new Callback<GetScrollNewsAndBNPojo>() {
+            @Override
+            public void onResponse(Call<GetScrollNewsAndBNPojo> call, Response<GetScrollNewsAndBNPojo> response) {
+
+                if (response.isSuccessful()) {
+                    scrollNews = response.body();
+
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    //for Top news text view in landscape mode
+                    tv_top_news = findViewById(R.id.tv_top_news);
+                    topNewsString = new ArrayList<>();
+                    anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+                    if (tv_top_news != null && scrollNews != null) {
+                        for (int i = 0; i < scrollNews.getResult().getTopNews().size(); i++) {
+                            String line1 = scrollNews.getResult().getScrollNews().get(i).getText1();
+                            topNewsString.add(line1);
+                            String line2 = scrollNews.getResult().getScrollNews().get(i).getText2();
+                            topNewsString.add(line2);
+                            String line3 = scrollNews.getResult().getScrollNews().get(i).getText3();
+                            topNewsString.add(line3);
+                            topNewsString.add("Top News");
+                        }
+                        tv_top_news.setText(topNewsString.get(flag++));
+                        tv_top_news.startAnimation(anim);
+
+                        ImageView place_holder_image = findViewById(R.id.place_holder_image);
+                        TextView place = findViewById(R.id.place);
+
+                        Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+                        scroll_line.setTypeface(fontBold);
+                        String line = "";
+                        if (scrollNews != null) {
+                            for (int i = 0; i < scrollNews.getResult().getScrollNews().size(); i++) {
+                                String line1 = scrollNews.getResult().getScrollNews().get(i).getText1();
+                                String line2 = scrollNews.getResult().getScrollNews().get(i).getText2();
+                                String line3 = scrollNews.getResult().getScrollNews().get(i).getText3();
+                                line = line + line1 + " " + line2 + " " + line3 + " ";
+                            }
+                            scroll_line.setSelected(true);
+                            scroll_line.setText(line);
+                        }
+                        Glide.with(DisplayBreakingNewsActivity.this).load(postDetails.getResult().get(0).getReporterPic()).into(place_holder_image);
+                        place.setText(postDetails.getResult().get(0).getReporterLocation());
+                    }
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            anim = animation;
+                            scrollHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (flag == topNewsString.size())
+                                        flag = 0;
+                                    tv_top_news.setText(topNewsString.get(flag++));
+                                    tv_top_news.startAnimation(anim);
+                                }
+                            }, 2000L);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    }); //end of Top news text view in landscape mode
+
+                } else {
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<GetScrollNewsAndBNPojo> call, Throwable t) {
+                // Log error here since request failed
+                main_layout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
             }
         });
     }

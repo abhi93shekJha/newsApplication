@@ -16,9 +16,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.model.retrofit.GetPostsByPlaylistId;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.playlist.CreatePlayListDialog;
 import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
+import com.gsatechworld.gugrify.view.playlist.PlayListDetaildViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +31,20 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
     Context context;
     private CreatePlayListDialog createPlayListDialog;
     List<String> playlistNames = new ArrayList<>();
+    List<GetPlaylistsPojo.Result> results;
 
     public PlaylistDataAdapter(GetPlaylistsPojo playlists, Context context) {
         this.playlists = playlists;
         this.context = context;
-        for(int i=0; i<playlists.getResult().size(); i++){
+        results = new ArrayList<>();
+        for (int i = 0; i < playlists.getResult().size(); i++) {
             playlistNames.add(playlists.getResult().get(i).getPlaylist_name());
+        }
+        if (playlists.getResult() != null) {
+            for (int i = 0; i < playlists.getResult().size(); i++) {
+                if (!playlists.getResult().get(i).getPlaylist_count().equalsIgnoreCase("0"))
+                    results.add(playlists.getResult().get(i));
+            }
         }
     }
 
@@ -42,6 +52,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
         ImageView itemImage;
         TextView tvTitle, tvTitleCount;
         LinearLayout mainLayout;
+
         public PlayListViewHolder(View itemView) {
             super(itemView);
             itemImage = itemView.findViewById(R.id.itemImage);
@@ -78,35 +89,35 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
     @Override
     public void onBindViewHolder(@NonNull PlaylistDataAdapter.PlayListViewHolder holder, final int position) {
 
-        if(position == getItemCount()-1){
+        if (position == getItemCount() - 1) {
             holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                            PopupMenu popup = new PopupMenu(context, view);
-                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                @Override
-                                public boolean onMenuItemClick(MenuItem menuItem) {
-                                    if (menuItem.getTitle().equals("Add to playlist")) {
+                    PopupMenu popup = new PopupMenu(context, view);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Add to playlist")) {
 //                                Intent intent = new Intent(mContext, LoginActivity.class);
 //                                mContext.startActivity(intent);
 
-                                        // need to login first before creating playlist
+                                // need to login first before creating playlist
 
-                                        // show playlist for creating playlist
-                                        createPlayListDialog = createPlayListDialog.getInstance(context, playlistNames);
-                                        createPlayListDialog.showDialog();
-                                        createPlayListDialog.show();
-                                    }
-                                    return false;
-                                }
-                            });
-                            popup.inflate(R.menu.popup_menu);
-                            popup.show();
+                                // show playlist for creating playlist
+                                createPlayListDialog = createPlayListDialog.getInstance(context, playlistNames);
+                                createPlayListDialog.showDialog();
+                                createPlayListDialog.show();
+                            }
+                            return false;
                         }
+                    });
+                    popup.inflate(R.menu.popup_menu);
+                    popup.show();
+                }
             });
-        }
-        else{
-            if(playlists.getResult() != null) {
+        } else {
+            if (playlists.getResult() != null) {
+                holder.mainLayout.setVisibility(View.VISIBLE);
                 if (playlists.getResult().get(position).getPlaylist_image() instanceof String) {
                     String playListImage = (String) playlists.getResult().get(position).getPlaylist_image();
                     Glide.with(context).load(playListImage).into(holder.itemImage);
@@ -117,8 +128,8 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
                 holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(context, DisplayBreakingNewsActivity.class);
-                        intent.putExtra("postId", playlists.getResult().get(position).getPlaylist_id());
+                        Intent intent = new Intent(context, PlayListDetaildViewActivity.class);
+                        intent.putExtra("playlistId", playlists.getResult().get(position).getPlaylist_id());
                         context.startActivity(intent);
                     }
                 });
@@ -131,7 +142,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
         if (playlists.getResult() == null) {
             return 0;
         } else
-            return playlists.getResult().size() + 1;
+            return results.size() + 1;
     }
 
 }

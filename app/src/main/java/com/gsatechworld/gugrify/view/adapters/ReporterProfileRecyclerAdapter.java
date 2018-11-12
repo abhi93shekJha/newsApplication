@@ -65,7 +65,7 @@ public class ReporterProfileRecyclerAdapter extends RecyclerView.Adapter<Reporte
 
     @Override
     public void onBindViewHolder(@NonNull ReporterProfileRecyclerAdapter.ReporterViewHolder holder, int position) {
-        Glide.with(context).load(posts.get(position)).into(holder.video_thumbnail_image_view);
+        Glide.with(context).load(posts.get(position).getPostImage()).into(holder.video_thumbnail_image_view);
         holder.textViewname.setText(posts.get(position).getPostHeading());
         holder.text1.setText(posts.get(position).getViews() + " views");
 

@@ -22,6 +22,7 @@
     <color name="global_color_green_control_activated">#ffc107</color>
     <color name="profile_pic_background">#FFC000</color>
     <color name="profile_pic_background_dark">#CD980A</color>
+    <color name="for_top_news_background">#FFF7E3</color>
 
     // dashboard screen status bar color
     <color name="ststusbar_color">#878e91</color>

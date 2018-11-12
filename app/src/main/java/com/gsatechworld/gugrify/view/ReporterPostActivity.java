@@ -248,7 +248,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                         return;
                     }
                     ReporterPost post;
-                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", headline, "", brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "text_arrays", headline, headline, brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
                     makeANewsPost(post);
                 } else {
                     for (int i = 0; i < imagesPresent.length; i++) {
@@ -258,7 +258,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                         }
                     }
                     ReporterPost post;
-                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "image_arrays", headline, "", brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
+                    post = new ReporterPost(sharedPreferences.getSharedPrefValue("reporterId"), mainImage, "image_arrays", headline, headline, brief, description, youtube_id, categroySelected, sharedPreferences.getSharedPrefValue("reporterLanguage"), textsArray, imageArray, sharedPreferences.getSharedPrefValue("reporterCity"));
                     for (String image : imageArray)
                         Log.d("Total images are", image);
                     makeANewsPost(post);

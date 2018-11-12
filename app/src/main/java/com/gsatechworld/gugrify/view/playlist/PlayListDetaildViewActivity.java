@@ -48,9 +48,13 @@ import com.google.android.gms.ads.MobileAds;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
+import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.PostsForLandscape;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.CityWiseAdvertisement;
+import com.gsatechworld.gugrify.model.retrofit.GetPostsByPlaylistId;
+import com.gsatechworld.gugrify.model.retrofit.PostDetailPojo;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 
@@ -66,7 +70,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PlayListDetaildViewActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener{
+public class PlayListDetaildViewActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
 
     ArrayList<PlayListModel> posts;
     ArrayList<Integer> listPlaylistItemPositions;
@@ -80,9 +84,9 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
     private FrameLayout frameLayoutTextAnimation;
     private FrameLayout frameLayoutViewPager, frameShowAdd;
     private RecyclerView recycler;
-    private LinearLayout ll_rewind, ll_play, ll_forward, ll_suffle, ll_frame2, ll_repeat;
+    private LinearLayout ll_rewind, ll_play, ll_forward, ll_suffle, ll_frame2;
     private PlayListViewRecyclerAdapter adapter;
-    private ImageView iv_suffle, iv_rewind, iv_play, iv_forward, iv_repeat;
+    private ImageView iv_suffle, iv_rewind, iv_play, iv_forward;
     private boolean isSuffleEnabled = false;
     private boolean isPlayEnabled = false;
     AdView mAdView;
@@ -94,6 +98,9 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
     Button dialogUrlButton;
     public boolean active = false;
     ApiInterface apiService;
+    String playListId = "";
+    LinearLayout ll_playlist;
+    ProgressBar progressBar;
 
     List<CityWiseAdvertisement.Result> results;
 
@@ -137,7 +144,6 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
         ll_rewind = (LinearLayout) findViewById(R.id.ll_rewind);
         ll_play = (LinearLayout) findViewById(R.id.ll_play);
         ll_forward = (LinearLayout) findViewById(R.id.ll_forward);
-        ll_repeat = (LinearLayout) findViewById(R.id.ll_repeat);
         iv_suffle = (ImageView) findViewById(R.id.iv_suffle);
         ll_suffle = (LinearLayout) findViewById(R.id.ll_suffle);
         recycler = (RecyclerView) findViewById(R.id.playlist_recycler);
@@ -145,33 +151,24 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
         iv_rewind = (ImageView) findViewById(R.id.iv_rewind);
         iv_play = (ImageView) findViewById(R.id.iv_play);
         iv_forward = (ImageView) findViewById(R.id.iv_forward);
-        iv_repeat = (ImageView) findViewById(R.id.iv_repeat);
 
         if (ll_frame2 != null) {
             iv_suffle.setColorFilter(getResources().getColor(R.color.md_grey_400));
             iv_rewind.setColorFilter(getResources().getColor(R.color.color_black));
             iv_play.setColorFilter(getResources().getColor(R.color.color_black));
             iv_forward.setColorFilter(getResources().getColor(R.color.color_black));
-            iv_repeat.setColorFilter(getResources().getColor(R.color.color_black));
 
             isPlayEnabled = true;
             iv_play.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_pause));
-
         }
-
         ll_share = (LinearLayout) findViewById(R.id.ll_share);
 
         mHandler = new Handler();
+        playListId = getIntent().getStringExtra("playlistId");
 
-        loadData();
+        if (recycler != null)
+            getPostsByPlaylistId();
 
-        if (recycler != null) {
-            adapter = new PlayListViewRecyclerAdapter(this, posts);
-            recycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            recycler.setAdapter(adapter);
-
-            loadAdFragment(new ShowAdFragment());
-        }
 
         if (ll_share != null)
             ll_share.setOnClickListener(new View.OnClickListener() {
@@ -255,17 +252,61 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
             });
         }
 
-        // show or hide Ad Fragment in portrait mode
-        if (frameShowAdd != null) {
-            FragmentManager fm = getFragmentManager();
-            addShowHideListener(fm.findFragmentById(R.id.frameShowAdd), true);
 
-            // default first item selected
-            int currentPosition = adapter.getCurrentItemSelectedPosition();
-            adapter.itemClicked(currentPosition);
-        }
+        //getting Ads of Reporter if not present
+        ll_playlist = findViewById(R.id.ll_playlist);
+        progressBar = findViewById(R.id.progressBar);
+        if (results == null) {
+            ll_playlist.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
 
+            apiService = ApiClient.getClient().create(ApiInterface.class);
+            Log.d("selected city is", sharedPreferences.getCitySelected());
+            Call<CityWiseAdvertisement> call = apiService.getReporterAdvertisement(sharedPreferences.getCitySelected().toLowerCase());
 
+            call.enqueue(new Callback<CityWiseAdvertisement>() {
+                @Override
+                public void onResponse(Call<CityWiseAdvertisement> call, Response<CityWiseAdvertisement> response) {
+                    CityWiseAdvertisement advertisement = null;
+                    if (response.isSuccessful()) {
+
+                        Log.d("Reached here", "true");
+                        advertisement = response.body();
+                        results = advertisement.getResult();
+
+                        if (results.size() > 7)
+                            adsCount = 7;
+                        else
+                            adsCount = results.size();
+
+                        showAds();
+                        Log.d("Result is", results.get(0).getCity());
+                        Log.d("Result is", results.get(0).getImage());
+
+                        ll_playlist.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+
+                        ll_playlist.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CityWiseAdvertisement> call, Throwable t) {
+                    // Log error here since request failed
+                    ll_playlist.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+                }
+            });
+        }//end of getting ads
+
+    }
+
+    public void getAdapterClicks() {
         if (ll_forward != null && ll_rewind != null) {
             ll_forward.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -351,68 +392,6 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
                 }
             });
         }
-
-        if (ll_repeat != null) {
-            ll_repeat.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FragmentVideoORImageView fragment = (FragmentVideoORImageView)
-                            getFragmentManager().findFragmentByTag("videoFragment");
-                    fragment.repeatPlay();
-                }
-            });
-        }
-        //getting Ads of Reporter if not present
-        final LinearLayout ll_playlist = findViewById(R.id.ll_playlist);
-        final ProgressBar progressBar = findViewById(R.id.progressBar);
-        if (results == null) {
-            ll_playlist.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-
-            apiService = ApiClient.getClient().create(ApiInterface.class);
-            Log.d("selected city is", sharedPreferences.getCitySelected());
-            Call<CityWiseAdvertisement> call = apiService.getReporterAdvertisement(sharedPreferences.getCitySelected().toLowerCase());
-
-            call.enqueue(new Callback<CityWiseAdvertisement>() {
-                @Override
-                public void onResponse(Call<CityWiseAdvertisement> call, Response<CityWiseAdvertisement> response) {
-                    CityWiseAdvertisement advertisement = null;
-                    if (response.isSuccessful()) {
-
-                        Log.d("Reached here", "true");
-                        advertisement = response.body();
-                        results = advertisement.getResult();
-
-                        if (results.size() > 7)
-                            adsCount = 7;
-                        else
-                            adsCount = results.size();
-
-                        showAds();
-                        Log.d("Result is", results.get(0).getCity());
-                        Log.d("Result is", results.get(0).getImage());
-
-                        ll_playlist.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
-
-                        ll_playlist.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<CityWiseAdvertisement> call, Throwable t) {
-                    // Log error here since request failed
-                    ll_playlist.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-
-                    Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
-                }
-            });
-        }//end of getting ads
-
     }
 
 
@@ -432,97 +411,112 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
         }
     }
 
-    private void loadData() {
-        posts = new ArrayList<>();
-        listPlaylistItemPositions = new ArrayList<>();
-        String image1 = "https://i2-prod.manchestereveningnews.co.uk/incoming/article13699191.ece/ALTERNATES/s615/unnamed-2.jpg";
-        String image2 = "http://blog.typeathought.com/wp-content/uploads/2018/06/football.jpg";
-        String image3 = "https://cdn-triplem.scadigital.io/media/46306/cricket-australia.jpg?preset=MainImage";
+ /*   private void loadData() {
 
-        String head1 = "Football news 1";
-        String head2 = "Football news 2";
-        String head3 = "Cricket news 3";
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<PostDetailPojo> call = apiService.getPostDetails(postId);
 
-        String desc1 = "Kane played 573 minutes at the World Cup this summer, picking up six goals and the Golden Boot along the way.";
-        String desc2 = "Southgate said: \"Harry falls in the category in which we have several players where we have to watch how much they play.\"";
-        String desc3 = "After the two-and-a-half-day disaster at The Lord's last month, Virat Kohli's boys are now staring at another humiliation at the other end of London, The Oval.";
+        call.enqueue(new Callback<PostDetailPojo>() {
+            @Override
+            public void onResponse(Call<PostDetailPojo> call, Response<PostDetailPojo> response) {
 
-        String view1 = "15";
-        String view2 = "19";
-        String view3 = "25";
+                if (response.isSuccessful()) {
 
-        String likes1 = "10";
-        String likes2 = "15";
-        String likes3 = "20";
+                    Log.d("Reached to", "loadFragment");
+                    postDetails = response.body();
 
-        ArrayList<String> comments1 = new ArrayList<>();
-        ArrayList<String> comments2 = new ArrayList<>();
-        ArrayList<String> comments3 = new ArrayList<>();
+                    if (posts.size() == 0) {
+                        frame1.setVisibility(View.VISIBLE);
+                        frame2.setVisibility(View.VISIBLE);
+                        breaking_ll1.setVisibility(View.VISIBLE);
+                        recycler.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    } else
+                        fragmentprogressBar.setVisibility(View.VISIBLE);
 
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up");
+                    PostsByCategory post = null;
 
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up!!");
+                    if(postDetails.getResult() != null) {
+                        selection = postDetails.getResult().get(0).getSelection();
+                        String id = postDetails.getResult().get(0).getPostId();
+                        String image = postDetails.getResult().get(0).getImage();
+                        String headlines = postDetails.getResult().get(0).getNewsHeadline();
+                        String description = postDetails.getResult().get(0).getNewsDescription();
+                        String views = postDetails.getResult().get(0).getViews();
+                        String likes = "" + postDetails.getResult().get(0).getLikes();
+                        List<PostDetailPojo.Comment> comments = postDetails.getResult().get(0).getComments();
+                        String selection = postDetails.getResult().get(0).getSelection();
+                        ArrayList<String> array = (ArrayList<String>) postDetails.getResult().get(0).getImageArray();
+                        String newsBrief = postDetails.getResult().get(0).getNewsBrief();
+                        String postTime = postDetails.getResult().get(0).getTimeOfPost();
 
-        comments1.add("Good post!! Keep up the good work.");
-        comments1.add("Nice post!!");
-        comments1.add("Keep it up!!");
+                        if (posts.size() == 0) {
+                            PostsByCategory category = new PostsByCategory(id, image, headlines, description, views, likes);
+                            posts.add(category);
+                        }
 
-        ArrayList<String> text1 = new ArrayList<>();
-        ArrayList<String> text2 = new ArrayList<>();
-        ArrayList<String> text3 = new ArrayList<>();
 
-        text1.add("Breaking News");
-        text1.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text1.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text1.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
+                        landscapePosts = new PostsForLandscape();
+                        landscapePosts.setArray(array);
+                        landscapePosts.setSelection(selection);
+                        landscapePosts.setHeadlines(headlines);
+                        landscapePosts.setImage(image);
+                        landscapePosts.setId(id);
+                        landscapePosts.setDescription(description);
+                        landscapePosts.setLikes(likes);
+                        landscapePosts.setBrief(newsBrief);
+                        landscapePosts.setPostTime(postTime);
 
-        text2.add("Breaking News");
-        text2.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text2.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text2.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
+                        FragmentManager fm = getFragmentManager();
+                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                        Bundle bundle = new Bundle();
+                        fragment1.setArguments(bundle);
 
-        text3.add("Breaking News");
-        text3.add("ಒಟಿ ತಂತ್ರಜ್ಞರ ಬೇಡಿಕೆಗೆ ತಕ್ಕಂತೆ ಹುದ್ದೆ ಭರ್ತಿ ಮಾಡಿ - ಯೂನಿಯನ್ ಆಗ್ರಹ");
-        text3.add("ಬೆಂಗಳೂರು - ಆಪರೇಷನ್ ಥಿಯೇಟರ್ ತಂತ್ರಜ್ಞರ ಕೋರ್ಸ್ ಮುಗಿಸಿ ಹೊರ ಬರುವವರಿಗೆ ಉದ್ಯೋಗ ಸೃಷ್ಟಿಯಾಗದಿರುವ ಬಗ್ಗೆ ಅಭ್ಯರ್ಥಿಗಳಲ್ಲಿ ");
-        text3.add("ವಸಂತನಗರದ ಗುರುನಾನಕ್ ಭವನದಲ್ಲಿ ಹಮ್ಮಿಕೊಂಡಿದ್ದ ಪದಾಧಿಕಾರಿಗಳ ಸಭೆಯಲ್ಲಿ ಮಾತನಾಡಿದರು. ");
+                        ArrayList<String> list = new ArrayList<>();
+                        list.add(views);
+                        list.add(likes);
 
-        PlayListModel p1 = new PlayListModel("0", image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p2 = new PlayListModel("1", image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p3 = new PlayListModel("2", image3, head3, view3, likes3, comments3, text3, false);
+                        bundle.putStringArrayList("forLinearLayout", list);
+                        fragment2.setArguments(bundle);
 
-        PlayListModel p4 = new PlayListModel("0", image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p5 = new PlayListModel("1", image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p6 = new PlayListModel("2", image3, head3, view3, likes3, comments3, text3, false);
+                        fragmentTransaction.replace(R.id.frame2, fragment2);
+                        fragmentTransaction.replace(R.id.frame1, fragment1);
+                        fragmentTransaction.commit(); // save the changes
 
-        PlayListModel p7 = new PlayListModel("0", image1, head1, view1, likes1, comments1, text1, false);
-        PlayListModel p8 = new PlayListModel("1", image2, head2, view2, likes2, comments2, text2, false);
-        PlayListModel p9 = new PlayListModel("2", image3, head3, view3, likes3, comments3, text3, false);
+                        //this will fetch 20 posts by category from database
+                        if (posts.size() == 1)
+                            lodaDataByCategory();
+                        if (posts.size() > 1)
+                            adapter.notifyDataSetChanged();
+                    }
 
-        posts.add(p1);
-        listPlaylistItemPositions.add(0);
-        posts.add(p2);
-        listPlaylistItemPositions.add(1);
-        posts.add(p3);
-        listPlaylistItemPositions.add(2);
 
-        posts.add(p4);
-        listPlaylistItemPositions.add(3);
-        posts.add(p5);
-        listPlaylistItemPositions.add(4);
-        posts.add(p6);
-        listPlaylistItemPositions.add(5);
+                } else {
+                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
 
-        posts.add(p7);
-        listPlaylistItemPositions.add(6);
-        posts.add(p8);
-        listPlaylistItemPositions.add(7);
-        posts.add(p9);
-        listPlaylistItemPositions.add(8);
-    }
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    fragmentprogressBar.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostDetailPojo> call, Throwable t) {
+                // Log error here since request failed
+                frame1.setVisibility(View.VISIBLE);
+                frame2.setVisibility(View.VISIBLE);
+                breaking_ll1.setVisibility(View.VISIBLE);
+                recycler.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                fragmentprogressBar.setVisibility(View.VISIBLE);
+
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT);
+            }
+        });
+    }*/
 
     private void loadAdFragment(ShowAdFragment showAdFragment) {
         Fragment imgFragment = new FragmentImage();
@@ -538,19 +532,43 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
         fragmentTransaction.commit();
     }
 
-    public void loadFragment(Fragment fragment1, int position) {
-        // create a FragmentManager
-        FragmentManager fm = getFragmentManager();
-        // create a FragmentTransaction to begin the transaction and replace the Fragment
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        // replace the FragmentLayout with new Fragment
+    public void loadFragment(Fragment fragment1, String postId) {
 
-        Bundle bundle = new Bundle();
-        bundle.putString("post_id", posts.get(position).getPost_id());
-        fragment1.setArguments(bundle);
+        loadData(fragment1, postId);
 
-        fragmentTransaction.replace(R.id.frame1, fragment1, "videoFragment");
-        fragmentTransaction.commit(); // save the changes
+    }
+
+    public void loadData(final Fragment fragment1, String postId) {
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<PostDetailPojo> call = apiService.getPostDetails(postId);
+
+        call.enqueue(new Callback<PostDetailPojo>() {
+            @Override
+            public void onResponse(Call<PostDetailPojo> call, Response<PostDetailPojo> response) {
+
+                if (response.isSuccessful()) {
+
+                    Log.d("Reached to", "loadFragment");
+                    DisplayBreakingNewsActivity.postDetails = response.body();
+
+                    // create a FragmentManager
+                    FragmentManager fm = getFragmentManager();
+                    // create a FragmentTransaction to begin the transaction and replace the Fragment
+                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                    // replace the FragmentLayout with new Fragment
+                    fragmentTransaction.replace(R.id.frame1, fragment1, "videoFragment");
+                    fragmentTransaction.commit(); // save the changes
+                } else {
+                    Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostDetailPojo> call, Throwable t) {
+                Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -766,6 +784,66 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
             mediaPlayer.start();
 //            cancelDialog.cancel();
         }
+
+    }
+
+    public void getPostsByPlaylistId() {
+
+        ll_playlist = findViewById(R.id.ll_playlist);
+        progressBar = findViewById(R.id.progressBar);
+        ll_playlist.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<GetPostsByPlaylistId> call = apiService.getPostsByPlaylistId(sharedPreferences.getSharedPrefValue("user_id"), playListId);
+
+        call.enqueue(new Callback<GetPostsByPlaylistId>() {
+            @Override
+            public void onResponse(Call<GetPostsByPlaylistId> call, Response<GetPostsByPlaylistId> response) {
+
+                if (response.isSuccessful()) {
+
+                    GetPostsByPlaylistId postsById = new GetPostsByPlaylistId();
+                    postsById = response.body();
+
+                    ll_playlist.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    if (recycler != null && postsById.getResult() != null) {
+                        adapter = new PlayListViewRecyclerAdapter(PlayListDetaildViewActivity.this, postsById);
+                        recycler.setLayoutManager(new LinearLayoutManager(PlayListDetaildViewActivity.this, LinearLayoutManager.VERTICAL, false));
+                        recycler.setAdapter(adapter);
+
+                        /*     loadAdFragment(new ShowAdFragment());*/
+
+                        // show or hide Ad Fragment in portrait mode
+                        if (frameShowAdd != null) {
+                            FragmentManager fm = getFragmentManager();
+                            addShowHideListener(fm.findFragmentById(R.id.frameShowAdd), true);
+
+                            // default first item selected
+                            int currentPosition = adapter.getCurrentItemSelectedPosition();
+                            adapter.itemClicked(currentPosition);
+
+                            getAdapterClicks();
+                        }
+                    }
+
+                } else {
+                    ll_playlist.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetPostsByPlaylistId> call, Throwable t) {
+                // Log error here since request failed
+                ll_playlist.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

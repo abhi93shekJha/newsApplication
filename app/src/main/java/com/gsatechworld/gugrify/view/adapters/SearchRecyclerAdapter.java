@@ -15,21 +15,20 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.NewsListHolder;
+import com.gsatechworld.gugrify.model.retrofit.HeadlineSearchPojo;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAdapter.MyViewHolder> implements Filterable {
+public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAdapter.MyViewHolder> {
 
-    private List<NewsListHolder> list;
+    HeadlineSearchPojo pojo;
     private Context context;
-    private List<NewsListHolder> listFiltered;
 
-    public SearchRecyclerAdapter(List<NewsListHolder> list, Context context) {
-        listFiltered = new ArrayList<>();
-        this.list = list;
+    public SearchRecyclerAdapter(HeadlineSearchPojo pojo, Context context) {
+        this.pojo = pojo;
         this.context = context;
     }
 
@@ -42,14 +41,17 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     @Override
     public void onBindViewHolder(final SearchRecyclerAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
-        holder.heading.setText(listFiltered.get(position).getPostHeading());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DisplayBreakingNewsActivity.class);
-                context.startActivity(intent);
-            }
-        });
+        if (pojo.getResult() != null) {
+            holder.heading.setText(pojo.getResult().get(position).getNewsHeadline());
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, DisplayBreakingNewsActivity.class);
+                    intent.putExtra("postId", pojo.getResult().get(position).getPostId());
+                    context.startActivity(intent);
+                }
+            });
+        }
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -59,52 +61,22 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
 //        });
     }
 
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView heading;
+
         MyViewHolder(View itemView) {
             super(itemView);
             heading = itemView.findViewById(R.id.textViewname);
         }
     }
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
-                if (charString.isEmpty()) {
-                   listFiltered = list;
-                } else {
-                    List<NewsListHolder> filtered = new ArrayList<>();
-                    for (NewsListHolder row : list) {
 
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
-                        if (row.getDescription().toLowerCase().contains(charString.toLowerCase()) || row.getPostHeading().toLowerCase().contains(charSequence)) {
-                            filtered.add(row);
-                        }
-                    }
-
-                    listFiltered = filtered;
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values =  listFiltered;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                listFiltered = (ArrayList<NewsListHolder>) filterResults.values;
-
-                // refresh the list with filtered data
-                notifyDataSetChanged();
-            }
-        };
-    }
     @Override
     public int getItemCount() {
-        return listFiltered.size();
+        if (pojo.getResult() != null)
+            return pojo.getResult().size();
+        else
+            return 0;
     }
 }

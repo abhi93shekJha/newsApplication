@@ -106,7 +106,7 @@
                     android:layout_height="50dp"
                     android:layout_gravity="bottom"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:weightSum=".8">
 
                     <LinearLayout
                         android:id="@+id/ll_suffle"
@@ -177,22 +177,6 @@
                             app:srcCompat="@drawable/ic_forward" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/ll_repeat"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.2"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/iv_repeat"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:padding="3dp"
-                            app:srcCompat="@drawable/ic_repeat" />
-                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

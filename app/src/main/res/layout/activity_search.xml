@@ -20,7 +20,28 @@
             <!--app:srcCompat="@drawable/ic_next_arrow"/>-->
     </android.support.v7.widget.Toolbar>
     <!-- android:background="?attr/colorPrimary"-->
+    <TextView
+        android:id="@+id/noPostsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        android:text="No posts found!!"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/toolbar"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/custom_progress_dialog"
+        android:visibility="gone" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/searchNewsList"
         android:layout_below="@+id/toolbar"

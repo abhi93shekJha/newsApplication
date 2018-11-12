@@ -23,26 +23,27 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.retrofit.GetPostsByPlaylistId;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListViewRecyclerAdapter.MyViewHolder> {
 
     Context context;
 
-    ArrayList<PlayListModel> posts;
     NewsSharedPreferences sharedPreferences;
     boolean b = false;
     boolean once = false;
     ArrayList<Integer> selectedItem = new ArrayList<>();
     public int currentItemClickedPosition = 0;
-    ArrayList<Integer> playListItems = new ArrayList<>();
+    GetPostsByPlaylistId postsById;
 
-    public PlayListViewRecyclerAdapter(Context context, ArrayList<PlayListModel> posts) {
+    public PlayListViewRecyclerAdapter(Context context, GetPostsByPlaylistId postsById ) {
         this.context = context;
-        this.posts = posts;
         sharedPreferences = NewsSharedPreferences.getInstance(context);
+        this.postsById = postsById;
     }
 
     public PlayListViewRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,7 +57,7 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
 
 //        holder.setIsRecyclable(false);
 //        holder.expandableLinearLayout.setInRecyclerView(true);
-        if (posts.get(position).isClicked() == true) {
+        if (postsById.getResult().get(position).isClicked() == true) {
             holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.black_overlay));
             holder.likes.setTextColor(context.getResources().getColor(R.color.colorWhite));
             holder.headline.setTextColor(context.getResources().getColor(R.color.colorWhite));
@@ -73,15 +74,15 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
             holder.iv_view.setColorFilter(context.getResources().getColor(R.color.color_black));
         }
 
-        Glide.with(context).load(posts.get(position).getImage()).into(holder.image);
-        holder.headline.setText(posts.get(position).getNews_headlines());
-        holder.likes.setText(posts.get(position).getLikes());
-        holder.views.setText(posts.get(position).getViews());
+        Glide.with(context).load(postsById.getResult().get(position).getPostImages()).into(holder.image);
+        holder.headline.setText(postsById.getResult().get(position).getPostHeadline());
+        holder.likes.setText(""+postsById.getResult().get(position).getLikes());
+        holder.views.setText(postsById.getResult().get(position).getViews());
     }
 
     @Override
     public int getItemCount() {
-        return posts.size();
+        return postsById.getResult().size();
     }
 
     public int getCurrentItemSelectedPosition() {
@@ -126,18 +127,18 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
     }
 
     public void itemClicked(int adapterPosition) {
-        if (adapterPosition != -1 && adapterPosition < posts.size()) {
+        if (adapterPosition != -1 && adapterPosition < postsById.getResult().size()) {
             currentItemClickedPosition = adapterPosition;
             sharedPreferences.setClickedPosition(currentItemClickedPosition);
-            if (!posts.get(adapterPosition).isClicked()) {
-                posts.get(adapterPosition).setClicked(true);
+            if (!postsById.getResult().get(adapterPosition).isClicked()) {
+                postsById.getResult().get(adapterPosition).setClicked(true);
                 FragmentImage fragment1 = new FragmentImage();
                 if (context instanceof PlayListDetaildViewActivity) {
-                    ((PlayListDetaildViewActivity) context).loadFragment(fragment1, adapterPosition);
+                    ((PlayListDetaildViewActivity) context).loadFragment(fragment1, postsById.getResult().get(adapterPosition).getPostId());
                 }
 
                 if (selectedItem.size() != 0) {
-                    posts.get(selectedItem.get(0)).setClicked(false);
+                    postsById.getResult().get(selectedItem.get(0)).setClicked(false);
                     notifyItemChanged(selectedItem.get(0));
                     selectedItem.clear();
                     selectedItem.add(adapterPosition);
@@ -148,7 +149,7 @@ public class PlayListViewRecyclerAdapter extends RecyclerView.Adapter<PlayListVi
                     //notifyDataSetChanged();
                 }
             } else {
-                posts.get(adapterPosition).setClicked(false);
+                postsById.getResult().get(adapterPosition).setClicked(false);
                 selectedItem.clear();
                 notifyItemChanged(adapterPosition);
             }

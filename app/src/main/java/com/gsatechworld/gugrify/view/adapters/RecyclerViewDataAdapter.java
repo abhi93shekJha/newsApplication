@@ -233,14 +233,14 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             });
 
         }
-        if (position == 1) {
+        else if (position == 1) {
             LatesNewsDataAdapter adapter = new LatesNewsDataAdapter(forRecycler, mContext);
             holder.btnMore.setVisibility(View.GONE);
             holder.itemTitle.setText("Latest News");
             holder.recycler_view_list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recycler_view_list.setAdapter(adapter);
         }
-        if (position == 2) {
+        else if (position == 2) {
 
             if (playlists.getResult() == null) {
                 holder.ll_playlist.setVisibility(View.GONE);
@@ -250,20 +250,19 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 PlaylistDataAdapter adapter = new PlaylistDataAdapter(playlists, mContext);
                 holder.recycler_view_list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
                 holder.recycler_view_list.setAdapter(adapter);
-
             }
 
-        } else {
+        } else if(position >= 3){
 
-            if (activePosts.getResults() != null) {
-                holder.itemTitle.setText(activePosts.getResults().get(position - 3).getNews_headline());
-                holder.tv_location.setText(activePosts.getResults().get(position - 3).getReporter_location());
-                holder.tvTime.setText(activePosts.getResults().get(position - 3).getTime_of_post());
-                holder.tvViews.setText(activePosts.getResults().get(position - 3).getViews());
+            if (activePosts.getResult() != null) {
+                holder.itemTitle.setText(activePosts.getResult().get(position - 3).getNewsHeadline());
+                holder.tv_location.setText(activePosts.getResult().get(position - 3).getReporterLocation());
+                holder.tvTime.setText(activePosts.getResult().get(position - 3).getTimeOfPost());
+                holder.tvViews.setText(activePosts.getResult().get(position - 3).getViews()+" views");
 
-                Glide.with(mContext).load(activePosts.getResults().get(position - 3).getImage()).into(holder.img);
+                Glide.with(mContext).load(activePosts.getResult().get(position - 3).getImage()).into(holder.img);
 
-                Glide.with(mContext).load(activePosts.getResults().get(position - 3).getReporter_image()).into(holder.profile_image);
+                Glide.with(mContext).load(activePosts.getResult().get(position - 3).getReporterImage()).into(holder.profile_image);
 
                 holder.btnMore.setOnClickListener(new View.OnClickListener() {
 
@@ -301,10 +300,13 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(mContext, DisplayBreakingNewsActivity.class);
-                        intent.putExtra("postId", activePosts.getResults().get(position - 3).getPost_id());
+                        intent.putExtra("postId", activePosts.getResult().get(position - 3).getPostId());
                         mContext.startActivity(intent);
                     }
                 });
+
+                Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.item_fall_down);
+                holder.itemView.startAnimation(animation);
 
             }
 
@@ -342,8 +344,6 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
         Glide.with(mContext).load(dataList.get(position).getImg()).into(holder.img);
 
         holder.itemTitle.setText(dataList.get(position).getHeaderTitle());
-        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.item_fall_down);
-        holder.itemView.startAnimation(animation);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,8 +414,8 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
 
     @Override
     public int getItemCount() {
-        if (activePosts.getResults() != null) {
-            return 3 + activePosts.getResults().size();
+        if (activePosts.getResult() != null) {
+            return 3 + activePosts.getResult().size();
         } else
             return 3;
     }
