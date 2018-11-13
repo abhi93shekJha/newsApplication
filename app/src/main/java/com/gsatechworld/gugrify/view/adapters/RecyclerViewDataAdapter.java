@@ -59,7 +59,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     LatestNewsByCity news;
     GetPlaylistsPojo playlists;
     ActivePostsPojo activePosts;
-    List<String> playlistNames;
+    public static List<String> playlistNames;
     NewsSharedPreferences sharedPreferences;
 
     private int lastPosition = -1;
@@ -250,6 +250,32 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 PlaylistDataAdapter adapter = new PlaylistDataAdapter(playlists, mContext);
                 holder.recycler_view_list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
                 holder.recycler_view_list.setAdapter(adapter);
+
+                holder.btnMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        PopupMenu popup = new PopupMenu(mContext, view);
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                if (menuItem.getTitle().equals("Create Playlist")) {
+//                                Intent intent = new Intent(mContext, LoginActivity.class);
+//                                mContext.startActivity(intent);
+
+                                    // need to login first before creating playlist
+
+                                    // show playlist for creating playlist
+                                    createPlayListDialog = createPlayListDialog.getInstance(mContext, playlistNames);
+                                    createPlayListDialog.showDialog();
+                                    createPlayListDialog.show();
+                                }
+                                return false;
+                            }
+                        });
+                        popup.inflate(R.menu.menu_create);
+                        popup.show();
+                    }
+                });
             }
 
         } else if(position >= 3){

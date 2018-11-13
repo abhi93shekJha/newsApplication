@@ -555,6 +555,9 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
                     // create a FragmentManager
                     FragmentManager fm = getFragmentManager();
                     // create a FragmentTransaction to begin the transaction and replace the Fragment
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("key", true);
+                    fragment1.setArguments(bundle);
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
                     // replace the FragmentLayout with new Fragment
                     fragmentTransaction.replace(R.id.frame1, fragment1, "videoFragment");

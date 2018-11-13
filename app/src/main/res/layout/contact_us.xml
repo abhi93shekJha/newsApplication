@@ -114,7 +114,6 @@
                                 android:layout_margin="0dp"
                                 android:backgroundTint="@color/colorWhite"
                                 android:hint="Email"
-                                android:inputType="textPassword"
                                 android:singleLine="true"
                                 android:maxLength="6"
                                 android:textColor="@color/colorWhite"
@@ -151,7 +150,43 @@
                                 android:layout_margin="0dp"
                                 android:backgroundTint="@color/colorWhite"
                                 android:hint="Mobile"
-                                android:inputType="textPassword"
+                                android:inputType="number"
+                                android:singleLine="true"
+                                android:maxLength="6"
+                                android:textColor="@color/colorWhite"
+                                android:textColorHint="@color/colorWhite" />
+                        </android.support.design.widget.TextInputLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/squre_radius_bg"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:layout_marginRight="1dp"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/colorWhite"
+                            android:theme="@style/TextLabel"
+                            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+
+                            <EditText
+                                android:id="@+id/etContactMessage"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="0dp"
+                                android:backgroundTint="@color/colorWhite"
+                                android:hint="Message (Optional)"
                                 android:singleLine="true"
                                 android:maxLength="6"
                                 android:textColor="@color/colorWhite"
@@ -178,9 +213,6 @@
                             android:text="Submit Details"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold" />
-
-
-
                     </LinearLayout>
 
                     <LinearLayout

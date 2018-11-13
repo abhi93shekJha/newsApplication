@@ -59,6 +59,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     LanguageResponse language;
     LanguageRecyclerAdapter l;
     RecyclerView grid;
+    boolean fromSettings;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -70,11 +71,18 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         setContentView(R.layout.select_language_cities);
         sharedPreferences = NewsSharedPreferences.getInstance(SelectLanguageAndCities.this);
 
+        fromSettings = getIntent().getBooleanExtra("fromSettings",false);
+
         //if city has already been selected
+
         if(sharedPreferences.getCitySelected().length() != 0){
-            Intent intent = new Intent(SelectLanguageAndCities.this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
+            if(fromSettings){
+
+            }else {
+                Intent intent = new Intent(SelectLanguageAndCities.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
 
         mainLayout = findViewById(R.id.selectCityMain);

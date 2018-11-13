@@ -96,7 +96,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private ViewPagerAdapter mAdapter;
     private LinearLayoutManager l;
     RecyclerView recyclerView;
-    private boolean isFinished = false;
+    private static boolean isFinished = false;
     public static GetMainAdvertisement result;
     private DrawerLayout mainLayout;
     int count = 0, activePostCount = 10;
@@ -210,7 +210,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         allSampleData = new ArrayList<>();
         createDummyData();
 
-        showVideoDialog();
+        if (!isFinished)
+            showVideoDialog();
 //        recyclerView.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 
         // Adds the scroll listener to RecyclerView
@@ -309,8 +310,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         dialog.setContentView(R.layout.video_dialog);
         // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
         // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -451,7 +452,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         if (playlistsPojo.getResult() == null) {
@@ -460,9 +461,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
 
         if (!isFinished) {
-            if (!dialog.isShowing()) {
+            if (result != null  && !dialog.isShowing()) {
                 dialog.show();
-                if (result != null) {
+                if (result != null && mediaPlayer != null) {
                     mediaPlayer.seekTo(length);
                     mediaPlayer.start();
                 }
@@ -540,8 +541,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         super.onStop();
         dialog.cancel();
         Log.d("Entered", "OnStop");
-        length = mediaPlayer.getCurrentPosition();
-        mediaPlayer.pause();
+        if(mediaPlayer != null){
+            length = mediaPlayer.getCurrentPosition();
+            mediaPlayer.pause();
+        }
     }
 
     @Override
@@ -610,33 +613,35 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                     Log.d("Reached here", "to latestNewsByCity");
                     news = response.body();
 
-                    String category = news.getResult().get(0).getCategory();
-                    Log.d("catergory", category);
+                    if(news.getResult() != null) {
+                        String category = news.getResult().get(0).getCategory();
+                        Log.d("catergory", category);
 
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
-                    my_recycler_view.setHasFixedSize(true);
-                    adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
-                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+                        my_recycler_view.setHasFixedSize(true);
+                        adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
+                        my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 //        adapter.addMoreContacts(allSampleData);
-                    l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
-                    my_recycler_view.setLayoutManager(l);
+                        l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                        my_recycler_view.setLayoutManager(l);
 
-                    my_recycler_view.setAdapter(adapter);
-                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, DividerItemDecoration.VERTICAL));
+                        my_recycler_view.setAdapter(adapter);
+                        my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, DividerItemDecoration.VERTICAL));
 
-                    scrollListener = new EndlessScrollListener(l) {
-                        @Override
-                        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                            // Triggered only when new data needs to be appended to the list
-                            // Add whatever code is needed to append new items to the bottom of the list
-                            Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-//                if(page<3)
-//                    loadNextDataFromApi(page);
-                        }
-                    };
-                    my_recycler_view.addOnScrollListener(scrollListener);
+                        scrollListener = new EndlessScrollListener(l) {
+                            @Override
+                            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                                // Triggered only when new data needs to be appended to the list
+                                // Add whatever code is needed to append new items to the bottom of the list
+                                Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+                if(page<3)
+                    Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+                            }
+                        };
+                        my_recycler_view.addOnScrollListener(scrollListener);
+                    }
 
                 } else {
                     Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
@@ -706,7 +711,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         progressBar.setVisibility(View.VISIBLE);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ActivePostsPojo> call = apiService.getActivePosts("0","12");
+        Call<ActivePostsPojo> call = apiService.getActivePosts("0", "200");
 
         call.enqueue(new Callback<ActivePostsPojo>() {
             @Override

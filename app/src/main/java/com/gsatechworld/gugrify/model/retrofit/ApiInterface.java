@@ -8,6 +8,7 @@ import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -79,4 +80,13 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/get_search.php")
     Call<HeadlineSearchPojo> getSearchedHeadlines(@Query("search") String search);
+
+    @POST("gugrify_news/API/get_post_details.php")
+    Call<ViewPojo> makeAView(@Query("post_id") String post_id);
+
+    @POST("gugrify_news/API/get_post_details.php")
+    Call<LikePojo> likeAPost(@Body LikePojo post);
+
+    @POST("gugrify_news/API/post_contactus.php")
+    Call<ContactUsPojo> contactUsRequest(@Body ContactUsPojo post);
 }

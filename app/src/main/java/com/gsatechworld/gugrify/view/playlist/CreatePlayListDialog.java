@@ -39,15 +39,17 @@ public class CreatePlayListDialog {
     public Dialog dialog;
     List<String> playListExistingList;
     private LinearLayout ll_container_playlistList, ll_createPlayList;
-    EditText tv_ok;
-    TextView cancel;
+    EditText et_playlistName;
+    TextView cancel, tv_ok;
     ApiInterface apiService;
     NewsSharedPreferences sharedPreferences;
+
 
     public CreatePlayListDialog(Context context, List<String> playList) {
         this.mContext = context;
         playListExistingList = playList;
         sharedPreferences = NewsSharedPreferences.getInstance(context);
+
     }
 
     public static CreatePlayListDialog getInstance(Context context, List<String> playList){
@@ -85,6 +87,14 @@ public class CreatePlayListDialog {
                 TextView tv_playListTitle = (TextView) rowView.findViewById(R.id.tv_playListTitle);
                 tv_playListTitle.setText(playListExistingList.get(i).toString());
                 ll_container_playlistList.addView(rowView);
+
+                ll_container_playlistList.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "Post added!!", Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }
+                });
             }
         }
 
@@ -107,18 +117,19 @@ public class CreatePlayListDialog {
 
                 cancel = dialog.findViewById(R.id.cancel);
                 tv_ok = dialog.findViewById(R.id.tv_ok);
+                et_playlistName = dialog.findViewById(R.id.et_playlistName);
 
                 dialog.show();
 
                 tv_ok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(tv_ok.getText().toString().trim().equalsIgnoreCase("")){
-                            tv_ok.setError("Empty");
-                            tv_ok.setFocusable(true);
+                        if(et_playlistName.getText().toString().trim().equalsIgnoreCase("")){
+                            et_playlistName.setError("Empty");
+                            et_playlistName.setFocusable(true);
                         }
                         else{
-                            CreatePlayListPojo post = new CreatePlayListPojo(tv_ok.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
+                            CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
                             makeCommentPost(post);
                         }
                     }

@@ -126,7 +126,10 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                 public void onClick(View view) {
                     if(holder.navItemTitle.getText().toString().equalsIgnoreCase("Sign In")){
                         Intent intent = new Intent(mContext, LoginActivity.class);
+                        intent.putExtra("fromDash", true);
                         mContext.startActivity(intent);
+                        if(mContext instanceof DashboardActivity)
+                            ((DashboardActivity) mContext).finish();
                     }
                     else{
                         sharedPreferences.setLoggedIn(false);
@@ -169,8 +172,10 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, SelectLanguageAndCities.class);
-                    if(mContext instanceof DashboardActivity)
-                        ((DashboardActivity) mContext).finish();
+                    intent.putExtra("fromSettings", true);
+                    mContext.startActivity(intent);
+                    /*if(mContext instanceof DashboardActivity)
+                        ((DashboardActivity) mContext).finish();*/
                 }
             });
         }

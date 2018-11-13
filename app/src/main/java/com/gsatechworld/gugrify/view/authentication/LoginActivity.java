@@ -74,6 +74,7 @@ import static com.gsatechworld.gugrify.utils.NetworkUtil.NO_INTERNET;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -83,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button btn_googlePlus;
     com.facebook.login.widget.LoginButton btn_fb;
     CallbackManager callbackManager;
+    Boolean fromDash;
 
     //for google sign in
     GoogleSignInClient mGoogleSignInClient;
@@ -102,6 +104,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sharedPreferences = NewsSharedPreferences.getInstance(this);
 
         InitViews();
+        fromDash = getIntent().getBooleanExtra("fromDash", false);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
@@ -160,7 +163,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 getUserProfile(AccessToken.getCurrentAccessToken());
                 boolean loggedIn = AccessToken.getCurrentAccessToken() == null;
                 Log.d("API123", loggedIn + " ??");
-                finish();
+                if (fromDash) {
+                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else
+                    finish();
             }
 
             @Override
@@ -216,7 +224,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             sharedPreferences.setSharedPrefValue("email", account.getEmail());
             sharedPreferences.setSharedPrefValue("user_image", account.getPhotoUrl().toString());
 
-            finish();
+            if (fromDash) {
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            } else
+                finish();
         }
     }
 
@@ -336,7 +349,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         sharedPreferences.setSharedPrefValue("user_image", loginPojo.getResult().getUser_image());
                         sharedPreferences.setSharedPrefValue("user_city", loginPojo.getResult().getUser_city());
                         sharedPreferences.setLoggedIn(true);
-                        finish();
+                        if (fromDash) {
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else
+                            finish();
                     }
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();

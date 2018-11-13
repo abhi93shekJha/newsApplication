@@ -59,6 +59,7 @@ import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.GetScrollNewsAndBNPojo;
 import com.gsatechworld.gugrify.model.retrofit.PostDetailPojo;
 import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
+import com.gsatechworld.gugrify.model.retrofit.ViewPojo;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
@@ -174,6 +175,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         //getting postCategory and postId from previous activity
         category = getIntent().getStringExtra("category");
         postId = getIntent().getStringExtra("postId");
+
+        //request for increasing view
+        makeAViewIncreaseRequest();
 
         mHandler = new Handler();
 
@@ -1019,4 +1023,53 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         });
     }
 
+    public void makeAViewIncreaseRequest(){
+        final FrameLayout frame1 = findViewById(R.id.frame1);
+        final FrameLayout frame2 = findViewById(R.id.frame2);
+        breaking_ll1 = findViewById(R.id.breaking_ll1);
+        progressBar = findViewById(R.id.progressBar);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<ViewPojo> call = apiService.makeAView(postId);
+
+        call.enqueue(new Callback<ViewPojo>() {
+
+            @Override
+            public void onResponse(Call<ViewPojo> call, Response<ViewPojo> response) {
+
+                ViewPojo postsByCat = null;
+                if (response.isSuccessful()) {
+
+                    Log.d("Reached to", "makeAview");
+                    postsByCat = response.body();
+
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+
+                } else {
+
+                    frame1.setVisibility(View.VISIBLE);
+                    frame2.setVisibility(View.VISIBLE);
+                    breaking_ll1.setVisibility(View.VISIBLE);
+                    recycler.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ViewPojo> call, Throwable t) {
+                // Log error here since request failed
+                frame1.setVisibility(View.VISIBLE);
+                frame2.setVisibility(View.VISIBLE);
+                breaking_ll1.setVisibility(View.VISIBLE);
+                recycler.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+
+            }
+        });
+    }
 }

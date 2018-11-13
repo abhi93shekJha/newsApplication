@@ -52,6 +52,7 @@ public class FragmentImage extends Fragment {
     private ImageView dots[];
     int i = 0;
     List<String> texts;
+    boolean fromPlaylistDetail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,8 +67,7 @@ public class FragmentImage extends Fragment {
             texts = new ArrayList<>();
             texts.add("Big breaking");
             texts.addAll(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getImageArray());
-        }
-        else{
+        } else {
             texts = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getImageArray();
         }
 
@@ -98,6 +98,19 @@ public class FragmentImage extends Fragment {
 
         frameLayoutTextAnimation = view.findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = view.findViewById(R.id.view_pager_frame_layout);
+
+
+        //checking if this activity comes from PlaylistDetailsActivity and hence hide the rotating button
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            fromPlaylistDetail = bundle.getBoolean("key", false);
+        }
+        ImageView enlarge = view.findViewById(R.id.enlarge);
+        if (fromPlaylistDetail) {
+            enlarge.setVisibility(View.GONE);
+        } else
+            enlarge.setVisibility(View.VISIBLE); // end for code here
+
 
 
         //this block of code is for pausing and play the visible animations (for text animations)
@@ -216,15 +229,15 @@ public class FragmentImage extends Fragment {
             public void onClick(View view) {
 
 
-                    mHandler.removeCallbacksAndMessages(null);
-                    animatedTextView.setVisibility(View.GONE);
+                mHandler.removeCallbacksAndMessages(null);
+                animatedTextView.setVisibility(View.GONE);
 
-                    view.setVisibility(View.GONE);
-                    play.setVisibility(View.VISIBLE);
+                view.setVisibility(View.GONE);
+                play.setVisibility(View.VISIBLE);
 
-                    animateHandler.removeCallbacksAndMessages(null);
-                    pausePlayLayout.setVisibility(View.VISIBLE);
-                }
+                animateHandler.removeCallbacksAndMessages(null);
+                pausePlayLayout.setVisibility(View.VISIBLE);
+            }
 
         });
 
@@ -232,17 +245,17 @@ public class FragmentImage extends Fragment {
             @Override
             public void onClick(View view) {
 
-                    animatedTextView.setVisibility(View.VISIBLE);
-                    if (i == 12)
-                        i = -1;
-                    animatedTextView.setText(texts.get(++i));
-                    animatedTextView.startAnimation(zoomIn);
+                animatedTextView.setVisibility(View.VISIBLE);
+                if (i == 12)
+                    i = -1;
+                animatedTextView.setText(texts.get(++i));
+                animatedTextView.startAnimation(zoomIn);
 
-                    view.setVisibility(View.GONE);
-                    pause.setVisibility(View.VISIBLE);
+                view.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
 
-                    pausePlayLayout.startAnimation(animFadeOut);
-                }
+                pausePlayLayout.startAnimation(animFadeOut);
+            }
         }); // pausing and playing stops here
 
 

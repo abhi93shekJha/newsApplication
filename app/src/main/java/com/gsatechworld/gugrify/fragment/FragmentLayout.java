@@ -30,8 +30,11 @@ import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
+import com.gsatechworld.gugrify.model.retrofit.LikePojo;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
+import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
+import com.gsatechworld.gugrify.view.playlist.CreatePlayListDialog;
 
 import java.util.ArrayList;
 
@@ -44,6 +47,8 @@ public class FragmentLayout extends Fragment {
     String comment = "";
     NewsSharedPreferences sharedPreferences;
     ApiInterface apiService;
+    private CreatePlayListDialog createPlayListDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,25 +59,51 @@ public class FragmentLayout extends Fragment {
         TextView likes = view.findViewById(R.id.likesText);
         TextView commentsNumber = view.findViewById(R.id.commentsText);
         ImageView comments_image = view.findViewById(R.id.comments_image);
+        ImageView likesImage = view.findViewById(R.id.likesImage);
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity());
 
         LinearLayout layout = view.findViewById(R.id.addToPlaylistLayout);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(getActivity(), view);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        if (menuItem.getTitle().equals("Add to playlist")) {
-                            Intent intent = new Intent(getActivity(), LoginActivity.class);
-                            getActivity().startActivity(intent);
+                if (!sharedPreferences.getIsLoggedIn()) {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivity(intent);
+                } else {
+                    PopupMenu popup = new PopupMenu(getActivity(), view);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (menuItem.getTitle().equals("Add to playlist")) {
+//                                Intent intent = new Intent(mContext, LoginActivity.class);
+//                                mContext.startActivity(intent);
+
+                                // need to login first before creating playlist
+
+                                // show playlist for creating playlist
+                                createPlayListDialog = createPlayListDialog.getInstance(getActivity(), RecyclerViewDataAdapter.playlistNames);
+                                createPlayListDialog.showDialog();
+                                createPlayListDialog.show();
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popup.inflate(R.menu.popup_menu);
-                popup.show();
+                    });
+                    popup.inflate(R.menu.popup_menu);
+                    popup.show();
+                }
+            }
+        });
+
+        likesImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!sharedPreferences.getIsLoggedIn()) {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivity(intent);
+                } else {
+                    LikePojo pojo = new LikePojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("user_id"));
+                    likeaPost(pojo);
+                }
             }
         });
 
@@ -82,7 +113,7 @@ public class FragmentLayout extends Fragment {
         commentsNumber.setTypeface(fontRegular);
 
         views.setText(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getViews());
-        likes.setText(""+DisplayBreakingNewsActivity.postDetails.getResult().get(0).getLikes());
+        likes.setText("" + DisplayBreakingNewsActivity.postDetails.getResult().get(0).getLikes());
         commentsNumber.setText("" + DisplayBreakingNewsActivity.postDetails.getResult().get(0).getComments().size());
         comments_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,8 +150,7 @@ public class FragmentLayout extends Fragment {
                             });
 
                     alertDialog.show();
-                }
-                else{
+                } else {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     getActivity().startActivity(intent);
                 }
@@ -130,7 +160,7 @@ public class FragmentLayout extends Fragment {
         return view;
     }
 
-    void makeCommentPostRequest(CommentsPostPojo pojo){
+    void makeCommentPostRequest(CommentsPostPojo pojo) {
         apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CommentsPostPojo> call = apiService.postComments(pojo);
 
@@ -140,17 +170,46 @@ public class FragmentLayout extends Fragment {
                 CommentsPostPojo commentsResponse = null;
                 if (response.isSuccessful()) {
                     commentsResponse = response.body();
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), "Server error!!", Toast.LENGTH_SHORT).show();
                 }
 //                Log.d(TAG, "Number of movies received: " + movies.size());
             }
 
             @Override
-            public void onFailure(Call<CommentsPostPojo>call, Throwable t) {
+            public void onFailure(Call<CommentsPostPojo> call, Throwable t) {
                 // Log error here since request failed
                 Toast.makeText(getActivity(), "Server error!!", Toast.LENGTH_SHORT).show();
+                Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
+            }
+        });
+    }
+
+    public void likeaPost(LikePojo pojo) {
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<LikePojo> call = apiService.likeAPost(pojo);
+
+        call.enqueue(new Callback<LikePojo>() {
+            @Override
+            public void onResponse(Call<LikePojo> call, Response<LikePojo> response) {
+                LikePojo like = null;
+                if (response.isSuccessful()) {
+                    like = response.body();
+                    if (like.getResult() == null) {
+                        Toast.makeText(getActivity(), "You have already liked this post!!", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getActivity(), "Post liked!!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getActivity(), "Server error1!!", Toast.LENGTH_SHORT).show();
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<LikePojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(getActivity(), "Server error2!!", Toast.LENGTH_SHORT).show();
                 Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
             }
         });

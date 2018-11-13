@@ -97,7 +97,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
-                            if (menuItem.getTitle().equals("Add to playlist")) {
+                            if (menuItem.getTitle().equals("Create Playlist")) {
 //                                Intent intent = new Intent(mContext, LoginActivity.class);
 //                                mContext.startActivity(intent);
 
@@ -111,7 +111,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
                             return false;
                         }
                     });
-                    popup.inflate(R.menu.popup_menu);
+                    popup.inflate(R.menu.menu_create);
                     popup.show();
                 }
             });
