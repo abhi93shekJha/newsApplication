@@ -84,9 +84,15 @@ public interface ApiInterface {
     @POST("gugrify_news/API/get_post_details.php")
     Call<ViewPojo> makeAView(@Query("post_id") String post_id);
 
-    @POST("gugrify_news/API/get_post_details.php")
-    Call<LikePojo> likeAPost(@Body LikePojo post);
+    @POST("gugrify_news/API/post_likes.php")
+    Call<LikePojo> likeAPost(@Body LikePojo pojo);
 
     @POST("gugrify_news/API/post_contactus.php")
     Call<ContactUsPojo> contactUsRequest(@Body ContactUsPojo post);
+
+    @POST("gugrify_news/API/get_playlist_data.php")
+    Call<PlaylistPostPojo> addPostToPlaylist(@Body PlaylistPostPojo post);
+
+    @GET("gugrify_news/API/get_youtube.php")
+    Call<YoutubeResponsePojo> makeYoutubeVideoRequest();
 }

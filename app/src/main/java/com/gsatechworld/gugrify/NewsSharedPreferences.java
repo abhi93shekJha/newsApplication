@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     private SharedPreferences androidPref;
@@ -93,6 +97,45 @@ public class NewsSharedPreferences implements SharedPreferences.OnSharedPreferen
         return androidPref.getBoolean(key, false);
     }
 
+    public void setSearchedStringList(Set<String> strings){
+        editor = androidPref.edit();
+        editor.putStringSet("set", strings);
+        editor.commit();
+    }
 
+    public Set<String> getSearchedStringList(){
+        Set<String> dummySet = new HashSet<>();
+        return androidPref.getStringSet("set", dummySet);
+    }
+
+    public void setPostIdsSet(Set<String> strings){
+        editor = androidPref.edit();
+        editor.putStringSet("id", strings);
+        editor.commit();
+    }
+
+    public Set<String> getPostIdsSet(){
+        Set<String> dummySet = new HashSet<>();
+        return androidPref.getStringSet("id", dummySet);
+    }
+
+    public void setLoggedInUsingGoogle(boolean value){
+        editor = androidPref.edit();
+        editor.putBoolean("google", value);
+        editor.commit();
+    }
+    public void setLoggedInUsingFB(boolean value){
+        editor = androidPref.edit();
+        editor.putBoolean("fb", value);
+        editor.commit();
+    }
+
+    public boolean getLoggedInUsingGoogle(){
+        return androidPref.getBoolean("google", false);
+    }
+
+    public boolean getLoggedInUsingFB(){
+        return androidPref.getBoolean("fb", false);
+    }
 
 }

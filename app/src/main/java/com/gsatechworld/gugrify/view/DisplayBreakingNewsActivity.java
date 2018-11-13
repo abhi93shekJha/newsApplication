@@ -21,6 +21,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -66,8 +67,13 @@ import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
 import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -131,9 +137,16 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         active = true;
 
         //if run in landscape mode.
-        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             if (scrollNews == null)
                 getLandscapeItems();
+
+            //setting post date and tiem in landscape mode
+            TextView tv_date, tv_time;
+            tv_date = findViewById(R.id.tv_date);
+            tv_time = findViewById(R.id.tv_time);
+            tv_date.setText(postDetails.getResult().get(0).getPublishedDate());
+            tv_time.setText(postDetails.getResult().get(0).getTimeOfPost());
         }
 
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
@@ -176,8 +189,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         category = getIntent().getStringExtra("category");
         postId = getIntent().getStringExtra("postId");
 
+
         //request for increasing view
-        makeAViewIncreaseRequest();
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            makeAViewIncreaseRequest();
+        }
+
 
         mHandler = new Handler();
 
@@ -646,24 +663,24 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         FragmentImage fragment1 = new FragmentImage();
         FragmentLayout fragment2 = new FragmentLayout();
 
-        if (adapter.previous == (adapter.getItemCount() - 1) - 1) {
+        if (adapter.previous == (adapter.getItemCount() - 1)-2) {
             adapter.clicked[0] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, posts.get(0).getPostId());
             sharedPreferences.setClickedPosition(0);
 
-            adapter.clicked[(adapter.getItemCount() - 1) - 1] = false;
+            adapter.clicked[(adapter.getItemCount() - 1)- 2] = false;
             recycler.smoothScrollToPosition(0);
             adapter.previous = 0;
         } else {
-            adapter.clicked[adapter.previous] = false;
-            adapter.clicked[adapter.previous + 1] = true;
-            //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, posts.get(adapter.previous + 1).getPostId());
-            sharedPreferences.setClickedPosition(adapter.previous + 1);
+                adapter.clicked[adapter.previous] = false;
+                adapter.clicked[adapter.previous + 1] = true;
+                //loading both the fragments with clicked position
+                loadFragment(fragment1, fragment2, posts.get(adapter.previous + 1).getPostId());
+                sharedPreferences.setClickedPosition(adapter.previous + 1);
 
-            recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
-            adapter.previous = adapter.previous + 1;
+                recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
+                adapter.previous = adapter.previous + 1;
         }
         adapter.notifyDataSetChanged();
     }
@@ -675,14 +692,14 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         FragmentLayout fragment2 = new FragmentLayout();
 
         if (adapter.previous == 0) {
-            adapter.clicked[(adapter.getItemCount() - 1) - 1] = true;
+            adapter.clicked[(adapter.getItemCount() - 1) - 2] = true;
             //loading both the fragments with clicked position
-            loadFragment(fragment1, fragment2, posts.get((adapter.getItemCount() - 1) - 1).getPostId());
-            sharedPreferences.setClickedPosition((adapter.getItemCount() - 1) - 1);
+            loadFragment(fragment1, fragment2, posts.get((adapter.getItemCount() - 1) - 2).getPostId());
+            sharedPreferences.setClickedPosition((adapter.getItemCount() - 1) - 2);
 
             adapter.clicked[adapter.previous] = false;
-            recycler.smoothScrollToPosition(((adapter.getItemCount() - 1) - 1) + 1); //added this extra 1 to scroll the recycler to correct position
-            adapter.previous = (adapter.getItemCount() - 1) - 1;
+            recycler.smoothScrollToPosition(((adapter.getItemCount() - 1) - 2) + 1); //added this extra 1 to scroll the recycler to correct position
+            adapter.previous = (adapter.getItemCount() - 1) - 2;
         } else {
             adapter.clicked[adapter.previous - 1] = true;
             //loading both the fragments with clicked position
@@ -973,8 +990,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                                 String line3 = scrollNews.getResult().getScrollNews().get(i).getText3();
                                 line = line + line1 + " " + line2 + " " + line3 + " ";
                             }
-                            scroll_line.setSelected(true);
                             scroll_line.setText(line);
+                            scroll_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                            scroll_line.setSingleLine(true);
+                            scroll_line.setMarqueeRepeatLimit(5);
+                            scroll_line.setSelected(true);
+
                         }
                         Glide.with(DisplayBreakingNewsActivity.this).load(postDetails.getResult().get(0).getReporterPic()).into(place_holder_image);
                         place.setText(postDetails.getResult().get(0).getReporterLocation());
@@ -1023,11 +1044,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         });
     }
 
-    public void makeAViewIncreaseRequest(){
-        final FrameLayout frame1 = findViewById(R.id.frame1);
-        final FrameLayout frame2 = findViewById(R.id.frame2);
-        breaking_ll1 = findViewById(R.id.breaking_ll1);
-        progressBar = findViewById(R.id.progressBar);
+    public void makeAViewIncreaseRequest() {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<ViewPojo> call = apiService.makeAView(postId);
@@ -1043,32 +1060,15 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     Log.d("Reached to", "makeAview");
                     postsByCat = response.body();
 
-                    frame1.setVisibility(View.VISIBLE);
-                    frame2.setVisibility(View.VISIBLE);
-                    breaking_ll1.setVisibility(View.VISIBLE);
-                    recycler.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-
 
                 } else {
 
-                    frame1.setVisibility(View.VISIBLE);
-                    frame2.setVisibility(View.VISIBLE);
-                    breaking_ll1.setVisibility(View.VISIBLE);
-                    recycler.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<ViewPojo> call, Throwable t) {
                 // Log error here since request failed
-                frame1.setVisibility(View.VISIBLE);
-                frame2.setVisibility(View.VISIBLE);
-                breaking_ll1.setVisibility(View.VISIBLE);
-                recycler.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-
             }
         });
     }

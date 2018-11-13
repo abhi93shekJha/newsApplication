@@ -1,9 +1,15 @@
 package com.gsatechworld.gugrify.view.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInstaller;
+import android.media.MediaCas;
+import android.media.tv.TvInputService;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.SelectLanguageAndCities;
@@ -132,7 +142,26 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                             ((DashboardActivity) mContext).finish();
                     }
                     else{
-                        sharedPreferences.setLoggedIn(false);
+                        if(sharedPreferences.getLoggedInUsingFB()){
+                            FacebookSdk.sdkInitialize(mContext);
+                            LoginManager.getInstance().logOut();
+                            sharedPreferences.setLoggedIn(false);
+                            sharedPreferences.setLoggedInUsingFB(false);
+                        }
+                        else if(sharedPreferences.getLoggedInUsingGoogle()){
+                            sharedPreferences.setLoggedIn(false);
+                            sharedPreferences.setLoggedInUsingGoogle(false);
+                            LoginActivity.mGoogleSignInClient.revokeAccess()
+                                    .addOnCompleteListener((Activity) mContext, new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            // ...
+                                        }
+                                    });
+                        }
+                        else {
+                            sharedPreferences.setLoggedIn(false);
+                        }
                         if(mContext instanceof DashboardActivity)
                             ((DashboardActivity) mContext).recreate();
                     }
@@ -196,4 +225,5 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             this.nav_linearLayout = itemView.findViewById(R.id.nav_linearLayout);
         }
     }
+
 }

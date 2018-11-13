@@ -39,6 +39,10 @@ public class ReporterLoginActivity extends AppCompatActivity {
         sharedPreferences = NewsSharedPreferences.getInstance(this);
         username = findViewById(R.id.etLoginUserName);
         password = findViewById(R.id.etLoginPassword);
+        if(sharedPreferences.getLoggedInUsingGoogle() || sharedPreferences.getLoggedInUsingFB() || sharedPreferences.getIsLoggedIn()){
+            Toast.makeText(this, "First logout as a user to login as a reporter!!", Toast.LENGTH_LONG).show();
+            finish();
+        }
         if(sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")){
             Intent intent = new Intent(ReporterLoginActivity.this, ReporterProfile.class);
             startActivity(intent);

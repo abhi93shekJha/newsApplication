@@ -174,18 +174,17 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
             ll_share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Share to Social Media
+                    String imageToShare = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getImage(); //Image You wants to share
 
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.country7);
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("image/jpeg");
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                    String path = MediaStore.Images.Media.insertImage(getContentResolver(),
-                            icon, "Title", null);
-                    Uri imageUri = Uri.parse(path);
-                    share.putExtra(Intent.EXTRA_STREAM, imageUri);
-                    startActivity(Intent.createChooser(share, "Share Image"));
+                    String title = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getNewsTitle(); //Title you wants to share
+
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+                    shareIntent.setType("*/*");
+                    shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
+                    startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
                 }
             });
 
@@ -287,7 +286,6 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
                         progressBar.setVisibility(View.GONE);
                     } else {
                         Toast.makeText(PlayListDetaildViewActivity.this, "Server error!!", Toast.LENGTH_SHORT);
-
                         ll_playlist.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
                     }
@@ -319,12 +317,14 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
                         // get random positions
                         Random rand = new Random();
                         int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
-                        int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-                        if (currentPositionAdapter == currentPosition) {
-                            currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+                        if (listPlaylistItemPositions != null) {
+                            int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+                            if (currentPositionAdapter == currentPosition) {
+                                currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+                            }
+                            adapter.itemClicked(currentPosition);
+                            recycler.smoothScrollToPosition(currentPosition);
                         }
-                        adapter.itemClicked(currentPosition);
-                        recycler.smoothScrollToPosition(currentPosition);
                     }
                 }
             });
@@ -342,12 +342,14 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
                         // get random positions
                         Random rand = new Random();
                         int currentPositionAdapter = adapter.getCurrentItemSelectedPosition();
-                        int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
-                        if (currentPositionAdapter == currentPosition) {
-                            currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+                        if(listPlaylistItemPositions != null) {
+                            int currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+                            if (currentPositionAdapter == currentPosition) {
+                                currentPosition = listPlaylistItemPositions.get(rand.nextInt(listPlaylistItemPositions.size()));
+                            }
+                            adapter.itemClicked(currentPosition);
+                            recycler.smoothScrollToPosition(currentPosition);
                         }
-                        adapter.itemClicked(currentPosition);
-                        recycler.smoothScrollToPosition(currentPosition);
                     }
                 }
             });
@@ -719,8 +721,10 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
                             } else {
                                 if (dialog.isShowing()) {
                                     new PlayListDetaildViewActivity.PlayMainAdAsync().execute("https://archive.org/download/testmp3testfile/mpthreetest.mp3");
-                                    mediaPlayer.setOnBufferingUpdateListener(PlayListDetaildViewActivity.this);
-                                    mediaPlayer.setOnCompletionListener(PlayListDetaildViewActivity.this);
+                                    if (mediaPlayer != null) {
+                                        mediaPlayer.setOnBufferingUpdateListener(PlayListDetaildViewActivity.this);
+                                        mediaPlayer.setOnCompletionListener(PlayListDetaildViewActivity.this);
+                                    }
                                 }
                             }
 
@@ -770,8 +774,10 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
         protected String doInBackground(String... aurl) {
 
             try {
-                mediaPlayer.setDataSource(aurl[0]);
-                mediaPlayer.prepare();
+                if (mediaPlayer != null) {
+                    mediaPlayer.setDataSource(aurl[0]);
+                    mediaPlayer.prepare();
+                }
             } catch (Exception e) {
                 Log.d("Exception is", e.toString());
             }
@@ -784,7 +790,8 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
 
         @Override
         protected void onPostExecute(String unused) {
-            mediaPlayer.start();
+            if (mediaPlayer != null)
+                mediaPlayer.start();
 //            cancelDialog.cancel();
         }
 

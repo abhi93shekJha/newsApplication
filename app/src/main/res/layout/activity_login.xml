@@ -433,9 +433,9 @@
                             android:id="@+id/btn_fb"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:paddingTop="11dp"
-                            android:paddingBottom="11dp"
+                            android:textSize="15sp"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
                             android:layout_weight="0.5" />
 
                         <LinearLayout
@@ -452,6 +452,7 @@
                                 android:backgroundTint="@color/red_color"
                                 android:drawableLeft="@drawable/ic_google"
                                 android:text="Google"
+                                android:textStyle="bold"
                                 android:textAllCaps="false"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="14sp" />

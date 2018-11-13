@@ -61,6 +61,7 @@ public class FragmentLayout extends Fragment {
         ImageView comments_image = view.findViewById(R.id.comments_image);
         ImageView likesImage = view.findViewById(R.id.likesImage);
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity());
+        ImageView iv_share = view.findViewById(R.id.iv_share);
 
         LinearLayout layout = view.findViewById(R.id.addToPlaylistLayout);
         layout.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +82,7 @@ public class FragmentLayout extends Fragment {
                                 // need to login first before creating playlist
 
                                 // show playlist for creating playlist
-                                createPlayListDialog = createPlayListDialog.getInstance(getActivity(), RecyclerViewDataAdapter.playlistNames);
+                                createPlayListDialog = createPlayListDialog.getInstance(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), getActivity(), RecyclerViewDataAdapter.playlistNames, RecyclerViewDataAdapter.playListIds);
                                 createPlayListDialog.showDialog();
                                 createPlayListDialog.show();
                             }
@@ -94,6 +95,23 @@ public class FragmentLayout extends Fragment {
             }
         });
 
+        iv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String imageToShare = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getImage(); //Image You wants to share
+
+                String title = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getNewsTitle(); //Title you wants to share
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+                shareIntent.setType("*/*");
+                shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
+                startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
+            }
+        });
+
         likesImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +120,7 @@ public class FragmentLayout extends Fragment {
                     getActivity().startActivity(intent);
                 } else {
                     LikePojo pojo = new LikePojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("user_id"));
+                    //Log.d("post_id", DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId()+" "+sharedPreferences.getSharedPrefValue("user_id"));
                     likeaPost(pojo);
                 }
             }
@@ -186,9 +205,8 @@ public class FragmentLayout extends Fragment {
     }
 
     public void likeaPost(LikePojo pojo) {
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<LikePojo> call = apiService.likeAPost(pojo);
-
         call.enqueue(new Callback<LikePojo>() {
             @Override
             public void onResponse(Call<LikePojo> call, Response<LikePojo> response) {

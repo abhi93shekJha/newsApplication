@@ -1,29 +1,45 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.GetPostsByPlaylistId;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.playlist.CreatePlayListDialog;
+import com.gsatechworld.gugrify.view.playlist.CreatePlayListPojo;
 import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 import com.gsatechworld.gugrify.view.playlist.PlayListDetaildViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapter.PlayListViewHolder> {
 
@@ -32,6 +48,10 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
     private CreatePlayListDialog createPlayListDialog;
     List<String> playlistNames = new ArrayList<>();
     List<GetPlaylistsPojo.Result> results;
+
+    TextView cancel, tv_ok;
+    EditText et_playlistName;
+    NewsSharedPreferences sharedPreferences;
 
     public PlaylistDataAdapter(GetPlaylistsPojo playlists, Context context) {
         this.playlists = playlists;
@@ -98,15 +118,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
                         @Override
                         public boolean onMenuItemClick(MenuItem menuItem) {
                             if (menuItem.getTitle().equals("Create Playlist")) {
-//                                Intent intent = new Intent(mContext, LoginActivity.class);
-//                                mContext.startActivity(intent);
-
-                                // need to login first before creating playlist
-
-                                // show playlist for creating playlist
-                                createPlayListDialog = createPlayListDialog.getInstance(context, playlistNames);
-                                createPlayListDialog.showDialog();
-                                createPlayListDialog.show();
+                                showCreatePlaylistDialog();
                             }
                             return false;
                         }
@@ -118,18 +130,18 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
         } else {
             if (playlists.getResult() != null) {
                 holder.mainLayout.setVisibility(View.VISIBLE);
-                if (playlists.getResult().get(position).getPlaylist_image() instanceof String) {
-                    String playListImage = (String) playlists.getResult().get(position).getPlaylist_image();
+                if (results.get(position).getPlaylist_image() instanceof String) {
+                    String playListImage = (String) results.get(position).getPlaylist_image();
                     Glide.with(context).load(playListImage).into(holder.itemImage);
                 }
-                holder.tvTitle.setText(playlists.getResult().get(position).getPlaylist_name());
-                holder.tvTitleCount.setText(playlists.getResult().get(position).getPlaylist_count());
+                holder.tvTitle.setText(results.get(position).getPlaylist_name());
+                holder.tvTitleCount.setText(results.get(position).getPlaylist_count());
 
                 holder.mainLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, PlayListDetaildViewActivity.class);
-                        intent.putExtra("playlistId", playlists.getResult().get(position).getPlaylist_id());
+                        intent.putExtra("playlistId", results.get(position).getPlaylist_id());
                         context.startActivity(intent);
                     }
                 });
@@ -144,5 +156,72 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
         } else
             return results.size() + 1;
     }
+    public void showCreatePlaylistDialog() {
+        final Dialog dialog = new Dialog(context, R.style.DialogSlideAnim);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //dialog.setCanceledOnTouchOutside(false);
+        //dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_create_playlist_item);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(layoutParams);
+
+        cancel = dialog.findViewById(R.id.cancel);
+        tv_ok = dialog.findViewById(R.id.tv_ok);
+        et_playlistName = dialog.findViewById(R.id.et_playlistName);
+
+        dialog.show();
+
+        tv_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (et_playlistName.getText().toString().trim().equalsIgnoreCase("")) {
+                    et_playlistName.setError("Empty");
+                    et_playlistName.setFocusable(true);
+                } else {
+                    CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
+                    makeCommentPost(post);
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+    }
+
+    public void makeCommentPost(CreatePlayListPojo pojo) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CreatePlayListPojo> call = apiService.createPlaylist(pojo);
+
+        call.enqueue(new Callback<CreatePlayListPojo>() {
+            @Override
+            public void onResponse(Call<CreatePlayListPojo> call, Response<CreatePlayListPojo> response) {
+                CreatePlayListPojo playlistResponse = null;
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    playlistResponse = response.body();
+                    Toast.makeText(context, "Playlist saved!!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(context, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatePlayListPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(context, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 }

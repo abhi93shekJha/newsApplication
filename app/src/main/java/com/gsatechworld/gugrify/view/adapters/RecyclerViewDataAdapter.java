@@ -1,8 +1,14 @@
 package com.gsatechworld.gugrify.view.adapters;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
@@ -15,34 +21,48 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.retrofit.ActivePostsPojo;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.LatestNewsByCity;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.dashboard.EndlessScrollListener;
 import com.gsatechworld.gugrify.view.dashboard.LatesNewsDataAdapter;
 import com.gsatechworld.gugrify.view.dashboard.PlaylistDataAdapter;
 import com.gsatechworld.gugrify.view.playlist.CreatePlayListDialog;
+import com.gsatechworld.gugrify.view.playlist.CreatePlayListPojo;
 import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 
+import org.w3c.dom.Text;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDataAdapter.ItemRowHolder> {
 
@@ -59,8 +79,10 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     LatestNewsByCity news;
     GetPlaylistsPojo playlists;
     ActivePostsPojo activePosts;
-    public static List<String> playlistNames;
+    public static List<String> playlistNames, playListIds;
     NewsSharedPreferences sharedPreferences;
+    TextView cancel, tv_ok;
+    EditText et_playlistName;
 
     private int lastPosition = -1;
     private CreatePlayListDialog createPlayListDialog;
@@ -68,7 +90,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         protected TextView itemTitle, tvViews, tvTime, tv_location;
         protected RecyclerView recycler_view_list;
-        protected ImageView btnMore;
+        protected ImageView btnMore, ivShare;
         protected ImageView img;
         RecyclerView recyclerView2;
         protected AutoScrollViewPager viewPager;
@@ -97,6 +119,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             this.tvTime = itemView.findViewById(R.id.tvTime);
             this.tv_location = itemView.findViewById(R.id.tv_location);
             frame1 = itemView.findViewById(R.id.frame1);
+            this.ivShare = itemView.findViewById(R.id.ivShare);
 
             this.listItemCard = itemView.findViewById(R.id.listItemCard);
 
@@ -120,10 +143,14 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
         sharedPreferences = NewsSharedPreferences.getInstance(mContext);
 
         playlistNames = new ArrayList<>();
+        playListIds = new ArrayList<>();
 
         if (playlists.getResult() != null) {
             for (int i = 0; i < playlists.getResult().size(); i++) {
                 playlistNames.add(playlists.getResult().get(i).getPlaylist_name());
+            }
+            for (int i = 0; i < playlists.getResult().size(); i++) {
+                playListIds.add(playlists.getResult().get(i).getPlaylist_id());
             }
         }
         if (news.getResult() != null) {
@@ -149,8 +176,10 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
         int viewType = 1; //Default is 1
         if (position == 0)
             viewType = 0;
-        if (position == 1 || position == 2)
-            viewType = 2; //if zero, it will be a header view
+        if (position == 1)
+            viewType = 2;
+        if (position == 2)
+            viewType = 3; //if zero, it will be a header view
 
         return viewType;
     }
@@ -165,6 +194,13 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 rowHolder = new RecyclerViewDataAdapter.ItemRowHolder(v);
                 return rowHolder;
             case 2:
+                Log.d("Comes here", "to case 2");
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item3, parent, false);
+                rowHolder = new RecyclerViewDataAdapter.ItemRowHolder(v);
+                snapHelper = new GravitySnapHelper(Gravity.START);
+                return rowHolder;
+            case 3:
                 Log.d("Comes here", "to case 2");
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item, parent, false);
@@ -232,15 +268,13 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 }
             });
 
-        }
-        else if (position == 1) {
+        } else if (position == 1) {
             LatesNewsDataAdapter adapter = new LatesNewsDataAdapter(forRecycler, mContext);
             holder.btnMore.setVisibility(View.GONE);
             holder.itemTitle.setText("Latest News");
             holder.recycler_view_list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             holder.recycler_view_list.setAdapter(adapter);
-        }
-        else if (position == 2) {
+        } else if (position == 2) {
 
             if (playlists.getResult() == null) {
                 holder.ll_playlist.setVisibility(View.GONE);
@@ -254,20 +288,13 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 holder.btnMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         PopupMenu popup = new PopupMenu(mContext, view);
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
                                 if (menuItem.getTitle().equals("Create Playlist")) {
-//                                Intent intent = new Intent(mContext, LoginActivity.class);
-//                                mContext.startActivity(intent);
-
-                                    // need to login first before creating playlist
-
-                                    // show playlist for creating playlist
-                                    createPlayListDialog = createPlayListDialog.getInstance(mContext, playlistNames);
-                                    createPlayListDialog.showDialog();
-                                    createPlayListDialog.show();
+                                    showCreatePlaylistDialog();
                                 }
                                 return false;
                             }
@@ -278,13 +305,13 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 });
             }
 
-        } else if(position >= 3){
+        } else if (position >= 3) {
 
             if (activePosts.getResult() != null) {
                 holder.itemTitle.setText(activePosts.getResult().get(position - 3).getNewsHeadline());
                 holder.tv_location.setText(activePosts.getResult().get(position - 3).getReporterLocation());
                 holder.tvTime.setText(activePosts.getResult().get(position - 3).getTimeOfPost());
-                holder.tvViews.setText(activePosts.getResult().get(position - 3).getViews()+" views");
+                holder.tvViews.setText(activePosts.getResult().get(position - 3).getViews() + " views");
 
                 Glide.with(mContext).load(activePosts.getResult().get(position - 3).getImage()).into(holder.img);
 
@@ -309,9 +336,10 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                                         // need to login first before creating playlist
 
                                         // show playlist for creating playlist
-                                        createPlayListDialog = createPlayListDialog.getInstance(mContext, playlistNames);
+                                        createPlayListDialog = createPlayListDialog.getInstance(activePosts.getResult().get(position - 3).getPostId(), mContext, playlistNames, playListIds);
                                         createPlayListDialog.showDialog();
                                         createPlayListDialog.show();
+
                                     }
                                     return false;
                                 }
@@ -319,6 +347,24 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                             popup.inflate(R.menu.popup_menu);
                             popup.show();
                         }
+                    }
+                });
+
+                holder.ivShare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        String imageToShare = activePosts.getResult().get(position - 3).getImage(); //Image You wants to share
+
+                        String title = activePosts.getResult().get(position - 3).getNewsTitle(); //Title you wants to share
+
+                        Intent shareIntent = new Intent();
+                        shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+                        shareIntent.setType("*/*");
+                        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
+                        mContext.startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
                     }
                 });
 
@@ -446,8 +492,70 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             return 3;
     }
 
-    public void showDialog() {
+    public void showCreatePlaylistDialog() {
+        final Dialog dialog = new Dialog(mContext, R.style.DialogSlideAnim);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //dialog.setCanceledOnTouchOutside(false);
+        //dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_create_playlist_item);
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+        dialog.getWindow().setAttributes(layoutParams);
 
+        cancel = dialog.findViewById(R.id.cancel);
+        tv_ok = dialog.findViewById(R.id.tv_ok);
+        et_playlistName = dialog.findViewById(R.id.et_playlistName);
+
+        dialog.show();
+
+        tv_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (et_playlistName.getText().toString().trim().equalsIgnoreCase("")) {
+                    et_playlistName.setError("Empty");
+                    et_playlistName.setFocusable(true);
+                } else {
+                    CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
+                    makeCommentPost(post);
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
     }
 
+    public void makeCommentPost(CreatePlayListPojo pojo) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<CreatePlayListPojo> call = apiService.createPlaylist(pojo);
+
+        call.enqueue(new Callback<CreatePlayListPojo>() {
+            @Override
+            public void onResponse(Call<CreatePlayListPojo> call, Response<CreatePlayListPojo> response) {
+                CreatePlayListPojo playlistResponse = null;
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "true");
+                    playlistResponse = response.body();
+                    Toast.makeText(mContext, "Playlist saved!!", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatePlayListPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

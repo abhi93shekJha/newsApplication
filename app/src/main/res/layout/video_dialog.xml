@@ -80,7 +80,7 @@
         android:id="@+id/redirectButton"
         android:layout_width="140dp"
         android:layout_height="40dp"
-        android:text="@string/watch_video"
+        android:text="Go to page"
         android:background="@drawable/btn_open_selector"
         android:textColor="@drawable/btn_open_color_selector"/>
 

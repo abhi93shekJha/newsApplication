@@ -17,12 +17,22 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import com.gsatechworld.gugrify.R;
+import com.gsatechworld.gugrify.SelectLanguageAndCities;
+import com.gsatechworld.gugrify.model.retrofit.ApiClient;
+import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.LanguageResponse;
+import com.gsatechworld.gugrify.model.retrofit.YoutubeResponsePojo;
 import com.gsatechworld.gugrify.view.adapters.YoutubeVideoAdapter;
 import com.gsatechworld.gugrify.utils.Constants;
 import com.gsatechworld.gugrify.utils.RecyclerViewOnClickListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DisplayVideoActivity extends AppCompatActivity {
 
@@ -31,18 +41,18 @@ public class DisplayVideoActivity extends AppCompatActivity {
     //youtube player fragment
     private YouTubePlayerSupportFragment youTubePlayerFragment;
     private ArrayList<String> youtubeVideoArrayList;
-
+    YoutubeResponsePojo responsePojo = new YoutubeResponsePojo();
     //youtube player to play video when new video selected
     private YouTubePlayer youTubePlayer;
+    ArrayList<String> newsHeadline, newsDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_video_youtube);
+        newsHeadline = new ArrayList<>();
+        newsDescription = new ArrayList<>();
         generateDummyVideoList();
-        initializeYoutubePlayer();
-        setUpRecyclerView();
-        populateRecyclerView();
 
         // clear FLAG_TRANSLUCENT_STATUS flag:
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -75,8 +85,8 @@ public class DisplayVideoActivity extends AppCompatActivity {
 
         //((TextView) view).setText("Task Completed (Expandable Button color changed)");
         Toast.makeText(DisplayVideoActivity.this, "Change The Text And Click On Child Data", Toast.LENGTH_SHORT).show();
-       // expandableButton.setBarColor(Color.parseColor("#297e55"));
-       // expandableButton.childView.setBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+        // expandableButton.setBarColor(Color.parseColor("#297e55"));
+        // expandableButton.childView.setBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
 
     }
 
@@ -85,7 +95,7 @@ public class DisplayVideoActivity extends AppCompatActivity {
      */
     private void initializeYoutubePlayer() {
 
-        youTubePlayerFragment = (YouTubePlayerSupportFragment)getSupportFragmentManager()
+        youTubePlayerFragment = (YouTubePlayerSupportFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.youtube_player_fragment);
 
         if (youTubePlayerFragment == null)
@@ -132,10 +142,10 @@ public class DisplayVideoActivity extends AppCompatActivity {
      * populate the recycler view and implement the click event here
      */
     private void populateRecyclerView() {
-        final YoutubeVideoAdapter adapter = new YoutubeVideoAdapter(this, youtubeVideoArrayList);
+        final YoutubeVideoAdapter adapter = new YoutubeVideoAdapter(this, youtubeVideoArrayList, newsHeadline, newsDescription);
         recyclerView.setAdapter(adapter);
 
-        ViewCompat.setNestedScrollingEnabled(recyclerView,false);
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
 
         //set click event
         recyclerView.addOnItemTouchListener(new RecyclerViewOnClickListener(this, new RecyclerViewOnClickListener.OnItemClickListener() {
@@ -159,13 +169,44 @@ public class DisplayVideoActivity extends AppCompatActivity {
      * method to generate dummy array list of videos
      */
     private void generateDummyVideoList() {
-        youtubeVideoArrayList = new ArrayList<>();
 
-        //get the video id array from strings.xml
-        String[] videoIDArray = getResources().getStringArray(R.array.video_id_array);
+        makeYoutubeVideoRequest();
 
-        //add all videos to array list
-        Collections.addAll(youtubeVideoArrayList, videoIDArray);
 
+    }
+
+    public void makeYoutubeVideoRequest() {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<YoutubeResponsePojo> call = apiService.makeYoutubeVideoRequest();
+        call.enqueue(new Callback<YoutubeResponsePojo>() {
+            @Override
+            public void onResponse(Call<YoutubeResponsePojo> call, Response<YoutubeResponsePojo> response) {
+                if (response.isSuccessful()) {
+                    responsePojo = response.body();
+                    youtubeVideoArrayList = new ArrayList<>();
+                    for (int i = 0; i < responsePojo.getResult().size(); i++) {
+                        if (responsePojo.getResult().get(i).getYoutubeLink().trim().equals("")) {
+
+                        } else {
+                            youtubeVideoArrayList.add(responsePojo.getResult().get(i).getYoutubeLink());
+                            newsHeadline.add(responsePojo.getResult().get(i).getNewsTitle());
+                            newsDescription.add(responsePojo.getResult().get(i).getNews_description());
+                        }
+                    }
+
+                    initializeYoutubePlayer();
+                    setUpRecyclerView();
+                    populateRecyclerView();
+                } else {
+                    Toast.makeText(DisplayVideoActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<YoutubeResponsePojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(DisplayVideoActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

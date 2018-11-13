@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
@@ -21,15 +22,17 @@ import java.util.ArrayList;
 public class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeViewHolder> {
     private static final String TAG = YoutubeVideoAdapter.class.getSimpleName();
     private Context context;
-    private ArrayList<String> youtubeVideoModelArrayList;
+    private ArrayList<String> youtubeVideoModelArrayList, newsHeadlines, newsDescriptions;
 
     //position to check which position is selected
     private int selectedPosition = 0;
 
 
-    public YoutubeVideoAdapter(Context context, ArrayList<String> youtubeVideoModelArrayList) {
+    public YoutubeVideoAdapter(Context context, ArrayList<String> youtubeVideoModelArrayList, ArrayList<String> newsHeadlines, ArrayList<String> newsDescriptions) {
         this.context = context;
         this.youtubeVideoModelArrayList = youtubeVideoModelArrayList;
+        this.newsDescriptions = newsDescriptions;
+        this.newsHeadlines = newsHeadlines;
     }
 
     @Override
@@ -49,6 +52,9 @@ public class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeViewHolder>
             //if selected position is not equal to that mean view is not selected so change the cardview color to white back again
             holder.youtubeCardView.setCardBackgroundColor(ContextCompat.getColor(context, android.R.color.white));
         }
+
+        holder.textViewdescription.setText(newsDescriptions.get(position));
+        holder.textViewname.setText(newsHeadlines.get(position));
 
         /*  initialize the thumbnail image view , we need to pass Developer Key */
         holder.videoThumbnailImageView.initialize(Constants.DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {

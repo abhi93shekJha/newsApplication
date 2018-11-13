@@ -5,6 +5,7 @@ package com.gsatechworld.gugrify.view.authentication;
  * Creted By Ashish Pandey 25 Oct 18
  * */
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +69,7 @@ import retrofit2.Response;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.ReporterProfile;
 
 import static com.gsatechworld.gugrify.utils.NetworkUtil.NO_INTERNET;
@@ -79,7 +81,7 @@ import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView tvSignUp, tv_signUp;
+    TextView tvSignUp, tv_signUp, tvTerms;
     Button btn_login;
     Button btn_googlePlus;
     com.facebook.login.widget.LoginButton btn_fb;
@@ -87,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Boolean fromDash;
 
     //for google sign in
-    GoogleSignInClient mGoogleSignInClient;
+    public static GoogleSignInClient mGoogleSignInClient;
     static final int RC_SIGN_IN = 1;
     GoogleSignInAccount account;
 
@@ -113,6 +115,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
 
+        tvTerms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, ActivityShowWebView.class);
+                intent.putExtra("url", "www.gugrify.com/terms.php");
+                startActivity(intent);
+            }
+        });
+
 
         btn_googlePlus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +131,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 account = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
                 if (account != null) {
                     String token = account.getIdToken();
-                    Toast.makeText(LoginActivity.this, "Login Successful for " + account.getDisplayName() + " " + account.getEmail() + " " + token, Toast.LENGTH_LONG).show();
                     Toast.makeText(LoginActivity.this, "Already signed in", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -166,6 +176,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (fromDash) {
                     Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                     startActivity(intent);
+                    sharedPreferences.setLoggedInUsingFB(true);
                     finish();
                 } else
                     finish();
@@ -223,6 +234,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             sharedPreferences.setSharedPrefValue("name", account.getDisplayName());
             sharedPreferences.setSharedPrefValue("email", account.getEmail());
             sharedPreferences.setSharedPrefValue("user_image", account.getPhotoUrl().toString());
+            sharedPreferences.setLoggedInUsingGoogle(true);
 
             if (fromDash) {
                 Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
@@ -279,6 +291,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btn_fb = findViewById(R.id.btn_fb);
         tv_signUp = findViewById(R.id.tv_signUp);
         tv_signUp.setOnClickListener(this);
+        tvTerms = findViewById(R.id.tvTerms);
     }
 
     @Override

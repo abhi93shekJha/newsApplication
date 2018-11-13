@@ -39,7 +39,7 @@
                     android:layout_marginTop="0dp"
                     android:text="Reporter login"
                     android:textColor="@color/colorWhite"
-                    android:textSize="40sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
 

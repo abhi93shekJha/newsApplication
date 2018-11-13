@@ -202,7 +202,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
                     fillSpinner();
                 }
                 else {
-                    Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT);
+                    Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT).show();
                 }
 //                Log.d(TAG, "Number of movies received: " + movies.size());
             }
@@ -210,7 +210,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
             @Override
             public void onFailure(Call<LanguageResponse>call, Throwable t) {
                 // Log error here since request failed
-                Log.e(SelectLanguageAndCities.class.getSimpleName(), t.toString());
+                Toast.makeText(SelectLanguageAndCities.this, "Server error!!", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -62,7 +62,7 @@ import retrofit2.Response;
 
 public class ReporterProfile extends AppCompatActivity {
     FloatingActionButton addNewPost;
-    ImageView profileSearch;
+    ImageView profileSearch, iv_contactUs;
     private Toolbar searchtollbar;
     private Toolbar toolbar;
     private Menu search_menu;
@@ -89,6 +89,15 @@ public class ReporterProfile extends AppCompatActivity {
         results = new ArrayList<>();
         main_layout = findViewById(R.id.main_layout);
         progressBar = findViewById(R.id.progressBar);
+        iv_contactUs = findViewById(R.id.iv_contactUs);
+
+        iv_contactUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ReporterProfile.this, ActivityContactUs.class);
+                startActivity(intent);
+            }
+        });
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

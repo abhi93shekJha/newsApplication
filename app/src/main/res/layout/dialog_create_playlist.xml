@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- layout title -->
+         layout title
         <LinearLayout
             android:id="@+id/ll_createPlayList"
             android:layout_width="match_parent"

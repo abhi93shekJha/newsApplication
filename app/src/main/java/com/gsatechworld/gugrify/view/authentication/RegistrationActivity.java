@@ -93,6 +93,11 @@ public class RegistrationActivity extends AppCompatActivity {
                         && !password.toString().trim().equalsIgnoreCase("")
                         && !confirmPassword.toString().trim().equalsIgnoreCase("")) {
 
+                    if (mobile.toString().trim().length() < 10) {
+                        Toast.makeText(RegistrationActivity.this, "Please enter valid mobile number!!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     if (thumbnail != null) {
                         if (!password.equals(confirmPassword)) {
                             Toast.makeText(getApplicationContext(), "Enter matching passwords!!", Toast.LENGTH_SHORT).show();
@@ -103,7 +108,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             UserRegistrationPojo pojo = new UserRegistrationPojo(Username, user_id, email, mobile, city, ImageInBase64, password);
                             userRegister(pojo);
                             startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
-                            finish();
                         }
                     } else if (bm != null) {
                         if (!password.equals(confirmPassword)) {
@@ -115,7 +119,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             UserRegistrationPojo pojo = new UserRegistrationPojo(Username, user_id, email, mobile, city, ImageInBase64, password);
                             userRegister(pojo);
                             startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
-                            finish();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "Please Select Image", Toast.LENGTH_SHORT).show();
@@ -137,14 +140,21 @@ public class RegistrationActivity extends AppCompatActivity {
                 UserRegistrationPojo regResponse = null;
                 if (response.isSuccessful()) {
                     regResponse = response.body();
-                    if (regResponse.getResult() instanceof String)
-                        Toast.makeText(RegistrationActivity.this, "Successfull loged in!!", Toast.LENGTH_SHORT).show();
+                    if (regResponse.getResult() instanceof String) {
+                        if (regResponse.getResult().toString().trim().equalsIgnoreCase("success")) {
+                            Toast.makeText(RegistrationActivity.this, "Successfully registered!!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else
+                            Toast.makeText(RegistrationActivity.this, regResponse.getResult().toString(), Toast.LENGTH_SHORT).show();
+                    }
 
                     if (regResponse.getResult() instanceof ArrayList<?>) {
                         ArrayList<String> result = (ArrayList<String>) regResponse.getResult();
-                        for(int i=0; i<result.size(); i++){
-                            Toast.makeText(RegistrationActivity.this, result.get(i), Toast.LENGTH_SHORT).show();
+                        String error = "Registration failed!!";
+                        for (int i = 0; i < result.size(); i++) {
+                            error = error +"\n"+ result.get(i);
                         }
+                        Toast.makeText(RegistrationActivity.this, error, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(RegistrationActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
@@ -310,7 +320,6 @@ public class RegistrationActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
-
         ll_takePic = (LinearLayout) findViewById(R.id.ll_takePic);
         ivImage = (ImageView) findViewById(R.id.ivImage);
 
@@ -321,7 +330,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 selectImage();
             }
         });
-
 
     }
 

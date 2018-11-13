@@ -16,4 +16,8 @@
             android:src="@mipmap/add_playlist"
             />
 
+        <View
+            android:background="@color/colorWhite"
+            android:layout_height="35dp"
+            android:layout_width="match_parent"/>
 </LinearLayout>

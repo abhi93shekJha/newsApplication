@@ -443,10 +443,11 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             return true;
         }
 
-        if (id == R.id.action_avatar) {
-            Intent intent = new Intent(DashboardActivity.this, ReporterLoginActivity.class);
+        if (id == R.id.action_avatar){
+            Intent intent = new Intent(this, ReporterLoginActivity.class);
             startActivity(intent);
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -461,7 +462,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         }
 
         if (!isFinished) {
-            if (result != null  && !dialog.isShowing()) {
+            if (result != null && !dialog.isShowing()) {
                 dialog.show();
                 if (result != null && mediaPlayer != null) {
                     mediaPlayer.seekTo(length);
@@ -539,9 +540,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     public void onStop() {
         super.onStop();
-        dialog.cancel();
+        if (dialog != null)
+            dialog.cancel();
         Log.d("Entered", "OnStop");
-        if(mediaPlayer != null){
+        if (mediaPlayer != null) {
             length = mediaPlayer.getCurrentPosition();
             mediaPlayer.pause();
         }
@@ -550,8 +552,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     @Override
     public void onDestroy() {
         super.onDestroy();
-        dialog.cancel();
-        mediaPlayer.stop();
+        if (dialog != null)
+            dialog.cancel();
+        if (mediaPlayer != null)
+            mediaPlayer.stop();
     }
 
     public void getReporterCategories() {
@@ -613,7 +617,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                     Log.d("Reached here", "to latestNewsByCity");
                     news = response.body();
 
-                    if(news.getResult() != null) {
+                    if (news.getResult() != null) {
                         String category = news.getResult().get(0).getCategory();
                         Log.d("catergory", category);
 
@@ -635,9 +639,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                                 // Triggered only when new data needs to be appended to the list
                                 // Add whatever code is needed to append new items to the bottom of the list
-                                Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-                if(page<3)
-                    Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+                                //Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+
+                                    Log.d("Scrolled position is", String.valueOf(page));
                             }
                         };
                         my_recycler_view.addOnScrollListener(scrollListener);
@@ -765,8 +769,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         protected String doInBackground(String... aurl) {
             int count;
             try {
-                mediaPlayer.setDataSource(aurl[0]);
-                mediaPlayer.prepare();
+                if (mediaPlayer != null) {
+                    mediaPlayer.setDataSource(aurl[0]);
+                    mediaPlayer.prepare();
+                }
             } catch (Exception e) {
                 Log.d("Exception is", e.toString());
                 dialog.setCanceledOnTouchOutside(true);
@@ -781,7 +787,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         @Override
         protected void onPostExecute(String unused) {
-            mediaPlayer.start();
+            if (mediaPlayer != null)
+                mediaPlayer.start();
             cancelDialog.cancel();
         }
 

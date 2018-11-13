@@ -31,6 +31,8 @@ import com.gsatechworld.gugrify.model.retrofit.HeadlineSearchPojo;
 import com.gsatechworld.gugrify.view.adapters.SearchRecyclerAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     TextView noPostsTitle;
     SearchView mSearchView;
     NewsSharedPreferences sharedPreferences;
+    Set<String> stringList, postLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +60,15 @@ public class SearchActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         sharedPreferences = NewsSharedPreferences.getInstance(SearchActivity.this);
 
+        headlines = new HeadlineSearchPojo();
+        stringList = sharedPreferences.getSearchedStringList();
+        postLists = sharedPreferences.getPostIdsSet();
+
         rView = (RecyclerView) findViewById(R.id.searchNewsList);
-        adapter = new SearchRecyclerAdapter(headlines, SearchActivity.this);
+        adapter = new SearchRecyclerAdapter(stringList, postLists, headlines, SearchActivity.this);
         LinearLayoutManager l = new LinearLayoutManager(SearchActivity.this);
         rView.setLayoutManager(l);
         rView.setAdapter(adapter);
-
-        headlines = new HeadlineSearchPojo();
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 //
@@ -117,7 +122,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("came here", "to query");
-                if(newText.trim().length() == 3){
+                if(newText.trim().length() >= 3){
                     getSearchedResult(newText.trim());
                 }
                 return true;
@@ -162,7 +167,7 @@ public class SearchActivity extends AppCompatActivity {
                         noPostsTitle.setVisibility(View.GONE);
                         rView.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
-                        adapter = new SearchRecyclerAdapter(headlines, SearchActivity.this);
+                        adapter = new SearchRecyclerAdapter(stringList, postLists, headlines, SearchActivity.this);
                         LinearLayoutManager l = new LinearLayoutManager(SearchActivity.this);
                         rView.setLayoutManager(l);
                         rView.setAdapter(adapter);
