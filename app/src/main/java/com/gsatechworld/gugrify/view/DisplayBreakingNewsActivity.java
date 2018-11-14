@@ -990,15 +990,15 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                                 String line3 = scrollNews.getResult().getScrollNews().get(i).getText3();
                                 line = line + line1 + " " + line2 + " " + line3 + " ";
                             }
-                            scroll_line.setText(line);
-                            scroll_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                            scroll_line.setSingleLine(true);
-                            scroll_line.setMarqueeRepeatLimit(5);
-                            scroll_line.setSelected(true);
-
                         }
                         Glide.with(DisplayBreakingNewsActivity.this).load(postDetails.getResult().get(0).getReporterPic()).into(place_holder_image);
                         place.setText(postDetails.getResult().get(0).getReporterLocation());
+                        scroll_line = findViewById(R.id.scrolling_line);
+                        scroll_line.setText(line);
+                        scroll_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        scroll_line.setSingleLine(true);
+                        scroll_line.setMarqueeRepeatLimit(5);
+                        scroll_line.setSelected(true);
                     }
                     anim.setAnimationListener(new Animation.AnimationListener() {
                         @Override

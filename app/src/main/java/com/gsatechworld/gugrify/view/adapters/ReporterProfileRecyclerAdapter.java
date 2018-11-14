@@ -121,8 +121,12 @@ public class ReporterProfileRecyclerAdapter extends RecyclerView.Adapter<Reporte
 
             } else {
                 if (AMORPM.equalsIgnoreCase("AM") && amOrPm.equalsIgnoreCase("PM")) {
-                    hourDiff = hour + 12 - Hour;
+                    hourDiff = hour + 12 - Hour - 1;
                     minutesDiff = minutes + (60 - Minutes);
+                    if(minutesDiff > 60){
+                        hourDiff = hourDiff + (minutesDiff/60);
+                        minutesDiff = minutesDiff % 60;
+                    }
                 }
             }
             holder.textTime.setText(hourDiff + "h " + minutesDiff + "m ago");

@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
@@ -42,6 +45,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
     private Context mContext;
     private RecyclerView.RecycledViewPool recycledViewPool;
     NewsSharedPreferences sharedPreferences;
+    public GoogleSignInClient mGoogleSignInClient;
 
     public RecyclerViewNavAdapter(NewsCategories dataList, Context mContext) {
         this.newsCategories = dataList;
@@ -54,11 +58,12 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
     @Override
     public int getItemViewType(int position) {
         int viewType = 0; //Default is 1
-        if (position == newsCategories.getCategory().size()) viewType = 1; //if zero, it will be a header view
-        if (position == newsCategories.getCategory().size()+1) viewType = 2;
-        if (position == newsCategories.getCategory().size()+2) viewType = 3;
-        if (position == newsCategories.getCategory().size()+3) viewType = 4;
-        if (position == newsCategories.getCategory().size()+4) viewType = 5;
+        if (position == newsCategories.getCategory().size())
+            viewType = 1; //if zero, it will be a header view
+        if (position == newsCategories.getCategory().size() + 1) viewType = 2;
+        if (position == newsCategories.getCategory().size() + 2) viewType = 3;
+        if (position == newsCategories.getCategory().size() + 3) viewType = 4;
+        if (position == newsCategories.getCategory().size() + 4) viewType = 5;
         return viewType;
     }
 
@@ -77,17 +82,17 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                         .inflate(R.layout.nav_other_item, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
-            case  2:
+            case 2:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.nav_sign_out, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
-            case  3:
+            case 3:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.nav_about_us, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
-            case  4:
+            case 4:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.nav_contact_us, parent, false);
                 rowHolder = new ItemRowHolder(v);
@@ -130,52 +135,54 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
         }
 
         //for sign in and sign out
-        else if (position == newsCategories.getCategory().size()+1){
+        else if (position == newsCategories.getCategory().size() + 1) {
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(holder.navItemTitle.getText().toString().equalsIgnoreCase("Sign In")){
+                    if (holder.navItemTitle.getText().toString().equalsIgnoreCase("Sign In")) {
                         Intent intent = new Intent(mContext, LoginActivity.class);
                         intent.putExtra("fromDash", true);
                         mContext.startActivity(intent);
-                        if(mContext instanceof DashboardActivity)
+                        if (mContext instanceof DashboardActivity)
                             ((DashboardActivity) mContext).finish();
-                    }
-                    else{
-                        if(sharedPreferences.getLoggedInUsingFB()){
+                    } else {
+                        if (sharedPreferences.getLoggedInUsingFB()) {
                             FacebookSdk.sdkInitialize(mContext);
                             LoginManager.getInstance().logOut();
                             sharedPreferences.setLoggedIn(false);
                             sharedPreferences.setLoggedInUsingFB(false);
-                        }
-                        else if(sharedPreferences.getLoggedInUsingGoogle()){
+                        } else if (sharedPreferences.getLoggedInUsingGoogle()) {
                             sharedPreferences.setLoggedIn(false);
                             sharedPreferences.setLoggedInUsingGoogle(false);
-                            LoginActivity.mGoogleSignInClient.revokeAccess()
+                            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                    .requestIdToken(mContext.getString(R.string.server_client_id))
+                                    .requestEmail()
+                                    .build();
+
+                            mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso);
+                            mGoogleSignInClient.revokeAccess()
                                     .addOnCompleteListener((Activity) mContext, new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             // ...
                                         }
                                     });
-                        }
-                        else {
+                        } else {
                             sharedPreferences.setLoggedIn(false);
                         }
-                        if(mContext instanceof DashboardActivity)
+                        if (mContext instanceof DashboardActivity)
                             ((DashboardActivity) mContext).recreate();
                     }
                 }
             });
-            if(sharedPreferences.getIsLoggedIn()){
+            if (sharedPreferences.getIsLoggedIn()) {
                 holder.navItemTitle.setText("Sign Out");
-            }
-            else {
+            } else {
                 holder.navItemTitle.setText("Sign In");
             }
         }
         //for about us
-        else if (position == newsCategories.getCategory().size()+2){
+        else if (position == newsCategories.getCategory().size() + 2) {
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -187,7 +194,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
         }
 
         //for contact us
-        else if (position == newsCategories.getCategory().size()+3){
+        else if (position == newsCategories.getCategory().size() + 3) {
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -195,8 +202,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                     mContext.startActivity(intent);
                 }
             });
-        }
-        else{
+        } else {
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

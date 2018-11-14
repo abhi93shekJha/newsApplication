@@ -84,7 +84,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@android:color/black"
-                            android:textSize="8sp" />
+                            android:textSize="10sp" />
                         <TextView
                             android:layout_weight="3"
                             android:id="@+id/tvTime"
@@ -94,18 +94,19 @@
                             android:gravity="center"
                             android:drawableLeft="@drawable/ic_clock"
                             android:textColor="@android:color/black"
-                            android:textSize="8sp" />
+                            android:textSize="10sp" />
+
                         <TextView
-                            android:layout_weight="3"
                             android:id="@+id/tvViews"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
                             android:layout_gravity="end"
-                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
                             android:drawableLeft="@drawable/ic_star"
-                            android:text="100k views"
                             android:gravity="center"
+                            android:text="100k views"
                             android:textColor="@android:color/black"
-                            android:textSize="8sp" />
+                            android:textSize="10sp" />
 
                     </LinearLayout>
 

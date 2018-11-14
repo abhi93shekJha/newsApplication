@@ -57,6 +57,7 @@ import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -83,6 +84,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     NewsSharedPreferences sharedPreferences;
     TextView cancel, tv_ok;
     EditText et_playlistName;
+    Calendar rightNow;
 
     private int lastPosition = -1;
     private CreatePlayListDialog createPlayListDialog;
@@ -139,6 +141,8 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
         this.playlists = playlists;
         this.activePosts = posts;
         recycledViewPool = new RecyclerView.RecycledViewPool();
+
+        rightNow = Calendar.getInstance();
 
         sharedPreferences = NewsSharedPreferences.getInstance(mContext);
 
@@ -310,7 +314,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
             if (activePosts.getResult() != null) {
                 holder.itemTitle.setText(activePosts.getResult().get(position - 3).getNewsHeadline());
                 holder.tv_location.setText(activePosts.getResult().get(position - 3).getReporterLocation());
-                holder.tvTime.setText(activePosts.getResult().get(position - 3).getTimeOfPost());
+                holder.tvTime.setText(getDate(activePosts, position-3));
                 holder.tvViews.setText(activePosts.getResult().get(position - 3).getViews() + " views");
 
                 Glide.with(mContext).load(activePosts.getResult().get(position - 3).getImage()).into(holder.img);
@@ -557,5 +561,72 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                 Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public String getDate(ActivePostsPojo activePosts, int position){
+        String day = "" + rightNow.get(Calendar.DATE);
+        if (day.length() == 1) {
+            day = "0" + day;
+        }
+
+        String month = "" + (rightNow.get(Calendar.MONTH) + 1);
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+        String year = "" + rightNow.get(Calendar.YEAR);
+
+        String date = year + "-" + month + "-" + day;
+
+        if (date.equalsIgnoreCase(activePosts.getResult().get(position).getPublished_date())) {
+
+            int hour = rightNow.get(Calendar.HOUR);
+            int minutes = rightNow.get(Calendar.MINUTE);
+            int seconds = rightNow.get(Calendar.SECOND);
+            String amOrPm = rightNow.get(Calendar.AM_PM) == 0 ? "AM" : "PM";
+            if(hour == 0){
+                hour = 12;
+            }
+
+            String time = activePosts.getResult().get(position).getTimeOfPost();
+            int Hour = Integer.parseInt(time.substring(0, 2));
+            int Minutes = Integer.parseInt(time.substring(3, 5));
+            int Seconds = Integer.parseInt(time.substring(6, 8));
+            String AMORPM = time.substring(9);
+            if(Hour == 0){
+                Hour = 12;
+            }
+
+            int hourDiff = 0;
+            int minutesDiff = 0;
+
+            if (AMORPM.equalsIgnoreCase(amOrPm)) {
+                if (hour == Hour) {
+                    minutesDiff = minutes - Minutes;
+                    hourDiff = 0;
+                }
+                else{
+                    hourDiff = (hour - Hour) - 1;
+                    minutesDiff = 60 - Minutes;
+                    minutesDiff = minutesDiff + minutes;
+                }
+                if(minutesDiff > 60){
+                    hourDiff = hourDiff + (minutesDiff/60);
+                    minutesDiff = minutesDiff % 60;
+                }
+
+            } else {
+                if (AMORPM.equalsIgnoreCase("AM") && amOrPm.equalsIgnoreCase("PM")) {
+                    hourDiff = hour + 12 - Hour - 1;
+                    minutesDiff = minutes + (60 - Minutes);
+                    if(minutesDiff > 60){
+                        hourDiff = hourDiff + (minutesDiff/60);
+                        minutesDiff = minutesDiff % 60;
+                    }
+                }
+            }
+            return hourDiff + "h " + minutesDiff + "m ago";
+        } else {
+            return date;
+        }
     }
 }

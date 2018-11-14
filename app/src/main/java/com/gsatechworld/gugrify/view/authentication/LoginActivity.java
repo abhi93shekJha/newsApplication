@@ -131,7 +131,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 account = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
                 if (account != null) {
                     String token = account.getIdToken();
-                    Toast.makeText(LoginActivity.this, "Already signed in", Toast.LENGTH_LONG).show();
+                    LoginActivity.mGoogleSignInClient.revokeAccess()
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    // ...
+                                }
+                            });
                     return;
                 }
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -218,7 +224,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Toast.makeText(LoginActivity.this, "Login failed!!", Toast.LENGTH_LONG).show();
             Log.w("Message", "signInResult:failed code=" + e.getStatusCode());
             updateUI(null);
         }

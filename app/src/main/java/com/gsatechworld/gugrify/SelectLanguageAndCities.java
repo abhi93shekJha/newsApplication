@@ -54,6 +54,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     RelativeLayout mainLayout;
     ProgressBar progressBar;
     List<CityResponse.city> lists;
+    List<String> images;
     List<String> languages;
     NewsSharedPreferences sharedPreferences;
     LanguageResponse language;
@@ -89,6 +90,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         progressBar = findViewById(R.id.progressBar1);
         list = new ArrayList<>();
         lists = new ArrayList<>();
+        images = new ArrayList<>();
         languages = new ArrayList<>();
         language = new LanguageResponse();
 
@@ -119,7 +121,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
         }
 
         grid = findViewById(R.id.select_language_grid_view);
-        l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, list, (FloatingActionButton) findViewById(R.id.languageAndCityFloating), rLayout);
+        l = new LanguageRecyclerAdapter(SelectLanguageAndCities.this, images, list, (FloatingActionButton) findViewById(R.id.languageAndCityFloating), rLayout);
         grid.setLayoutManager(new GridLayoutManager(SelectLanguageAndCities.this, 3));
         grid.setAdapter(l);
 //        l.setClickListener(this);
@@ -160,7 +162,9 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
                         for(int i=0; i<lists.size(); i++){
                             City c = new City(lists.get(i).getCities());
 //                            Log.d("city is", lists.get(i).getCities());
+                            String image = lists.get(i).getImages();
                             list.add(c);
+                            images.add(image);
                         }
                         Log.d("List size is", String.valueOf(list.size()));
                         l.notifyDataSetChanged();

@@ -715,7 +715,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         progressBar.setVisibility(View.VISIBLE);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ActivePostsPojo> call = apiService.getActivePosts("0", "200");
+        Call<ActivePostsPojo> call = apiService.getActivePosts("0", "500");
 
         call.enqueue(new Callback<ActivePostsPojo>() {
             @Override

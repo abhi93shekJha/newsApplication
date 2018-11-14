@@ -14,14 +14,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.retrofit.City;
+import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 //import android.support.v7.app.AlertController;
 
@@ -38,8 +41,9 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
     View temp;
     NewsSharedPreferences sharedPreferences;
     ArrayList<Integer> selectedItem = new ArrayList<>();
+    List<String> images;
 
-    public LanguageRecyclerAdapter(final Context context, ArrayList<City> citie, FloatingActionButton action, RelativeLayout rLayout) {
+    public LanguageRecyclerAdapter(final Context context, List<String> images, ArrayList<City> citie, FloatingActionButton action, RelativeLayout rLayout) {
         this.actionButton = action;
         this.relativeLayout = rLayout;
         this.layoutInflater = LayoutInflater.from(context);
@@ -47,6 +51,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
         this.context = context;
         this.cities = citie;
         sharedPreferences = NewsSharedPreferences.getInstance(context);
+        this.images = images;
 
         action.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +111,7 @@ public class LanguageRecyclerAdapter extends RecyclerView.Adapter<LanguageRecycl
 
         holder.tvWhite.setText(cities.get(position).getCityName());
         holder.tvBrown.setText(cities.get(position).getCityName());
+        Glide.with(context).load(images.get(position)).into(holder.image);
     }
 
     @Override
