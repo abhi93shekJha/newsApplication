@@ -84,6 +84,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -140,16 +141,30 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         setSupportActionBar(toolbar);
         newsCategories = new NewsCategories();
         activePosts = new ActivePostsPojo();
+        sharedPreferences = NewsSharedPreferences.getInstance(this);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            /*getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             getSupportActionBar().setDisplayShowCustomEnabled(true);
             getSupportActionBar().setCustomView(R.layout.custom_actionbar);
-            View view = getSupportActionBar().getCustomView();
+            View view = getSupportActionBar().getCustomView();*/
+
+            //setting icon for user login image on toolbar
+            CircleImageView icon = findViewById(R.id.login_icon);
+            Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("user_image")).into(icon);
+            icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    intent.putExtra("fromDash", true);
+                    finish();
+                }
+            });
         }
 
+
         progressBar = findViewById(R.id.progressBar);
-        sharedPreferences = NewsSharedPreferences.getInstance(this);
         my_recycler_view = findViewById(R.id.my_recycler_view);
         playlistsPojo = new GetPlaylistsPojo();
         news = new LatestNewsByCity();
@@ -230,7 +245,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         LinearLayout ll_location = findViewById(R.id.ll_location);
         TextView nav_header_sub_title = findViewById(R.id.nav_header_sub_title);
 
-        if (sharedPreferences.getIsLoggedIn()) {
+        if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
             profile_image.setVisibility(View.VISIBLE);
             ll_location.setVisibility(View.VISIBLE);
             nav_header_title.setText(sharedPreferences.getSharedPrefValue("name"));
@@ -310,8 +325,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         dialog.setContentView(R.layout.video_dialog);
         // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
 
         // dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
@@ -443,10 +458,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             return true;
         }
 
-        if (id == R.id.action_avatar){
-            Intent intent = new Intent(this, ReporterLoginActivity.class);
+      /*  if (id == R.id.action_avatar){
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -457,7 +472,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         super.onResume();
 
         if (playlistsPojo.getResult() == null) {
-            if (sharedPreferences.getIsLoggedIn())
+            if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn"))
                 getPlaylists();
         }
 
@@ -468,6 +483,11 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                     mediaPlayer.seekTo(length);
                     mediaPlayer.start();
                 }
+            }
+        }
+        if(newsCategories.getCategory() != null) {
+            if(sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                navAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -641,7 +661,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                                 // Add whatever code is needed to append new items to the bottom of the list
                                 //Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
 
-                                    Log.d("Scrolled position is", String.valueOf(page));
+                                Log.d("Scrolled position is", String.valueOf(page));
                             }
                         };
                         my_recycler_view.addOnScrollListener(scrollListener);

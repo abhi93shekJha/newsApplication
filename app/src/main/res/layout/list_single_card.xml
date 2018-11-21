@@ -4,7 +4,7 @@
     android:id="@+id/mainLayout"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -40,4 +40,8 @@
                 android:textSize="18sp" />
         </LinearLayout>
     </FrameLayout>
+    <View
+        android:background="@color/colorWhite"
+        android:layout_height="25dp"
+        android:layout_width="match_parent"/>
 </LinearLayout>

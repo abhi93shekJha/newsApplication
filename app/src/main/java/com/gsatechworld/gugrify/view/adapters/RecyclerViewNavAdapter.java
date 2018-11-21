@@ -34,6 +34,7 @@ import com.gsatechworld.gugrify.view.ActivityContactUs;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.PostByCategory;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
+import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.dashboard.DisplayVideoActivity;
 
@@ -139,12 +140,9 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (holder.navItemTitle.getText().toString().equalsIgnoreCase("Sign In")) {
-                        Intent intent = new Intent(mContext, LoginActivity.class);
-                        intent.putExtra("fromDash", true);
+                    if (holder.navItemTitle.getText().toString().equalsIgnoreCase("Reporter Sign In")) {
+                        Intent intent = new Intent(mContext, ReporterLoginActivity.class);
                         mContext.startActivity(intent);
-                        if (mContext instanceof DashboardActivity)
-                            ((DashboardActivity) mContext).finish();
                     } else {
                         if (sharedPreferences.getLoggedInUsingFB()) {
                             FacebookSdk.sdkInitialize(mContext);
@@ -169,16 +167,17 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                                     });
                         } else {
                             sharedPreferences.setLoggedIn(false);
+                            sharedPreferences.setSharedPrefValueBoolean("reporterLoggedIn", false);
                         }
                         if (mContext instanceof DashboardActivity)
                             ((DashboardActivity) mContext).recreate();
                     }
                 }
             });
-            if (sharedPreferences.getIsLoggedIn()) {
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn") || sharedPreferences.getIsLoggedIn()) {
                 holder.navItemTitle.setText("Sign Out");
             } else {
-                holder.navItemTitle.setText("Sign In");
+                holder.navItemTitle.setText("Reporter Sign In");
             }
         }
         //for about us
