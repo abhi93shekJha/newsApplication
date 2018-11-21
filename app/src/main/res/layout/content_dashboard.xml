@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,5 +22,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center|center_vertical">
+
+        <ImageView
+            android:id="@+id/ivNoInternet"
+            app:srcCompat="@drawable/ic_no_internet"
+            android:layout_width="80dp"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center|center_horizontal|center_vertical"
+            android:layout_height="80dp" />
+        <TextView
+            android:background="@color/colorPrimary"
+            android:id="@+id/tvTryAgain"
+            android:text="No internet! Try again"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_marginTop="90dp"
+            android:layout_gravity="center|center_horizontal|center_vertical"
+            android:visibility="gone"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp" />
+    </FrameLayout>
 </RelativeLayout>
 

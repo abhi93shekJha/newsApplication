@@ -143,14 +143,12 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
     }
 
     public void getCities(String languageId){
-
         list.clear();
         mainLayout.setAlpha(0.5f);
         progressBar.setVisibility(View.VISIBLE);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CityResponse> call = apiService.getAllCities(languageId);
-
         call.enqueue(new Callback<CityResponse>() {
             @Override
             public void onResponse(Call<CityResponse> call, Response<CityResponse> response) {

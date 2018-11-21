@@ -133,41 +133,45 @@ public class RegistrationActivity extends AppCompatActivity {
     public void userRegister(UserRegistrationPojo pojo) {
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<UserRegistrationPojo> call = apiService.createUserRegistration(pojo);
-        call.enqueue(new Callback<UserRegistrationPojo>() {
-            @Override
-            public void onResponse(Call<UserRegistrationPojo> call, Response<UserRegistrationPojo> response) {
-                UserRegistrationPojo regResponse = null;
-                if (response.isSuccessful()) {
-                    regResponse = response.body();
-                    if (regResponse.getResult() instanceof String) {
-                        if (regResponse.getResult().toString().trim().equalsIgnoreCase("success")) {
-                            Toast.makeText(RegistrationActivity.this, "Successfully registered!!", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else
-                            Toast.makeText(RegistrationActivity.this, regResponse.getResult().toString(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    if (regResponse.getResult() instanceof ArrayList<?>) {
-                        ArrayList<String> result = (ArrayList<String>) regResponse.getResult();
-                        String error = "Registration failed!!";
-                        for (int i = 0; i < result.size(); i++) {
-                            error = error +"\n"+ result.get(i);
+        if (NetworkUtil.getInstance(RegistrationActivity.this).isConnectingToInternet()) {
+            Call<UserRegistrationPojo> call = apiService.createUserRegistration(pojo);
+            call.enqueue(new Callback<UserRegistrationPojo>() {
+                @Override
+                public void onResponse(Call<UserRegistrationPojo> call, Response<UserRegistrationPojo> response) {
+                    UserRegistrationPojo regResponse = null;
+                    if (response.isSuccessful()) {
+                        regResponse = response.body();
+                        if (regResponse.getResult() instanceof String) {
+                            if (regResponse.getResult().toString().trim().equalsIgnoreCase("success")) {
+                                Toast.makeText(RegistrationActivity.this, "Successfully registered!!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else
+                                Toast.makeText(RegistrationActivity.this, regResponse.getResult().toString(), Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(RegistrationActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(RegistrationActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                }
-//                Log.d(TAG, "Number of movies received: " + movies.size());
-            }
 
-            @Override
-            public void onFailure(Call<UserRegistrationPojo> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(RegistrationActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-            }
-        });
+                        if (regResponse.getResult() instanceof ArrayList<?>) {
+                            ArrayList<String> result = (ArrayList<String>) regResponse.getResult();
+                            String error = "Registration failed!!";
+                            for (int i = 0; i < result.size(); i++) {
+                                error = error +"\n"+ result.get(i);
+                            }
+                            Toast.makeText(RegistrationActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(RegistrationActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+                }
+
+                @Override
+                public void onFailure(Call<UserRegistrationPojo> call, Throwable t) {
+                    // Log error here since request failed
+                    Toast.makeText(RegistrationActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(RegistrationActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

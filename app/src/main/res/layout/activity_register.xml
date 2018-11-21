@@ -58,7 +58,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -80,7 +79,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                             <EditText
@@ -103,7 +102,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -125,7 +123,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -149,7 +147,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -171,7 +168,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -193,7 +190,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -215,7 +211,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -239,7 +235,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -261,7 +256,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -336,7 +331,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -358,7 +352,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -370,7 +364,6 @@
                                 android:backgroundTint="@color/colorWhite"
                                 android:hint="Password"
                                 android:inputType="textPassword"
-                                android:maxLength="6"
                                 android:singleLine="true"
                                 android:textColor="@color/colorWhite"
                                 android:textColorHint="@color/colorWhite" />
@@ -382,7 +375,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -404,7 +396,7 @@
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -440,7 +432,7 @@
                             android:paddingLeft="0dp"
                             android:paddingRight="0dp"
                             android:text="Register"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="@color/color_black"
                             android:textStyle="bold" />
 
 

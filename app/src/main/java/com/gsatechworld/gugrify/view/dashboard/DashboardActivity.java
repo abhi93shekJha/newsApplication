@@ -59,11 +59,13 @@ import com.gsatechworld.gugrify.model.retrofit.LatestNewsByCity;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
 import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
 import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
+import com.gsatechworld.gugrify.utils.NetworkUtil;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.ReporterPostActivity;
 import com.gsatechworld.gugrify.view.ReporterProfile;
+import com.gsatechworld.gugrify.view.SplashActivity;
 import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
@@ -132,6 +134,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private ArrayList<SectionDataModel> allSampleData;
     private SectionDataModel sectionModel;
     private Toolbar toolbar;
+    private TextView tvTryAgain;
+    private ImageView ivNoInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,14 +172,23 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         my_recycler_view = findViewById(R.id.my_recycler_view);
         playlistsPojo = new GetPlaylistsPojo();
         news = new LatestNewsByCity();
-
+        ivNoInternet = findViewById(R.id.ivNoInternet);
+        tvTryAgain = findViewById(R.id.tvTryAgain);
         //filling navigation bar
-        if (newsCategories.getCategory() == null) {
-            getReporterCategories();
-        }
 
-        getAllActivePosts();
-        getLatestNews();
+        //  check internet
+        if (NetworkUtil.getInstance(DashboardActivity.this).isConnectingToInternet()) {
+            if (newsCategories.getCategory() == null) {
+                getReporterCategories();
+            }
+
+            getAllActivePosts();
+            getLatestNews();
+        } else {
+            tvTryAgain.setVisibility(View.VISIBLE);
+            ivNoInternet.setVisibility(View.VISIBLE);
+            Toast.makeText(DashboardActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
+        }
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -219,7 +232,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         // finally change the color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.ststusbar_color));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.color_black));
         }
 
         allSampleData = new ArrayList<>();
@@ -261,7 +274,14 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // create nav item list
         ArrayList<NavItemModel> navItemModelArrayList = getNavItemList();
 
-
+        tvTryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tvTryAgain.setVisibility(View.GONE);
+                ivNoInternet.setVisibility(View.GONE);
+                DashboardActivity.this.recreate();
+            }
+        });
     }
 
     private ArrayList<NavItemModel> getNavItemList() {
@@ -581,65 +601,132 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     public void getReporterCategories() {
 
         my_recycler_view.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        if (NetworkUtil.getInstance(DashboardActivity.this).isConnectingToInternet()) {
+            progressBar.setVisibility(View.VISIBLE);
+            apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<NewsCategories> call = apiService.getCategoryList();
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<NewsCategories> call = apiService.getCategoryList();
+            call.enqueue(new Callback<NewsCategories>() {
+                @Override
+                public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
 
-        call.enqueue(new Callback<NewsCategories>() {
-            @Override
-            public void onResponse(Call<NewsCategories> call, Response<NewsCategories> response) {
+                    if (response.isSuccessful()) {
+                        Log.d("Reached here", "to dashboard");
+                        newsCategories = response.body();
+                        RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
+                        recycler_nav_item.setHasFixedSize(true);
+                        navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                        recycler_nav_item.setLayoutManager(layoutManager);
+                        recycler_nav_item.setAdapter(navAdapter);
+                        ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
 
-                if (response.isSuccessful()) {
-                    Log.d("Reached here", "to dashboard");
-                    newsCategories = response.body();
-                    RecyclerView recycler_nav_item = (RecyclerView) findViewById(R.id.recycler_nav_item);
-                    recycler_nav_item.setHasFixedSize(true);
-                    navAdapter = new RecyclerViewNavAdapter(newsCategories, DashboardActivity.this);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
-                    recycler_nav_item.setLayoutManager(layoutManager);
-                    recycler_nav_item.setAdapter(navAdapter);
-                    ViewCompat.setNestedScrollingEnabled(recycler_nav_item, false);
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
+                    } else {
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
 
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<NewsCategories> call, Throwable t) {
+                    // Log error here since request failed
                     my_recycler_view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<NewsCategories> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                my_recycler_view.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+            });
+        } else {
+            // no internet
+            //Toast.makeText(DashboardActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void getLatestNews() {
 
         my_recycler_view.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        if (NetworkUtil.getInstance(DashboardActivity.this).isConnectingToInternet()) {
+            progressBar.setVisibility(View.VISIBLE);
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<LatestNewsByCity> call = apiService.getLatestNewsByCity(sharedPreferences.getCitySelected());
+            apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<LatestNewsByCity> call = apiService.getLatestNewsByCity(sharedPreferences.getCitySelected());
 
-        call.enqueue(new Callback<LatestNewsByCity>() {
-            @Override
-            public void onResponse(Call<LatestNewsByCity> call, Response<LatestNewsByCity> response) {
+            call.enqueue(new Callback<LatestNewsByCity>() {
+                @Override
+                public void onResponse(Call<LatestNewsByCity> call, Response<LatestNewsByCity> response) {
 
-                if (response.isSuccessful()) {
-                    Log.d("Reached here", "to latestNewsByCity");
-                    news = response.body();
+                    if (response.isSuccessful()) {
+                        Log.d("Reached here", "to latestNewsByCity");
+                        news = response.body();
 
-                    if (news.getResult() != null) {
-                        String category = news.getResult().get(0).getCategory();
-                        Log.d("catergory", category);
+                        if (news.getResult() != null) {
+                            String category = news.getResult().get(0).getCategory();
+                            Log.d("catergory", category);
+
+                            my_recycler_view.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+
+                            my_recycler_view.setHasFixedSize(true);
+                            adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
+                            my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+//        adapter.addMoreContacts(allSampleData);
+                            l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                            my_recycler_view.setLayoutManager(l);
+
+                            my_recycler_view.setAdapter(adapter);
+                            my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, DividerItemDecoration.VERTICAL));
+
+                            scrollListener = new EndlessScrollListener(l) {
+                                @Override
+                                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                                    // Triggered only when new data needs to be appended to the list
+                                    // Add whatever code is needed to append new items to the bottom of the list
+                                    //Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
+
+                                Log.d("Scrolled position is", String.valueOf(page));
+                            }
+                        };
+                        my_recycler_view.addOnScrollListener(scrollListener);
+                    }
+
+                    } else {
+                        Toast.makeText(DashboardActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LatestNewsByCity> call, Throwable t) {
+                    // Log error here since request failed
+                    Toast.makeText(DashboardActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    my_recycler_view.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } else {
+               // Toast.makeText(DashboardActivity.this, "No internet", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void getPlaylists() {
+
+        my_recycler_view.setVisibility(View.GONE);
+
+        if (NetworkUtil.getInstance(DashboardActivity.this).isConnectingToInternet()) {
+            progressBar.setVisibility(View.VISIBLE);
+
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<GetPlaylistsPojo> call = apiService.getPlaylists(sharedPreferences.getSharedPrefValue("user_id"));
+
+            call.enqueue(new Callback<GetPlaylistsPojo>() {
+                @Override
+                public void onResponse(Call<GetPlaylistsPojo> call, Response<GetPlaylistsPojo> response) {
+
+                    if (response.isSuccessful()) {
+                        Log.d("Reached here", "to gettig playlist");
+                        playlistsPojo = response.body();
 
                         my_recycler_view.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
@@ -652,127 +739,76 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                         my_recycler_view.setLayoutManager(l);
 
                         my_recycler_view.setAdapter(adapter);
-                        my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, DividerItemDecoration.VERTICAL));
 
-                        scrollListener = new EndlessScrollListener(l) {
-                            @Override
-                            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                                // Triggered only when new data needs to be appended to the list
-                                // Add whatever code is needed to append new items to the bottom of the list
-                                //Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
-
-                                Log.d("Scrolled position is", String.valueOf(page));
-                            }
-                        };
-                        my_recycler_view.addOnScrollListener(scrollListener);
+                    } else {
+                        Toast.makeText(DashboardActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
                     }
+                }
 
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<GetPlaylistsPojo> call, Throwable t) {
+                    // Log error here since request failed
+                    Toast.makeText(DashboardActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                     my_recycler_view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<LatestNewsByCity> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                my_recycler_view.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    public void getPlaylists() {
-
-        my_recycler_view.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<GetPlaylistsPojo> call = apiService.getPlaylists(sharedPreferences.getSharedPrefValue("user_id"));
-
-        call.enqueue(new Callback<GetPlaylistsPojo>() {
-            @Override
-            public void onResponse(Call<GetPlaylistsPojo> call, Response<GetPlaylistsPojo> response) {
-
-                if (response.isSuccessful()) {
-                    Log.d("Reached here", "to gettig playlist");
-                    playlistsPojo = response.body();
-
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-
-                    my_recycler_view.setHasFixedSize(true);
-                    adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
-                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
-//        adapter.addMoreContacts(allSampleData);
-                    l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
-                    my_recycler_view.setLayoutManager(l);
-
-                    my_recycler_view.setAdapter(adapter);
-
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetPlaylistsPojo> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                my_recycler_view.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+            });
+        } else {
+           Toast.makeText(DashboardActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void getAllActivePosts() {
 
         my_recycler_view.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
+        if (NetworkUtil.getInstance(DashboardActivity.this).isConnectingToInternet()) {
+            progressBar.setVisibility(View.VISIBLE);
 
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<ActivePostsPojo> call = apiService.getActivePosts("0", "500");
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<ActivePostsPojo> call = apiService.getActivePosts("0", "500");
 
-        call.enqueue(new Callback<ActivePostsPojo>() {
-            @Override
-            public void onResponse(Call<ActivePostsPojo> call, Response<ActivePostsPojo> response) {
+            call.enqueue(new Callback<ActivePostsPojo>() {
+                @Override
+                public void onResponse(Call<ActivePostsPojo> call, Response<ActivePostsPojo> response) {
 
-                if (response.isSuccessful()) {
+                    if (response.isSuccessful()) {
 
-                    Log.d("Reached here", "to gettig playlist");
-                    activePosts = response.body();
+                        Log.d("Reached here", "to gettig playlist");
+                        activePosts = response.body();
 
-                    my_recycler_view.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
 
-                    my_recycler_view.setHasFixedSize(true);
-                    adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
-                    my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
+                        my_recycler_view.setHasFixedSize(true);
+                        adapter = new RecyclerViewDataAdapter(activePosts, playlistsPojo, news, DashboardActivity.this);
+                        my_recycler_view.addItemDecoration(new DividerItemDecoration(DashboardActivity.this, 0));
 //        adapter.addMoreContacts(allSampleData);
-                    l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
-                    my_recycler_view.setLayoutManager(l);
+                        l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
+                        my_recycler_view.setLayoutManager(l);
 
-                    my_recycler_view.setAdapter(adapter);
+                        my_recycler_view.setAdapter(adapter);
 
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Server error1!!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(DashboardActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
+                        my_recycler_view.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ActivePostsPojo> call, Throwable t) {
+                    // Log error here since request failed
+                    Toast.makeText(DashboardActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
                     my_recycler_view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
-            }
+            });
 
-            @Override
-            public void onFailure(Call<ActivePostsPojo> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(DashboardActivity.this, t.toString(), Toast.LENGTH_SHORT).show();
-                my_recycler_view.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        } else {
+              //  Toast.makeText(DashboardActivity.this, "No internet", Toast.LENGTH_SHORT).show();
+        }
 
     }
 

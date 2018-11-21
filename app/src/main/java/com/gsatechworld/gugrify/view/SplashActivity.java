@@ -32,6 +32,7 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
+import com.gsatechworld.gugrify.utils.NetworkUtil;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
@@ -153,28 +154,33 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
             //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
 
             apiService = ApiClient.getClient().create(ApiInterface.class);
-            Call<GetMainAdvertisement> call = apiService.getMainAdvertisement();
+            if (NetworkUtil.getInstance(SplashActivity.this).isConnectingToInternet()) {
+                Call<GetMainAdvertisement> call = apiService.getMainAdvertisement();
 
-            call.enqueue(new Callback<GetMainAdvertisement>() {
-                @Override
-                public void onResponse(Call<GetMainAdvertisement> call, Response<GetMainAdvertisement> response) {
-                    GetMainAdvertisement advertisement = null;
-                    if (response.isSuccessful()) {
-                        Log.d("Reached here", "true");
-                        advertisement = response.body();
-                        DashboardActivity.result = advertisement;
+                call.enqueue(new Callback<GetMainAdvertisement>() {
+                    @Override
+                    public void onResponse(Call<GetMainAdvertisement> call, Response<GetMainAdvertisement> response) {
+                        GetMainAdvertisement advertisement = null;
+                        if (response.isSuccessful()) {
+                            Log.d("Reached here", "true");
+                            advertisement = response.body();
+                            DashboardActivity.result = advertisement;
 
-                    } else {
-                        Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            //Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<GetMainAdvertisement> call, Throwable t) {
-                    // Log error here since request failed
-                    Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<GetMainAdvertisement> call, Throwable t) {
+                        // Log error here since request failed
+                        //Toast.makeText(SplashActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                //Toast.makeText(SplashActivity.this, "No interNet!", Toast.LENGTH_SHORT).show();
+
+            }
 
             return null;
         }

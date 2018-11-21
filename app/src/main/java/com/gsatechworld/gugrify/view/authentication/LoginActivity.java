@@ -353,44 +353,49 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void makeLoginPost() {
         apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginPojo> call = apiService.userLogin(u, p);
 
-        call.enqueue(new Callback<LoginPojo>() {
-            @Override
-            public void onResponse(Call<LoginPojo> call, Response<LoginPojo> response) {
-                LoginPojo loginPojo = null;
-                if (response.isSuccessful()) {
-                    Log.d("Reached here", "true");
-                    loginPojo = response.body();
-                    if (loginPojo.getResponse() != null && loginPojo.getResponse().equalsIgnoreCase("Failed")) {
-                        Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
+        if (NetworkUtil.getInstance(LoginActivity.this).isConnectingToInternet()) {
+            Call<LoginPojo> call = apiService.userLogin(u, p);
+
+            call.enqueue(new Callback<LoginPojo>() {
+                @Override
+                public void onResponse(Call<LoginPojo> call, Response<LoginPojo> response) {
+                    LoginPojo loginPojo = null;
+                    if (response.isSuccessful()) {
+                        Log.d("Reached here", "true");
+                        loginPojo = response.body();
+                        if (loginPojo.getResponse() != null && loginPojo.getResponse().equalsIgnoreCase("Failed")) {
+                            Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Successfully Loged in!!", Toast.LENGTH_LONG).show();
+                            sharedPreferences.setSharedPrefValue("user_id", loginPojo.getResult().getUser_id());
+                            sharedPreferences.setSharedPrefValue("name", loginPojo.getResult().getName());
+                            sharedPreferences.setSharedPrefValue("email", loginPojo.getResult().getEmail());
+                            sharedPreferences.setSharedPrefValue("mobile_number", loginPojo.getResult().getMobileNumber());
+                            sharedPreferences.setSharedPrefValue("user_image", loginPojo.getResult().getUser_image());
+                            sharedPreferences.setSharedPrefValue("user_city", loginPojo.getResult().getUser_city());
+                            sharedPreferences.setLoggedIn(true);
+                            if (fromDash) {
+                                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else
+                                finish();
+                        }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Successfully Loged in!!", Toast.LENGTH_LONG).show();
-                        sharedPreferences.setSharedPrefValue("user_id", loginPojo.getResult().getUser_id());
-                        sharedPreferences.setSharedPrefValue("name", loginPojo.getResult().getName());
-                        sharedPreferences.setSharedPrefValue("email", loginPojo.getResult().getEmail());
-                        sharedPreferences.setSharedPrefValue("mobile_number", loginPojo.getResult().getMobileNumber());
-                        sharedPreferences.setSharedPrefValue("user_image", loginPojo.getResult().getUser_image());
-                        sharedPreferences.setSharedPrefValue("user_city", loginPojo.getResult().getUser_city());
-                        sharedPreferences.setLoggedIn(true);
-                        if (fromDash) {
-                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else
-                            finish();
+                        Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Toast.makeText(LoginActivity.this, "Invalid credentials!!", Toast.LENGTH_LONG).show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<LoginPojo> call, Throwable t) {
-                // Log error here since request failed
-                Toast.makeText(LoginActivity.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<LoginPojo> call, Throwable t) {
+                    // Log error here since request failed
+                    Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            Toast.makeText(LoginActivity.this, "No internet !", Toast.LENGTH_LONG).show();
+        }
     }
 
 }

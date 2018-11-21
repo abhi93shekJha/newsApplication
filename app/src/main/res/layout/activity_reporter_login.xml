@@ -56,7 +56,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -77,7 +76,7 @@
                             android:layout_marginRight="1dp"
                             android:layout_margin="0dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -99,7 +98,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/squre_radius_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
@@ -121,7 +119,7 @@
                             android:layout_marginRight="1dp"
                             android:layout_margin="0dp"
                             android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabel"
+                            android:theme="@style/TextLabe2"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 

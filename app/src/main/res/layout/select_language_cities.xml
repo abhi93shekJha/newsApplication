@@ -96,6 +96,6 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/fab_margin"
         android:visibility="gone"
-        app:backgroundTint="@color/ststusbar_color"
+        app:backgroundTint="@color/orange_light"
         app:srcCompat="@drawable/ic_check" />
 </RelativeLayout>

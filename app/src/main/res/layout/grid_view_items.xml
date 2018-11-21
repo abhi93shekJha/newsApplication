@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginTop="8dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="4dp"
     android:background="@color/colorWhite"
     android:id="@+id/grid_view_items_relativeLayout"
     >
@@ -17,8 +17,9 @@
         android:id="@+id/gridViewImage"
         android:src="@mipmap/camera"
         android:layout_centerHorizontal="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="70dp"
+        android:scaleType="fitXY"
+        android:layout_height="70dp" />
     <TextView
         android:id="@+id/citiesGridView_text"
         android:layout_below="@+id/gridViewImage"

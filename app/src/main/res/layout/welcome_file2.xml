@@ -41,15 +41,14 @@
             android:paddingRight="7dp">
             <ImageView
                 android:layout_gravity="center"
-                android:layout_width="228dp"
-                android:background="@drawable/shape"
-                android:layout_height="315dp"
+                android:layout_width="240dp"
+                android:layout_height="335dp"
                 />
             <ImageView
                 android:layout_gravity="center"
-                android:layout_width="228dp"
+                android:layout_width="240dp"
                 android:src="@mipmap/welcome_image_2"
-                android:layout_height="315dp"
+                android:layout_height="335dp"
                 />
         </FrameLayout>
     </FrameLayout>
