@@ -155,18 +155,27 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
             //setting icon for user login image on toolbar
             CircleImageView icon = findViewById(R.id.login_icon);
-            Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("user_image")).into(icon);
+            if (sharedPreferences.getIsLoggedIn())
+                Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("user_image")).into(icon);
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn"))
+                Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("reporterPic")).into(icon);
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    intent.putExtra("fromDash", true);
-                    finish();
+                    if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+
+                    } else {
+                        if (!sharedPreferences.getIsLoggedIn()) {
+                            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                            intent.putExtra("fromDash", true);
+                            startActivity(intent);
+                        }
+                    }
+//                        finish();
                 }
             });
-        }
 
+        }
 
         progressBar = findViewById(R.id.progressBar);
         my_recycler_view = findViewById(R.id.my_recycler_view);
@@ -181,7 +190,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             if (newsCategories.getCategory() == null) {
                 getReporterCategories();
             }
-
             getAllActivePosts();
             getLatestNews();
         } else {
@@ -258,13 +266,18 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         LinearLayout ll_location = findViewById(R.id.ll_location);
         TextView nav_header_sub_title = findViewById(R.id.nav_header_sub_title);
 
-        if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+        if (sharedPreferences.getIsLoggedIn()) {
             profile_image.setVisibility(View.VISIBLE);
             ll_location.setVisibility(View.VISIBLE);
             nav_header_title.setText(sharedPreferences.getSharedPrefValue("name"));
             nav_header_sub_title.setText(sharedPreferences.getCitySelected());
             Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("user_image")).into(profile_image);
-
+        } else if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+            profile_image.setVisibility(View.VISIBLE);
+            ll_location.setVisibility(View.VISIBLE);
+            nav_header_title.setText(sharedPreferences.getSharedPrefValue("reporterName"));
+            nav_header_sub_title.setText(sharedPreferences.getSharedPrefValue("reporterCity"));
+            Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("reporterPic")).into(profile_image);
         } else {
             profile_image.setVisibility(View.INVISIBLE);
             ll_location.setVisibility(View.INVISIBLE);
@@ -505,8 +518,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 }
             }
         }
-        if(newsCategories.getCategory() != null) {
-            if(sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+
+        if (newsCategories.getCategory() != null) {
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
                 navAdapter.notifyDataSetChanged();
             }
         }
@@ -684,11 +698,11 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                                     // Add whatever code is needed to append new items to the bottom of the list
                                     //Log.d("Scrolled position is", String.valueOf(view.getVerticalScrollbarPosition()));
 
-                                Log.d("Scrolled position is", String.valueOf(page));
-                            }
-                        };
-                        my_recycler_view.addOnScrollListener(scrollListener);
-                    }
+                                    Log.d("Scrolled position is", String.valueOf(page));
+                                }
+                            };
+                            my_recycler_view.addOnScrollListener(scrollListener);
+                        }
 
                     } else {
                         Toast.makeText(DashboardActivity.this, "Something went wrong!!", Toast.LENGTH_SHORT).show();
@@ -706,7 +720,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 }
             });
         } else {
-               // Toast.makeText(DashboardActivity.this, "No internet", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(DashboardActivity.this, "No internet", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -737,7 +751,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 //        adapter.addMoreContacts(allSampleData);
                         l = new LinearLayoutManager(DashboardActivity.this, LinearLayoutManager.VERTICAL, false);
                         my_recycler_view.setLayoutManager(l);
-
                         my_recycler_view.setAdapter(adapter);
 
                     } else {
@@ -756,7 +769,9 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 }
             });
         } else {
-           Toast.makeText(DashboardActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(DashboardActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
+            my_recycler_view.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -807,7 +822,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             });
 
         } else {
-              //  Toast.makeText(DashboardActivity.this, "No internet", Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(DashboardActivity.this, "No internet", Toast.LENGTH_SHORT).show();
         }
 
     }

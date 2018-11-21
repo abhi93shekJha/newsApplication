@@ -35,18 +35,12 @@
                     android:layout_height="50dp" />
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/login_icon"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentRight="true"
                     android:layout_toEndOf="@id/gugrifyText"
                     android:src="@drawable/news_logo"
                     android:layout_width="50dp"
                     android:layout_height="40dp" />
-                <TextView
-                    android:layout_toEndOf="@+id/login_icon"
-                    android:text="Gugrify"
-                    android:textColor="@color/black"
-                    android:textSize="23sp"
-                    android:gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp" />
             </RelativeLayout>
             <!--<TextView
                 android:id="@+id/tvTitle"

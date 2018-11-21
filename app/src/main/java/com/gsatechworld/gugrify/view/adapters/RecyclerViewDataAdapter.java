@@ -325,10 +325,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
 
                     @Override
                     public void onClick(View view) {
-                        if (!sharedPreferences.getIsLoggedIn()) {
-                            Intent intent = new Intent(mContext, LoginActivity.class);
-                            mContext.startActivity(intent);
-                        } else {
+
                             PopupMenu popup = new PopupMenu(mContext, view);
                             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                 @Override
@@ -340,6 +337,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                                         // need to login first before creating playlist
 
                                         // show playlist for creating playlist
+//                                        if(sharedPreferences.ge)
                                         createPlayListDialog = createPlayListDialog.getInstance(activePosts.getResult().get(position - 3).getPostId(), mContext, playlistNames, playListIds);
                                         createPlayListDialog.showDialog();
                                         createPlayListDialog.show();
@@ -350,7 +348,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                             });
                             popup.inflate(R.menu.popup_menu);
                             popup.show();
-                        }
+
                     }
                 });
 

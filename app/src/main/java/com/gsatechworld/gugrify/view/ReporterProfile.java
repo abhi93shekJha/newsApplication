@@ -159,6 +159,8 @@ public class ReporterProfile extends AppCompatActivity {
         iv_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(ReporterProfile.this, DashboardActivity.class);
+                startActivity(intent);
                 finish();
             }
         });

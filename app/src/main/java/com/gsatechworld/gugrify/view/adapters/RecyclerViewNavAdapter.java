@@ -33,6 +33,7 @@ import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
 import com.gsatechworld.gugrify.view.ActivityContactUs;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
 import com.gsatechworld.gugrify.view.PostByCategory;
+import com.gsatechworld.gugrify.view.ReporterProfile;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
 import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
@@ -61,10 +62,18 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
         int viewType = 0; //Default is 1
         if (position == newsCategories.getCategory().size())
             viewType = 1; //if zero, it will be a header view
-        if (position == newsCategories.getCategory().size() + 1) viewType = 2;
-        if (position == newsCategories.getCategory().size() + 2) viewType = 3;
-        if (position == newsCategories.getCategory().size() + 3) viewType = 4;
-        if (position == newsCategories.getCategory().size() + 4) viewType = 5;
+        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+            if (position == newsCategories.getCategory().size() + 1) viewType = 6;
+            if (position == newsCategories.getCategory().size() + 2) viewType = 2;
+            if (position == newsCategories.getCategory().size() + 3) viewType = 3;
+            if (position == newsCategories.getCategory().size() + 4) viewType = 4;
+            if (position == newsCategories.getCategory().size() + 5) viewType = 5;
+        } else {
+            if (position == newsCategories.getCategory().size() + 1) viewType = 2;
+            if (position == newsCategories.getCategory().size() + 2) viewType = 3;
+            if (position == newsCategories.getCategory().size() + 3) viewType = 4;
+            if (position == newsCategories.getCategory().size() + 4) viewType = 5;
+        }
         return viewType;
     }
 
@@ -98,9 +107,14 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                         .inflate(R.layout.nav_contact_us, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
-            default:
+            case 5:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.nav_settings, parent, false);
+                rowHolder = new ItemRowHolder(v);
+                return rowHolder;
+            default:
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.nav_reporter_dashboard, parent, false);
                 rowHolder = new ItemRowHolder(v);
                 return rowHolder;
         }
@@ -137,13 +151,70 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
         //for sign in and sign out
         else if (position == newsCategories.getCategory().size() + 1) {
+
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (holder.navItemTitle.getText().toString().equalsIgnoreCase("Reporter Sign In")) {
                         Intent intent = new Intent(mContext, ReporterLoginActivity.class);
                         mContext.startActivity(intent);
+                        if(mContext instanceof DashboardActivity)
+                            ((DashboardActivity) mContext).finish();
                     } else {
+                        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                            Intent intent = new Intent(mContext, ReporterProfile.class);
+                            mContext.startActivity(intent);
+                        } else {
+                            if (sharedPreferences.getLoggedInUsingFB()) {
+                                FacebookSdk.sdkInitialize(mContext);
+                                LoginManager.getInstance().logOut();
+                                sharedPreferences.setLoggedIn(false);
+                                sharedPreferences.setLoggedInUsingFB(false);
+                            } else if (sharedPreferences.getLoggedInUsingGoogle()) {
+                                sharedPreferences.setLoggedIn(false);
+                                sharedPreferences.setLoggedInUsingGoogle(false);
+                                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .requestIdToken(mContext.getString(R.string.server_client_id))
+                                        .requestEmail()
+                                        .build();
+
+                                mGoogleSignInClient = GoogleSignIn.getClient(mContext, gso);
+                                mGoogleSignInClient.revokeAccess()
+                                        .addOnCompleteListener((Activity) mContext, new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                // ...
+                                            }
+                                        });
+                            } else {
+                                sharedPreferences.setLoggedIn(false);
+                                sharedPreferences.setSharedPrefValueBoolean("reporterLoggedIn", false);
+                            }
+                            if (mContext instanceof DashboardActivity)
+                                ((DashboardActivity) mContext).recreate();
+                        }
+                    }
+                }
+            });
+
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+
+            } else {
+                if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn") || sharedPreferences.getIsLoggedIn()) {
+                    holder.navItemTitle.setText("Sign Out");
+                } else {
+                    holder.navItemTitle.setText("Reporter Sign In");
+                }
+            }
+        }
+        //for about us
+        else if (position == newsCategories.getCategory().size() + 2) {
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn") || sharedPreferences.getIsLoggedIn())
+                holder.navItemTitle.setText("Sign Out");
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
                         if (sharedPreferences.getLoggedInUsingFB()) {
                             FacebookSdk.sdkInitialize(mContext);
                             LoginManager.getInstance().logOut();
@@ -171,23 +242,11 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                         }
                         if (mContext instanceof DashboardActivity)
                             ((DashboardActivity) mContext).recreate();
+                    } else {
+                        Intent intent = new Intent(mContext, ActivityShowWebView.class);
+                        intent.putExtra("url", "www.gugrify.com/about-us.php");
+                        mContext.startActivity(intent);
                     }
-                }
-            });
-            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn") || sharedPreferences.getIsLoggedIn()) {
-                holder.navItemTitle.setText("Sign Out");
-            } else {
-                holder.navItemTitle.setText("Reporter Sign In");
-            }
-        }
-        //for about us
-        else if (position == newsCategories.getCategory().size() + 2) {
-            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, ActivityShowWebView.class);
-                    intent.putExtra("url", "www.gugrify.com/about-us.php");
-                    mContext.startActivity(intent);
                 }
             });
         }
@@ -197,19 +256,41 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, ActivityContactUs.class);
-                    mContext.startActivity(intent);
+                    if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                        Intent intent = new Intent(mContext, ActivityShowWebView.class);
+                        intent.putExtra("url", "www.gugrify.com/about-us.php");
+                        mContext.startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(mContext, ActivityContactUs.class);
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
+        } else if (position == newsCategories.getCategory().size() + 4) {
+            holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                        Intent intent = new Intent(mContext, ActivityContactUs.class);
+                        mContext.startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(mContext, SelectLanguageAndCities.class);
+                        intent.putExtra("fromSettings", true);
+                        mContext.startActivity(intent);
+                    }
+                    /*if(mContext instanceof DashboardActivity)
+                        ((DashboardActivity) mContext).finish();*/
                 }
             });
         } else {
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     Intent intent = new Intent(mContext, SelectLanguageAndCities.class);
                     intent.putExtra("fromSettings", true);
                     mContext.startActivity(intent);
-                    /*if(mContext instanceof DashboardActivity)
-                        ((DashboardActivity) mContext).finish();*/
+
                 }
             });
         }
@@ -217,7 +298,10 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
 
     @Override
     public int getItemCount() {
-        return (null != newsCategories.getCategory() ? newsCategories.getCategory().size() + 5 : 0);
+        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+            return (null != newsCategories.getCategory() ? newsCategories.getCategory().size() + 6 : 0);
+        } else
+            return (null != newsCategories.getCategory() ? newsCategories.getCategory().size() + 5 : 0);
     }
 
     public class ItemRowHolder extends RecyclerView.ViewHolder {

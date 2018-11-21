@@ -663,24 +663,24 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         FragmentImage fragment1 = new FragmentImage();
         FragmentLayout fragment2 = new FragmentLayout();
 
-        if (adapter.previous == (adapter.getItemCount() - 1)-2) {
+        if (adapter.previous == (adapter.getItemCount() - 1) - 2) {
             adapter.clicked[0] = true;
             //loading both the fragments with clicked position
             loadFragment(fragment1, fragment2, posts.get(0).getPostId());
             sharedPreferences.setClickedPosition(0);
 
-            adapter.clicked[(adapter.getItemCount() - 1)- 2] = false;
+            adapter.clicked[(adapter.getItemCount() - 1) - 2] = false;
             recycler.smoothScrollToPosition(0);
             adapter.previous = 0;
         } else {
-                adapter.clicked[adapter.previous] = false;
-                adapter.clicked[adapter.previous + 1] = true;
-                //loading both the fragments with clicked position
-                loadFragment(fragment1, fragment2, posts.get(adapter.previous + 1).getPostId());
-                sharedPreferences.setClickedPosition(adapter.previous + 1);
+            adapter.clicked[adapter.previous] = false;
+            adapter.clicked[adapter.previous + 1] = true;
+            //loading both the fragments with clicked position
+            loadFragment(fragment1, fragment2, posts.get(adapter.previous + 1).getPostId());
+            sharedPreferences.setClickedPosition(adapter.previous + 1);
 
-                recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
-                adapter.previous = adapter.previous + 1;
+            recycler.smoothScrollToPosition((adapter.previous + 1) + 1); //added this extra 1 to scroll the recycler to correct position
+            adapter.previous = adapter.previous + 1;
         }
         adapter.notifyDataSetChanged();
     }
@@ -896,17 +896,18 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                     PostsByCategory post = null;
                     if (postsByCat != null) {
-                        for (int i = 0; i < postsByCat.getResult().size(); i++) {
-                            String id = postsByCat.getResult().get(0).getPostId();
-                            String image = postsByCat.getResult().get(0).getImage();
-                            String headlines = postsByCat.getResult().get(0).getNewsHeadline();
-                            String description = postsByCat.getResult().get(0).getNewsDescription();
-                            String views = postsByCat.getResult().get(0).getViews();
-                            String likes = postsByCat.getResult().get(0).getLikes();
+                        if (postsByCat.getResult().size() > 1)
+                            for (int i = 1; i < postsByCat.getResult().size(); i++) {
+                                String id = postsByCat.getResult().get(0).getPostId();
+                                String image = postsByCat.getResult().get(0).getImage();
+                                String headlines = postsByCat.getResult().get(0).getNewsHeadline();
+                                String description = postsByCat.getResult().get(0).getNewsDescription();
+                                String views = postsByCat.getResult().get(0).getViews();
+                                String likes = postsByCat.getResult().get(0).getLikes();
 
-                            post = new PostsByCategory(id, image, headlines, description, views, likes);
-                            posts.add(post);
-                        }
+                                post = new PostsByCategory(id, image, headlines, description, views, likes);
+                                posts.add(post);
+                            }
                     }
 
                     if (recycler != null) {

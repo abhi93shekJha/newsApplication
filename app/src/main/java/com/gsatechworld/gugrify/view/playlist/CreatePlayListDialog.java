@@ -56,13 +56,13 @@ public class CreatePlayListDialog {
         this.playListIds = playListIds;
     }
 
-    public static CreatePlayListDialog getInstance(String postId, Context context, List<String> playList, List<String> playListIds){
+    public static CreatePlayListDialog getInstance(String postId, Context context, List<String> playList, List<String> playListIds) {
         instance = new CreatePlayListDialog(postId, context, playList, playListIds);
         return instance;
     }
 
     public void showDialog() {
-        if(dialog != null && dialog.isShowing()){
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
 
@@ -79,15 +79,15 @@ public class CreatePlayListDialog {
         layoutParams.gravity = Gravity.CENTER;
         dialog.getWindow().setAttributes(layoutParams);
 
-        ll_container_playlistList = (LinearLayout)dialog.findViewById(R.id.ll_container_playlistList);
+        ll_container_playlistList = (LinearLayout) dialog.findViewById(R.id.ll_container_playlistList);
         ll_createPlayList = (LinearLayout) dialog.findViewById(R.id.ll_createPlayList);
 
-        if(mContext instanceof DisplayBreakingNewsActivity){
+        if (mContext instanceof DisplayBreakingNewsActivity) {
             ll_createPlayList.setVisibility(View.GONE);
         }
 
         View rowView = null;
-        if(playListExistingList != null && playListExistingList != null) {
+        if (playListExistingList != null && playListExistingList != null) {
             for (int i = 0; i < playListExistingList.size(); i++) {
 
                 rowView = LayoutInflater.from(mContext).inflate(R.layout.dynaic_view_row_create_play_list, null);
@@ -100,15 +100,15 @@ public class CreatePlayListDialog {
                     @Override
                     public void onClick(View view) {
                         int i = 0;
-                        for(i=0; i<playListExistingList.size(); i++){
-                            if(tv_playListTitle.getText().toString().equals(playListExistingList.get(i)))
+                        for (i = 0; i < playListExistingList.size(); i++) {
+                            if (tv_playListTitle.getText().toString().equals(playListExistingList.get(i)))
                                 break;
                         }
                         PlaylistPostPojo pojo = new PlaylistPostPojo(sharedPreferences.getSharedPrefValue("user_id"), postId, playListIds.get(i), tv_playListTitle.getText().toString());
                         Log.d("playlist id is ", playListIds.get(i));
                         addPostToPlaylist(pojo);
                         dialog.dismiss();
-                        if(mContext instanceof DashboardActivity){
+                        if (mContext instanceof DashboardActivity) {
                             ((DashboardActivity) mContext).recreate();
                         }
                     }
@@ -133,7 +133,6 @@ public class CreatePlayListDialog {
                 layoutParams.gravity = Gravity.CENTER;
                 dialog.getWindow().setAttributes(layoutParams);
 
-
                 cancel = dialog.findViewById(R.id.cancel);
                 tv_ok = dialog.findViewById(R.id.tv_ok);
                 et_playlistName = dialog.findViewById(R.id.et_playlistName);
@@ -143,11 +142,10 @@ public class CreatePlayListDialog {
                 tv_ok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(et_playlistName.getText().toString().trim().equalsIgnoreCase("")){
+                        if (et_playlistName.getText().toString().trim().equalsIgnoreCase("")) {
                             et_playlistName.setError("Empty");
                             et_playlistName.setFocusable(true);
-                        }
-                        else{
+                        } else {
                             dialog.dismiss();
                             CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
                             makeCommentPost(post);
@@ -166,7 +164,7 @@ public class CreatePlayListDialog {
         });
     }
 
-    public void makeCommentPost(CreatePlayListPojo pojo){
+    public void makeCommentPost(CreatePlayListPojo pojo) {
         apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CreatePlayListPojo> call = apiService.createPlaylist(pojo);
 
@@ -179,7 +177,7 @@ public class CreatePlayListDialog {
                     playlistResponse = response.body();
                     playListExistingList.add(playlistResponse.getResults().getPlaylist_name());
                     Toast.makeText(mContext, "Playlist saved!!", Toast.LENGTH_SHORT).show();
-                    if(mContext instanceof DashboardActivity){
+                    if (mContext instanceof DashboardActivity) {
                         ((DashboardActivity) mContext).recreate();
                     }
 
@@ -194,38 +192,37 @@ public class CreatePlayListDialog {
                 Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     public void show() {
         dialog.show();
     }
 
-   public void addPostToPlaylist(PlaylistPostPojo pojo){
-       ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-       Call<PlaylistPostPojo> call = apiService.addPostToPlaylist(pojo);
+    public void addPostToPlaylist(PlaylistPostPojo pojo) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<PlaylistPostPojo> call = apiService.addPostToPlaylist(pojo);
 
-       call.enqueue(new Callback<PlaylistPostPojo>() {
-           @Override
-           public void onResponse(Call<PlaylistPostPojo> call, Response<PlaylistPostPojo> response) {
-               PlaylistPostPojo playlistResponse = null;
-               if (response.isSuccessful()) {
-                   Log.d("Reached here", "PlaylistPostPojo");
-                   playlistResponse = response.body();
-                   Toast.makeText(mContext, "Post successfully addedd!!", Toast.LENGTH_SHORT).show();
+        call.enqueue(new Callback<PlaylistPostPojo>() {
+            @Override
+            public void onResponse(Call<PlaylistPostPojo> call, Response<PlaylistPostPojo> response) {
+                PlaylistPostPojo playlistResponse = null;
+                if (response.isSuccessful()) {
+                    Log.d("Reached here", "PlaylistPostPojo");
+                    playlistResponse = response.body();
+                    Toast.makeText(mContext, "Post successfully addedd!!", Toast.LENGTH_SHORT).show();
 
-               } else {
-                   Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
-               }
-           }
+                } else {
+                    Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-           @Override
-           public void onFailure(Call<PlaylistPostPojo> call, Throwable t) {
-               // Log error here since request failed
-               Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
-           }
-       });
+            @Override
+            public void onFailure(Call<PlaylistPostPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-   }
+    }
 
 }

@@ -156,7 +156,7 @@
                             android:paddingLeft="0dp"
                             android:paddingRight="0dp"
                             android:text="@string/action_sign_in"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="@color/black"
                             android:textStyle="bold" />
 
 

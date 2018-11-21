@@ -106,12 +106,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         sharedPreferences = NewsSharedPreferences.getInstance(this);
         fromDash = getIntent().getBooleanExtra("fromDash", false);
 
-        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
-            if (fromDash)
-                Toast.makeText(this, "First logout as a reporter to sign in as a user!!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
         InitViews();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
