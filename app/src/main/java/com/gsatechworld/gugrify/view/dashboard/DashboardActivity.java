@@ -1,28 +1,27 @@
 package com.gsatechworld.gugrify.view.dashboard;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -40,50 +39,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.gsatechworld.gugrify.NewsSharedPreferences;
 import com.gsatechworld.gugrify.R;
-import com.gsatechworld.gugrify.SelectLanguageAndCities;
 import com.gsatechworld.gugrify.model.LatestNewItemModel;
 import com.gsatechworld.gugrify.model.NavItemModel;
 import com.gsatechworld.gugrify.model.OtherNewsItemModel;
 import com.gsatechworld.gugrify.model.PlayListItemModel;
-import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.model.SectionDataModel;
 import com.gsatechworld.gugrify.model.retrofit.ActivePostsPojo;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
-import com.gsatechworld.gugrify.model.retrofit.City;
-import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.GetMainAdvertisement;
 import com.gsatechworld.gugrify.model.retrofit.LatestNewsByCity;
 import com.gsatechworld.gugrify.model.retrofit.NewsCategories;
-import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
-import com.gsatechworld.gugrify.model.retrofit.TwentyPostsByCategory;
 import com.gsatechworld.gugrify.utils.NetworkUtil;
 import com.gsatechworld.gugrify.utils.Utility;
 import com.gsatechworld.gugrify.view.ActivityShowWebView;
-import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
-import com.gsatechworld.gugrify.view.ReporterPostActivity;
-import com.gsatechworld.gugrify.view.ReporterProfile;
-import com.gsatechworld.gugrify.view.SplashActivity;
-import com.gsatechworld.gugrify.view.adapters.BreakingNewsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewNavAdapter;
 import com.gsatechworld.gugrify.view.adapters.ViewPagerAdapter;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
-import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.genericadapter.OnRecyclerItemClickListener;
 import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -136,6 +117,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private Toolbar toolbar;
     private TextView tvTryAgain;
     private ImageView ivNoInternet;
+    private MenuItem menu_avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,10 +137,6 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
             //setting icon for user login image on toolbar
             CircleImageView icon = findViewById(R.id.login_icon);
-            if (sharedPreferences.getIsLoggedIn())
-                Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("user_image")).into(icon);
-            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn"))
-                Glide.with(DashboardActivity.this).load(sharedPreferences.getSharedPrefValue("reporterPic")).into(icon);
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -434,6 +412,8 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
 
+        menu_avatar = menu.findItem(R.id.action_avatar);
+
      /*   MenuItem mSearch = menu.findItem(R.id.action_search);
 
         SearchView mSearchView = (SearchView) mSearch.getActionView();
@@ -461,6 +441,26 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                 (SearchView) menu.findItem(R.menu.menu_dashboard).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));*/
+
+        if (sharedPreferences.getIsLoggedIn()) {
+            Glide.with(this).load(sharedPreferences.getSharedPrefValue("user_image"))
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            menu_avatar.setIcon(resource);
+                        }
+                    });
+        }
+        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")){
+
+            Glide.with(this).load(sharedPreferences.getSharedPrefValue("reporterPic"))
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            menu_avatar.setIcon(resource);
+                        }
+                    });
+            }
 
         return true;
     }
@@ -491,10 +491,10 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             return true;
         }
 
-      /*  if (id == R.id.action_avatar){
+        if (id == R.id.action_avatar){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }

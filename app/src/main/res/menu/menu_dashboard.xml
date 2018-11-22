@@ -5,17 +5,16 @@
     tools:context="com.gsatechworld.gugrify.view.dashboard.DashboardActivity">
     <group
         android:id="@+id/main_menu_group">
-        <!--<item-->
-            <!--android:id="@+id/action_create"-->
-            <!--android:enabled="true"-->
-            <!--android:actionLayout="@layout/action_layout"-->
-            <!--android:orderInCategory="1"-->
-            <!--app:showAsAction="ifRoom"-->
-            <!--tools:ignore="MenuTitle" />-->
-        <!--Before Ashish-->
+        <item
+            android:id="@+id/action_avatar"
+            android:orderInCategory="1"
+            android:title="notification"
+            android:icon="@drawable/ic_user"
+            app:showAsAction="always" />
         <item
             android:id="@+id/action_search"
             android:enabled="true"
+            android:orderInCategory="2"
             android:icon="@drawable/ic_search"
             android:title="search"
             android:visible="true"
