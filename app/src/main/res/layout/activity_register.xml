@@ -135,7 +135,6 @@
                                 android:backgroundTint="@color/colorWhite"
                                 android:hint="User ID"
                                 android:inputType="text"
-                                android:maxLength="6"
                                 android:singleLine="true"
                                 android:textColor="@color/colorWhite"
                                 android:textColorHint="@color/colorWhite" />
@@ -408,7 +407,6 @@
                                 android:backgroundTint="@color/colorWhite"
                                 android:hint="Confirm Password"
                                 android:inputType="textPassword"
-                                android:maxLength="6"
                                 android:singleLine="true"
                                 android:textColor="@color/colorWhite"
                                 android:textColorHint="@color/colorWhite" />

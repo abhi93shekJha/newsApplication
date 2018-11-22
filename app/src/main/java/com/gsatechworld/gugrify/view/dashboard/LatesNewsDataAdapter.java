@@ -57,6 +57,8 @@ public class LatesNewsDataAdapter extends RecyclerView.Adapter<LatesNewsDataAdap
                 intent.putExtra("category", lists.get(position).getCategory());
                 intent.putExtra("postId", lists.get(position).getPost_id());
                 mContext.startActivity(intent);
+                if(mContext instanceof DashboardActivity)
+                    ((DashboardActivity) mContext).finish();
             }
         });
 

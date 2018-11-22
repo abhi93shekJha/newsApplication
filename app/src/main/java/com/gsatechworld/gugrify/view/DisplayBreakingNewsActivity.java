@@ -664,8 +664,11 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         // code here to show dialog
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        else
+        else {
+            Intent intent = new Intent(DisplayBreakingNewsActivity.this, DashboardActivity.class);
+            startActivity(intent);
             finish();
+        }
     }
 
     //changing the adapter to go to next item
@@ -969,38 +972,38 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 if (response.isSuccessful()) {
                     scrollNews = response.body();
                     String s = "";
-                    if(scrollNews.getResult().getScrollNews() != null){
-                        for(int i=0; i<scrollNews.getResult().getScrollNews().size(); i++){
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText1();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText2();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText3();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText4();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText5();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText6();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText7();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText8();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText9();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText10();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText11();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText12();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText13();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText14();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText15();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText16();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText17();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText18();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText19();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText20();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText21();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText22();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText23();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText24();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText25();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText26();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText27();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText28();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText29();
-                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText30();
+                    if (scrollNews.getResult().getScrollNews() != null) {
+                        for (int i = 0; i < scrollNews.getResult().getScrollNews().size(); i++) {
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText1();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText2();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText3();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText4();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText5();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText6();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText7();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText8();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText9();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText10();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText11();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText12();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText13();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText14();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText15();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText16();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText17();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText18();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText19();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText20();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText21();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText22();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText23();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText24();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText25();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText26();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText27();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText28();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText29();
+                            s = s + scrollNews.getResult().getScrollNews().get(i).getText30();
                         }
                     }
                     main_layout.setVisibility(View.VISIBLE);
@@ -1059,7 +1062,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         });
     }
 
-    public void getTopNews(){
+    public void getTopNews() {
         main_layout = findViewById(R.id.main_layout);
         progressBar = findViewById(R.id.progressBar);
 
@@ -1076,8 +1079,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                 if (response.isSuccessful()) {
                     topNews = response.body();
                     s = new ArrayList<>();
-                    if(topNews.getResult().getTopNews() != null){
-                        for(int i=0; i<topNews.getResult().getTopNews().size(); i++){
+                    if (topNews.getResult().getTopNews() != null) {
+                        for (int i = 0; i < topNews.getResult().getTopNews().size(); i++) {
                             s.add("Top News");
                             s.add(topNews.getResult().getTopNews().get(i).getText1());
                             s.add(topNews.getResult().getTopNews().get(i).getText2());
@@ -1178,4 +1181,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }
         });
     }
+
+
 }

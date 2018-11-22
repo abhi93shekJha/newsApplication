@@ -2,6 +2,7 @@ package com.gsatechworld.gugrify.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -180,7 +181,8 @@ public class ReporterProfile extends AppCompatActivity {
         addNewPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ReporterProfile.this, ReporterPostActivity.class));
+                Intent resultIntent = new Intent(ReporterProfile.this, ReporterPostActivity.class);
+                startActivityForResult(resultIntent, 1);
             }
         });
     }
@@ -420,4 +422,11 @@ public class ReporterProfile extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_OK){
+            this.recreate();
+        }
+    }
 }

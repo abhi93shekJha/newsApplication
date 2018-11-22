@@ -670,6 +670,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
+                    setResult(RESULT_OK);
 
                 } else {
                     Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
@@ -715,5 +716,10 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(ReporterPostActivity.this, "Server error!!", Toast.LENGTH_SHORT);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

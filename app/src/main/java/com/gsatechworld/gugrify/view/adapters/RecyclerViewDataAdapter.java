@@ -382,6 +382,8 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                         Intent intent = new Intent(mContext, DisplayBreakingNewsActivity.class);
                         intent.putExtra("postId", activePosts.getResult().get(position - 3).getPostId());
                         mContext.startActivity(intent);
+                        if(mContext instanceof DashboardActivity)
+                            ((DashboardActivity) mContext).finish();
                     }
                 });
 

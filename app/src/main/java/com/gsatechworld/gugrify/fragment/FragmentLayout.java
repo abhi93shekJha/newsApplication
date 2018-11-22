@@ -190,6 +190,7 @@ public class FragmentLayout extends Fragment {
                 CommentsPostPojo commentsResponse = null;
                 if (response.isSuccessful()) {
                     commentsResponse = response.body();
+                    getActivity().recreate();
                 } else {
                     Toast.makeText(getActivity(), "Server error!!", Toast.LENGTH_SHORT).show();
                 }
@@ -216,6 +217,7 @@ public class FragmentLayout extends Fragment {
                     like = response.body();
                     if (like.getResult() == null) {
                         Toast.makeText(getActivity(), "You have already liked this post!!", Toast.LENGTH_SHORT).show();
+                        getActivity().recreate();
                     } else
                         Toast.makeText(getActivity(), "Post liked!!", Toast.LENGTH_SHORT).show();
 

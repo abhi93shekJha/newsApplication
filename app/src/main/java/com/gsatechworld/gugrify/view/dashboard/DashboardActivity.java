@@ -505,6 +505,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         if (id == R.id.action_avatar){
             Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra("fromDash", true);
             startActivity(intent);
         }
 

@@ -113,7 +113,6 @@
                                 android:backgroundTint="@color/black"
                                 android:hint="Email"
                                 android:singleLine="true"
-                                android:maxLength="6"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black" />
                         </android.support.design.widget.TextInputLayout>
@@ -149,7 +148,6 @@
                                 android:hint="Mobile"
                                 android:inputType="number"
                                 android:singleLine="true"
-                                android:maxLength="6"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black" />
                         </android.support.design.widget.TextInputLayout>
@@ -184,7 +182,6 @@
                                 android:backgroundTint="@color/black"
                                 android:hint="Message"
                                 android:singleLine="true"
-                                android:maxLength="6"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black" />
                         </android.support.design.widget.TextInputLayout>
