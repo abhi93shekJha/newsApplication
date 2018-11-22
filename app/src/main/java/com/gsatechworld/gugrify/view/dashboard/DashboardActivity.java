@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -118,6 +119,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
     private TextView tvTryAgain;
     private ImageView ivNoInternet;
     private MenuItem menu_avatar;
+    private CircleImageView ivAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -414,6 +416,16 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
 
         menu_avatar = menu.findItem(R.id.action_avatar);
 
+        View actionViewAvatar = MenuItemCompat.getActionView(menu_avatar);
+        ivAvatar = (CircleImageView) actionViewAvatar.findViewById(R.id.iv_avatar);
+
+        actionViewAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menu_avatar);
+            }
+        });
+
      /*   MenuItem mSearch = menu.findItem(R.id.action_search);
 
         SearchView mSearchView = (SearchView) mSearch.getActionView();
@@ -447,7 +459,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                     .into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            menu_avatar.setIcon(resource);
+                            ivAvatar.setImageDrawable(resource);
                         }
                     });
         }
@@ -457,7 +469,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                     .into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            menu_avatar.setIcon(resource);
+                            ivAvatar.setImageDrawable(resource);
                         }
                     });
             }
