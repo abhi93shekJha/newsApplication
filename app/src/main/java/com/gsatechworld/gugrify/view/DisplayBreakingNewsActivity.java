@@ -51,6 +51,8 @@ import com.gsatechworld.gugrify.fragment.FragmentImage;
 import com.gsatechworld.gugrify.fragment.FragmentLayout;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.model.PostsForLandscape;
+import com.gsatechworld.gugrify.model.ScrollNewsPojo;
+import com.gsatechworld.gugrify.model.TopNewsPojo;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
@@ -92,6 +94,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     List<CityWiseAdvertisement.Result> results;
     TextView textView;
     ApiInterface apiService;
+    ArrayList<String> s;
     private int dotscount;
     BreakingNewsViewPagerAdapter b;
     private LinearLayout linearLayout, pausePlayLayout1, breaking_ll1;
@@ -111,7 +114,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     public static PostDetailPojo postDetails = null;
     PostsForLandscape landscapePosts;
     static String selection;
-    GetScrollNewsAndBNPojo scrollNews;
+    ScrollNewsPojo scrollNews;
+    TopNewsPojo topNews;
     int flag = 0;
     List<String> topNewsString;
     TextView tv_top_news, scroll_line;
@@ -138,8 +142,15 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
         //if run in landscape mode.
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            if (scrollNews == null)
+            if (scrollNews == null) {
                 getLandscapeItems();
+            }
+            tv_top_news = findViewById(R.id.tv_top_news);
+
+
+            if (topNews == null) {
+                getTopNews();
+            }
 
             //setting post date and tiem in landscape mode
             TextView tv_date, tv_time;
@@ -949,83 +960,57 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         progressBar.setVisibility(View.VISIBLE);
 
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<GetScrollNewsAndBNPojo> call = apiService.getscrollingNews();
+        Call<ScrollNewsPojo> call = apiService.getscrollingNews();
 
-        call.enqueue(new Callback<GetScrollNewsAndBNPojo>() {
+        call.enqueue(new Callback<ScrollNewsPojo>() {
             @Override
-            public void onResponse(Call<GetScrollNewsAndBNPojo> call, Response<GetScrollNewsAndBNPojo> response) {
+            public void onResponse(Call<ScrollNewsPojo> call, Response<ScrollNewsPojo> response) {
 
                 if (response.isSuccessful()) {
                     scrollNews = response.body();
-
+                    String s = "";
+                    if(scrollNews.getResult().getScrollNews() != null){
+                        for(int i=0; i<scrollNews.getResult().getScrollNews().size(); i++){
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText1();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText2();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText3();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText4();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText5();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText6();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText7();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText8();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText9();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText10();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText11();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText12();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText13();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText14();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText15();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText16();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText17();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText18();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText19();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText20();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText21();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText22();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText23();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText24();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText25();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText26();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText27();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText28();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText29();
+                            s = s+ scrollNews.getResult().getScrollNews().get(i).getText30();
+                        }
+                    }
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
-                    //for Top news text view in landscape mode
-                    tv_top_news = findViewById(R.id.tv_top_news);
-                    topNewsString = new ArrayList<>();
-                    anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-                    if (tv_top_news != null && scrollNews != null) {
-                        for (int i = 0; i < scrollNews.getResult().getTopNews().size(); i++) {
-                            String line1 = scrollNews.getResult().getScrollNews().get(i).getText1();
-                            topNewsString.add(line1);
-                            String line2 = scrollNews.getResult().getScrollNews().get(i).getText2();
-                            topNewsString.add(line2);
-                            String line3 = scrollNews.getResult().getScrollNews().get(i).getText3();
-                            topNewsString.add(line3);
-                            topNewsString.add("Top News");
-                        }
-                        tv_top_news.setText(topNewsString.get(flag++));
-                        tv_top_news.startAnimation(anim);
-
-                        ImageView place_holder_image = findViewById(R.id.place_holder_image);
-                        TextView place = findViewById(R.id.place);
-
-                        Typeface fontBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-                        scroll_line.setTypeface(fontBold);
-                        String line = "";
-                        if (scrollNews != null) {
-                            for (int i = 0; i < scrollNews.getResult().getScrollNews().size(); i++) {
-                                String line1 = scrollNews.getResult().getScrollNews().get(i).getText1();
-                                String line2 = scrollNews.getResult().getScrollNews().get(i).getText2();
-                                String line3 = scrollNews.getResult().getScrollNews().get(i).getText3();
-                                line = line + line1 + " " + line2 + " " + line3 + " ";
-                            }
-                        }
-                        Glide.with(DisplayBreakingNewsActivity.this).load(postDetails.getResult().get(0).getReporterPic()).into(place_holder_image);
-                        place.setText(postDetails.getResult().get(0).getReporterLocation());
-                        scroll_line = findViewById(R.id.scrolling_line);
-                        scroll_line.setText(line);
-                        scroll_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                        scroll_line.setSingleLine(true);
-                        scroll_line.setMarqueeRepeatLimit(5);
-                        scroll_line.setSelected(true);
-                    }
-                    anim.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            anim = animation;
-                            scrollHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (flag == topNewsString.size())
-                                        flag = 0;
-                                    tv_top_news.setText(topNewsString.get(flag++));
-                                    tv_top_news.startAnimation(anim);
-                                }
-                            }, 2000L);
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
-                        }
-                    }); //end of Top news text view in landscape mode
+                    TextView scrolling_line = findViewById(R.id.scrolling_line);
+                    scrolling_line.setText(s);
+                    scrolling_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                    scrolling_line.setSelected(true);
+                    scrolling_line.setSingleLine(true);
 
                 } else {
                     main_layout.setVisibility(View.VISIBLE);
@@ -1036,7 +1021,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }
 
             @Override
-            public void onFailure(Call<GetScrollNewsAndBNPojo> call, Throwable t) {
+            public void onFailure(Call<ScrollNewsPojo> call, Throwable t) {
                 // Log error here since request failed
                 main_layout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
@@ -1070,6 +1055,126 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             @Override
             public void onFailure(Call<ViewPojo> call, Throwable t) {
                 // Log error here since request failed
+            }
+        });
+    }
+
+    public void getTopNews(){
+        main_layout = findViewById(R.id.main_layout);
+        progressBar = findViewById(R.id.progressBar);
+
+        main_layout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<TopNewsPojo> call = apiService.getTopNews();
+
+        call.enqueue(new Callback<TopNewsPojo>() {
+            @Override
+            public void onResponse(Call<TopNewsPojo> call, Response<TopNewsPojo> response) {
+
+                if (response.isSuccessful()) {
+                    topNews = response.body();
+                    s = new ArrayList<>();
+                    if(topNews.getResult().getTopNews() != null){
+                        for(int i=0; i<topNews.getResult().getTopNews().size(); i++){
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText1());
+                            s.add(topNews.getResult().getTopNews().get(i).getText2());
+                            s.add(topNews.getResult().getTopNews().get(i).getText3());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText4());
+                            s.add(topNews.getResult().getTopNews().get(i).getText5());
+                            s.add(topNews.getResult().getTopNews().get(i).getText6());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText7());
+                            s.add(topNews.getResult().getTopNews().get(i).getText8());
+                            s.add(topNews.getResult().getTopNews().get(i).getText9());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText10());
+                            s.add(topNews.getResult().getTopNews().get(i).getText11());
+                            s.add(topNews.getResult().getTopNews().get(i).getText12());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText13());
+                            s.add(topNews.getResult().getTopNews().get(i).getText14());
+                            s.add(topNews.getResult().getTopNews().get(i).getText15());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText16());
+                            s.add(topNews.getResult().getTopNews().get(i).getText17());
+                            s.add(topNews.getResult().getTopNews().get(i).getText18());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText19());
+                            s.add(topNews.getResult().getTopNews().get(i).getText20());
+                            s.add(topNews.getResult().getTopNews().get(i).getText21());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText22());
+                            s.add(topNews.getResult().getTopNews().get(i).getText23());
+                            s.add(topNews.getResult().getTopNews().get(i).getText24());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText25());
+                            s.add(topNews.getResult().getTopNews().get(i).getText26());
+                            s.add(topNews.getResult().getTopNews().get(i).getText27());
+                            s.add("Top News");
+                            s.add(topNews.getResult().getTopNews().get(i).getText28());
+                            s.add(topNews.getResult().getTopNews().get(i).getText29());
+                            s.add(topNews.getResult().getTopNews().get(i).getText30());
+                        }
+                    }
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                    tv_top_news = findViewById(R.id.tv_top_news);
+                    anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+                    tv_top_news.setText(s.get(flag++));
+                    tv_top_news.startAnimation(anim);
+
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            anim = animation;
+                            scrollHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (flag == s.size())
+                                        flag = 0;
+                                    tv_top_news.setText(s.get(flag++));
+                                    tv_top_news.startAnimation(anim);
+                                }
+                            }, 2000L);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+
+                    ImageView place_holder_image = findViewById(R.id.place_holder_image);
+                    TextView place = findViewById(R.id.place);
+
+                    Glide.with(DisplayBreakingNewsActivity.this).load(postDetails.getResult().get(0).getReporterPic()).into(place_holder_image);
+                    place.setText(postDetails.getResult().get(0).getReporterLocation());
+
+                } else {
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
+                }
+//                Log.d(TAG, "Number of movies received: " + movies.size());
+            }
+
+            @Override
+            public void onFailure(Call<TopNewsPojo> call, Throwable t) {
+                // Log error here since request failed
+                main_layout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(DisplayBreakingNewsActivity.this, "Server error!!", Toast.LENGTH_SHORT).show();
             }
         });
     }

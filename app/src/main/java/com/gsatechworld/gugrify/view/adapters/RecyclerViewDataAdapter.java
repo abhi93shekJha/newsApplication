@@ -338,9 +338,15 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
 
                                         // show playlist for creating playlist
 //                                        if(sharedPreferences.ge)
-                                        createPlayListDialog = createPlayListDialog.getInstance(activePosts.getResult().get(position - 3).getPostId(), mContext, playlistNames, playListIds);
-                                        createPlayListDialog.showDialog();
-                                        createPlayListDialog.show();
+                                        if(sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                                            createPlayListDialog = createPlayListDialog.getInstance(activePosts.getResult().get(position - 3).getPostId(), mContext, playlistNames, playListIds);
+                                            createPlayListDialog.showDialog();
+                                            createPlayListDialog.show();
+                                        }
+                                        else {
+                                            Intent intent = new Intent(mContext, LoginActivity.class);
+                                            mContext.startActivity(intent);
+                                        }
 
                                     }
                                     return false;

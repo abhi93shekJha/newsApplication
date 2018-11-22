@@ -67,10 +67,6 @@ public class FragmentLayout extends Fragment {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!sharedPreferences.getIsLoggedIn()) {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    getActivity().startActivity(intent);
-                } else {
                     PopupMenu popup = new PopupMenu(getActivity(), view);
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
@@ -82,16 +78,21 @@ public class FragmentLayout extends Fragment {
                                 // need to login first before creating playlist
 
                                 // show playlist for creating playlist
-                                createPlayListDialog = createPlayListDialog.getInstance(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), getActivity(), RecyclerViewDataAdapter.playlistNames, RecyclerViewDataAdapter.playListIds);
-                                createPlayListDialog.showDialog();
-                                createPlayListDialog.show();
+                                if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                                    createPlayListDialog = createPlayListDialog.getInstance(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), getActivity(), RecyclerViewDataAdapter.playlistNames, RecyclerViewDataAdapter.playListIds);
+                                    createPlayListDialog.showDialog();
+                                    createPlayListDialog.show();
+                                }
+                                else {
+                                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                    getActivity().startActivity(intent);
+                                }
                             }
                             return false;
                         }
                     });
                     popup.inflate(R.menu.popup_menu);
                     popup.show();
-                }
             }
         });
 
@@ -115,13 +116,13 @@ public class FragmentLayout extends Fragment {
         likesImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!sharedPreferences.getIsLoggedIn()) {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    getActivity().startActivity(intent);
-                } else {
+                 if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
                     LikePojo pojo = new LikePojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("user_id"));
                     //Log.d("post_id", DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId()+" "+sharedPreferences.getSharedPrefValue("user_id"));
                     likeaPost(pojo);
+                }else {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivity(intent);
                 }
             }
         });
@@ -138,7 +139,7 @@ public class FragmentLayout extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (sharedPreferences.getIsLoggedIn()) {
+                if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
 
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
                     alertDialog.setTitle("Comment");

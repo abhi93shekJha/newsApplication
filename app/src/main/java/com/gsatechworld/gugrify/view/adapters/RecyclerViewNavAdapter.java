@@ -209,7 +209,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
         }
         //for about us
         else if (position == newsCategories.getCategory().size() + 2) {
-            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn") || sharedPreferences.getIsLoggedIn())
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn"))
                 holder.navItemTitle.setText("Sign Out");
             holder.nav_linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

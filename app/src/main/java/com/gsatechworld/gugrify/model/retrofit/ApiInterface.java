@@ -2,6 +2,8 @@ package com.gsatechworld.gugrify.model.retrofit;
 
 import com.gsatechworld.gugrify.model.CommentsPostPojo;
 import com.gsatechworld.gugrify.model.PostsByCategory;
+import com.gsatechworld.gugrify.model.ScrollNewsPojo;
+import com.gsatechworld.gugrify.model.TopNewsPojo;
 import com.gsatechworld.gugrify.view.authentication.LoginPojo;
 import com.gsatechworld.gugrify.view.playlist.CreatePlayListPojo;
 import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
@@ -75,8 +77,11 @@ public interface ApiInterface {
     @GET("gugrify_news/API/get_playlist_data.php")
     Call<GetPostsByPlaylistId> getPostsByPlaylistId(@Query("user_id") String user_id, @Query("playlist_id") String playlist_id);
 
-    @GET("gugrify_news/API/get_scrolling_news.php")
-    Call<GetScrollNewsAndBNPojo> getscrollingNews();
+    @GET("gugrify_news/API/get_scrolling_scroll_news.php")
+    Call<ScrollNewsPojo> getscrollingNews();
+
+    @GET("gugrify_news/API/get_scrolling_top_news.php")
+    Call<TopNewsPojo> getTopNews();
 
     @GET("gugrify_news/API/get_search.php")
     Call<HeadlineSearchPojo> getSearchedHeadlines(@Query("search") String search);
