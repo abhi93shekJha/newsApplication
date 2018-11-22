@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/news_headline_text"
             android:text="News Post Headline Goes Here"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:layout_weight="1.4"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="30dp"
@@ -111,7 +111,7 @@
             android:layout_marginLeft="17dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="17dp"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:text="@string/news_description"
             android:textColor="@color/color_black"
             android:layout_width="match_parent"

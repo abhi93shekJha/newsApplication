@@ -15,13 +15,16 @@
         android:indeterminateDrawable="@drawable/custom_progress_dialog"
         android:visibility="gone" />
 
-
     <LinearLayout
         android:id="@+id/ll_playlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
         android:orientation="vertical"
-        android:weightSum="1">
+        android:weightSum="0.92">
 
         <FrameLayout
             android:id="@+id/frame1"
@@ -79,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_above="@+id/frame2"
-            android:layout_weight="0.08"
+            android:layout_weight="0"
             android:orientation="horizontal"
             android:visibility="gone"></FrameLayout>
 

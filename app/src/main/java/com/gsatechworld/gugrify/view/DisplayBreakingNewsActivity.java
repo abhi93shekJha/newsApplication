@@ -15,6 +15,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -69,6 +70,7 @@ import com.gsatechworld.gugrify.view.adapters.BreakingNewsViewPagerAdapter;
 import com.gsatechworld.gugrify.view.dashboard.AutoScrollViewPager;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -110,6 +112,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     TextView dialogText1, dialogText2, tv_comments;
     Button dialogUrlButton;
     public boolean active = true;
+    TextView tv_date, tv_time;
     String postId = "", category = "";
     public static PostDetailPojo postDetails = null;
     PostsForLandscape landscapePosts;
@@ -153,11 +156,39 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }
 
             //setting post date and tiem in landscape mode
-            TextView tv_date, tv_time;
+            Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+
             tv_date = findViewById(R.id.tv_date);
             tv_time = findViewById(R.id.tv_time);
-            tv_date.setText(postDetails.getResult().get(0).getPublishedDate());
-            tv_time.setText(postDetails.getResult().get(0).getTimeOfPost());
+            tv_date.setTypeface(fontRegular);
+            tv_time.setTypeface(fontRegular);
+
+            Date todayDate = Calendar.getInstance().getTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String todayString = formatter.format(todayDate);
+
+            tv_date.setText(todayString);
+
+            Calendar calendar = Calendar.getInstance();
+            int hours = calendar.get(Calendar.HOUR_OF_DAY);
+            int minutes = calendar.get(Calendar.MINUTE);
+            tv_time.setText(""+hours+":"+minutes);
+
+            new CountDownTimer(6000000, 60000) {
+
+                public void onTick(long millisUntilFinished) {
+                    Calendar calendar = Calendar.getInstance();
+                    int hours = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minutes = calendar.get(Calendar.MINUTE);
+                    tv_time.setText(""+hours+":"+minutes);
+                }
+
+                public void onFinish() {
+
+                }
+
+            }.start();
+
         }
 
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
@@ -200,12 +231,10 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         category = getIntent().getStringExtra("category");
         postId = getIntent().getStringExtra("postId");
 
-
         //request for increasing view
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             makeAViewIncreaseRequest();
         }
-
 
         mHandler = new Handler();
 
@@ -597,7 +626,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                             posts.add(category);
                         }
 
-
                         landscapePosts = new PostsForLandscape();
                         landscapePosts.setArray(array);
                         landscapePosts.setSelection(selection);
@@ -912,12 +940,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     if (postsByCat != null) {
                         if (postsByCat.getResult().size() > 1)
                             for (int i = 1; i < postsByCat.getResult().size(); i++) {
-                                String id = postsByCat.getResult().get(0).getPostId();
-                                String image = postsByCat.getResult().get(0).getImage();
-                                String headlines = postsByCat.getResult().get(0).getNewsHeadline();
-                                String description = postsByCat.getResult().get(0).getNewsDescription();
-                                String views = postsByCat.getResult().get(0).getViews();
-                                String likes = postsByCat.getResult().get(0).getLikes();
+                                String id = postsByCat.getResult().get(i).getPostId();
+                                String image = postsByCat.getResult().get(i).getImage();
+                                String headlines = postsByCat.getResult().get(i).getNewsHeadline();
+                                String description = postsByCat.getResult().get(i).getNewsDescription();
+                                String views = postsByCat.getResult().get(i).getViews();
+                                String likes = postsByCat.getResult().get(i).getLikes();
 
                                 post = new PostsByCategory(id, image, headlines, description, views, likes);
                                 posts.add(post);

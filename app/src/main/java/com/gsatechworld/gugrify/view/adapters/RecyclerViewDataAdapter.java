@@ -92,7 +92,8 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
     public class ItemRowHolder extends RecyclerView.ViewHolder {
         protected TextView itemTitle, tvViews, tvTime, tv_location;
         protected RecyclerView recycler_view_list;
-        protected ImageView btnMore, ivShare;
+        protected ImageView btnMore;
+        protected LinearLayout ivShare;
         protected ImageView img;
         RecyclerView recyclerView2;
         protected AutoScrollViewPager viewPager;
@@ -341,7 +342,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                                         if(sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
                                             createPlayListDialog = createPlayListDialog.getInstance(activePosts.getResult().get(position - 3).getPostId(), mContext, playlistNames, playListIds);
                                             createPlayListDialog.showDialog();
-                                            createPlayListDialog.show();
+//                                            createPlayListDialog.show();
                                         }
                                         else {
                                             Intent intent = new Intent(mContext, LoginActivity.class);
@@ -368,8 +369,8 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
 
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plain");
                         shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
-                        shareIntent.setType("*/*");
                         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
                         mContext.startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));

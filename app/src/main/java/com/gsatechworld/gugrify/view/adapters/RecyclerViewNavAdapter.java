@@ -164,6 +164,8 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                         if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
                             Intent intent = new Intent(mContext, ReporterProfile.class);
                             mContext.startActivity(intent);
+                            if(mContext instanceof DashboardActivity)
+                                ((DashboardActivity) mContext).finish();
                         } else {
                             if (sharedPreferences.getLoggedInUsingFB()) {
                                 FacebookSdk.sdkInitialize(mContext);

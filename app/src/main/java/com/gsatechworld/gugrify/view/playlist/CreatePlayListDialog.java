@@ -82,12 +82,12 @@ public class CreatePlayListDialog {
         ll_container_playlistList = (LinearLayout) dialog.findViewById(R.id.ll_container_playlistList);
         ll_createPlayList = (LinearLayout) dialog.findViewById(R.id.ll_createPlayList);
 
-        if (mContext instanceof DisplayBreakingNewsActivity) {
+        if (mContext instanceof DisplayBreakingNewsActivity || mContext instanceof DashboardActivity) {
             ll_createPlayList.setVisibility(View.GONE);
         }
 
         View rowView = null;
-        if (playListExistingList != null && playListExistingList != null) {
+        if (playListExistingList != null && playListExistingList.size() > 0) {
             for (int i = 0; i < playListExistingList.size(); i++) {
 
                 rowView = LayoutInflater.from(mContext).inflate(R.layout.dynaic_view_row_create_play_list, null);
@@ -114,9 +114,51 @@ public class CreatePlayListDialog {
                     }
                 });
             }
+            dialog.show();
+        } else{
+            dialog.dismiss();
+            final Dialog dialog = new Dialog(mContext, R.style.DialogSlideAnim);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            //dialog.setCanceledOnTouchOutside(false);
+            //dialog.setCancelable(false);
+            dialog.setContentView(R.layout.dialog_create_playlist_item);
+            layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(dialog.getWindow().getAttributes());
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            layoutParams.gravity = Gravity.CENTER;
+            dialog.getWindow().setAttributes(layoutParams);
+
+            cancel = dialog.findViewById(R.id.cancel);
+            tv_ok = dialog.findViewById(R.id.tv_ok);
+            et_playlistName = dialog.findViewById(R.id.et_playlistName);
+
+            dialog.show();
+
+            tv_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (et_playlistName.getText().toString().trim().equalsIgnoreCase("")) {
+                        et_playlistName.setError("Empty");
+                        et_playlistName.setFocusable(true);
+                    } else {
+                        dialog.dismiss();
+                        CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
+                        makeCommentPost(post);
+                    }
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.cancel();
+                }
+            });
         }
 
-        ll_createPlayList.setOnClickListener(new View.OnClickListener() {
+        /*ll_createPlayList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -161,7 +203,7 @@ public class CreatePlayListDialog {
                 });
 
             }
-        });
+        });*/
     }
 
     public void makeCommentPost(CreatePlayListPojo pojo) {
@@ -180,6 +222,8 @@ public class CreatePlayListDialog {
                     if (mContext instanceof DashboardActivity) {
                         ((DashboardActivity) mContext).recreate();
                     }
+                    if(mContext instanceof DisplayBreakingNewsActivity)
+                        ((DisplayBreakingNewsActivity) mContext).recreate();
 
                 } else {
                     Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();

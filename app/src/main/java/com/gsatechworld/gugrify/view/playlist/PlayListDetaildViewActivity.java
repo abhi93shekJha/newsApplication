@@ -180,8 +180,8 @@ public class PlayListDetaildViewActivity extends AppCompatActivity implements Me
 
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
                     shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
-                    shareIntent.setType("*/*");
                     shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
                     startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));

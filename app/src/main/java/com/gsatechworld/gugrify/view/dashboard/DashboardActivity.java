@@ -138,7 +138,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             View view = getSupportActionBar().getCustomView();*/
 
             //setting icon for user login image on toolbar
-            CircleImageView icon = findViewById(R.id.login_icon);
+            /*CircleImageView icon = findViewById(R.id.login_icon);
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -153,7 +153,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                     }
 //                        finish();
                 }
-            });
+            });*/
 
         }
 
@@ -463,7 +463,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                         }
                     });
         }
-        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")){
+        if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
 
             Glide.with(this).load(sharedPreferences.getSharedPrefValue("reporterPic"))
                     .into(new SimpleTarget<Drawable>() {
@@ -472,7 +472,7 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
                             ivAvatar.setImageDrawable(resource);
                         }
                     });
-            }
+        }
 
         return true;
     }
@@ -503,10 +503,16 @@ public class DashboardActivity extends AppCompatActivity implements OnRecyclerIt
             return true;
         }
 
-        if (id == R.id.action_avatar){
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.putExtra("fromDash", true);
-            startActivity(intent);
+        if (id == R.id.action_avatar) {
+            if (sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+
+            } else {
+                if (!sharedPreferences.getIsLoggedIn()) {
+                    Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                    intent.putExtra("fromDash", true);
+                    startActivity(intent);
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);

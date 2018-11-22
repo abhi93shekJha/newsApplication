@@ -5,14 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_register_main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@drawable/login_bg"
+    android:background="@color/colorWhite"
     android:gravity="center">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="10dp"
         android:fillViewport="true">
 
@@ -40,7 +41,7 @@
                     android:layout_marginTop="0dp"
                     android:gravity="center"
                     android:text="Join with us"
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/black"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -75,11 +76,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                             <EditText
@@ -87,12 +88,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
                                 android:hint="User Name"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:backgroundTint="@color/black"
                                 android:inputType="text"
-                                android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -119,11 +120,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -132,12 +133,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
                                 android:hint="User ID"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:backgroundTint="@color/black"
                                 android:inputType="text"
-                                android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -163,11 +164,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -176,11 +177,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
+                                android:backgroundTint="@color/black"
                                 android:hint="Email"
                                 android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -206,11 +207,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -219,13 +220,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
                                 android:hint="Mobile Number"
                                 android:inputType="number"
                                 android:maxLength="10"
-                                android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:backgroundTint="@color/black"
+                                android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -251,11 +252,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -264,13 +265,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
                                 android:hint="City"
                                 android:inputType="text"
                                 android:maxLength="17"
-                                android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:backgroundTint="@color/black"
+                                android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -302,7 +303,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="Upload Picture"
-                                android:textColor="@color/colorWhite"
+                                android:textColor="@color/black"
                                 android:textSize="14dp"
                                 android:textStyle="italic" />
                         </LinearLayout>
@@ -347,11 +348,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -360,12 +361,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
                                 android:hint="Password"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:backgroundTint="@color/black"
                                 android:inputType="textPassword"
-                                android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -391,11 +392,11 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
                             android:layout_marginLeft="1dp"
                             android:layout_marginRight="1dp"
-                            android:textColor="@color/colorWhite"
-                            android:theme="@style/TextLabe2"
+                            android:layout_margin="0dp"
+                            android:textColor="@color/black"
+                            android:theme="@style/TextLabel"
                             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
 
@@ -404,12 +405,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="0dp"
-                                android:backgroundTint="@color/colorWhite"
                                 android:hint="Confirm Password"
                                 android:inputType="textPassword"
-                                android:singleLine="true"
-                                android:textColor="@color/colorWhite"
-                                android:textColorHint="@color/colorWhite" />
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:backgroundTint="@color/black"
+                                android:singleLine="true" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 

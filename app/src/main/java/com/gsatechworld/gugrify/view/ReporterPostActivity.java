@@ -115,7 +115,7 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Gugrify");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.black));
         setSupportActionBar(toolbar);
 
         //getting the categories if not already present
@@ -720,6 +720,6 @@ public class ReporterPostActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
-
+        finish();
     }
 }

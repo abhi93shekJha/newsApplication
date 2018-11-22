@@ -44,7 +44,7 @@ public class PostByCategory extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Gugrify");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.black));
         setSupportActionBar(toolbar);
 
         category = getIntent().getStringExtra("category");

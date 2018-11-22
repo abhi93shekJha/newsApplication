@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -31,10 +33,13 @@ import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.City;
 import com.gsatechworld.gugrify.model.retrofit.CityResponse;
 import com.gsatechworld.gugrify.model.retrofit.LikePojo;
+import com.gsatechworld.gugrify.utils.NetworkUtil;
 import com.gsatechworld.gugrify.view.DisplayBreakingNewsActivity;
 import com.gsatechworld.gugrify.view.adapters.RecyclerViewDataAdapter;
 import com.gsatechworld.gugrify.view.authentication.LoginActivity;
+import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
 import com.gsatechworld.gugrify.view.playlist.CreatePlayListDialog;
+import com.gsatechworld.gugrify.view.playlist.GetPlaylistsPojo;
 
 import java.util.ArrayList;
 
@@ -48,6 +53,7 @@ public class FragmentLayout extends Fragment {
     NewsSharedPreferences sharedPreferences;
     ApiInterface apiService;
     private CreatePlayListDialog createPlayListDialog;
+    GetPlaylistsPojo playlistsPojo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,36 +69,40 @@ public class FragmentLayout extends Fragment {
         sharedPreferences = NewsSharedPreferences.getInstance(getActivity());
         ImageView iv_share = view.findViewById(R.id.iv_share);
 
+        if (sharedPreferences.getSharedPrefValueBoolean("") || sharedPreferences.getIsLoggedIn()) {
+            if (RecyclerViewDataAdapter.playListIds != null && RecyclerViewDataAdapter.playListIds.size() == 0)
+                getPlaylists();
+        }
+
         LinearLayout layout = view.findViewById(R.id.addToPlaylistLayout);
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    PopupMenu popup = new PopupMenu(getActivity(), view);
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            if (menuItem.getTitle().equals("Add to playlist")) {
+                PopupMenu popup = new PopupMenu(getActivity(), view);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if (menuItem.getTitle().equals("Add to playlist")) {
 //                                Intent intent = new Intent(mContext, LoginActivity.class);
 //                                mContext.startActivity(intent);
 
-                                // need to login first before creating playlist
+                            // need to login first before creating playlist
 
-                                // show playlist for creating playlist
-                                if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
-                                    createPlayListDialog = createPlayListDialog.getInstance(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), getActivity(), RecyclerViewDataAdapter.playlistNames, RecyclerViewDataAdapter.playListIds);
-                                    createPlayListDialog.showDialog();
-                                    createPlayListDialog.show();
-                                }
-                                else {
-                                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                                    getActivity().startActivity(intent);
-                                }
+                            // show playlist for creating playlist
+                            if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                                createPlayListDialog = createPlayListDialog.getInstance(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), getActivity(), RecyclerViewDataAdapter.playlistNames, RecyclerViewDataAdapter.playListIds);
+                                createPlayListDialog.showDialog();
+//                                createPlayListDialog.show();
+                            } else {
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                getActivity().startActivity(intent);
                             }
-                            return false;
                         }
-                    });
-                    popup.inflate(R.menu.popup_menu);
-                    popup.show();
+                        return false;
+                    }
+                });
+                popup.inflate(R.menu.popup_menu);
+                popup.show();
             }
         });
 
@@ -105,8 +115,8 @@ public class FragmentLayout extends Fragment {
 
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
-                shareIntent.setType("*/*");
                 shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
                 startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
@@ -116,11 +126,11 @@ public class FragmentLayout extends Fragment {
         likesImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
+                if (sharedPreferences.getIsLoggedIn() || sharedPreferences.getSharedPrefValueBoolean("reporterLoggedIn")) {
                     LikePojo pojo = new LikePojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("user_id"));
                     //Log.d("post_id", DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId()+" "+sharedPreferences.getSharedPrefValue("user_id"));
                     likeaPost(pojo);
-                }else {
+                } else {
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     getActivity().startActivity(intent);
                 }
@@ -217,9 +227,10 @@ public class FragmentLayout extends Fragment {
                     like = response.body();
                     if (like.getResult() == null) {
                         Toast.makeText(getActivity(), "You have already liked this post!!", Toast.LENGTH_SHORT).show();
-                        getActivity().recreate();
-                    } else
+                    } else {
                         Toast.makeText(getActivity(), "Post liked!!", Toast.LENGTH_SHORT).show();
+                        getActivity().recreate();
+                    }
 
                 } else {
                     Toast.makeText(getActivity(), "Server error1!!", Toast.LENGTH_SHORT).show();
@@ -235,4 +246,49 @@ public class FragmentLayout extends Fragment {
             }
         });
     }
+
+
+    public void getPlaylists() {
+
+        if (NetworkUtil.getInstance(getActivity()).isConnectingToInternet()) {
+
+            ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+            Call<GetPlaylistsPojo> call = apiService.getPlaylists(sharedPreferences.getSharedPrefValue("user_id"));
+
+            call.enqueue(new Callback<GetPlaylistsPojo>() {
+                @Override
+                public void onResponse(Call<GetPlaylistsPojo> call, Response<GetPlaylistsPojo> response) {
+
+                    if (response.isSuccessful()) {
+                        Log.d("Reached here", "to gettig playlist");
+                        playlistsPojo = response.body();
+                        if (playlistsPojo.getResult() != null) {
+                            for (int i = 0; i < playlistsPojo.getResult().size(); i++) {
+                                RecyclerViewDataAdapter.playlistNames.add(playlistsPojo.getResult().get(i).getPlaylist_name());
+                            }
+                            for (int i = 0; i < playlistsPojo.getResult().size(); i++) {
+                                RecyclerViewDataAdapter.playListIds.add(playlistsPojo.getResult().get(i).getPlaylist_id());
+                            }
+                        }
+
+//        adapter.addMoreContacts(allSampleData);
+
+                    } else {
+                        Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetPlaylistsPojo> call, Throwable t) {
+                    // Log error here since request failed
+                    Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        } else {
+//
+        }
+    }
 }
+
