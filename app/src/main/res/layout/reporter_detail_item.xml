@@ -11,18 +11,18 @@
         android:weightSum="10">
         <TextView
             android:id="@+id/news_headline_text"
-            android:text="News Post Headline Goes Here"
+            android:text="trump died today"
             android:textSize="22sp"
             android:layout_weight="1.4"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="30dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <ImageView
             android:id="@+id/dropImage"
             android:src="@drawable/drop_down"
             android:layout_toRightOf="@+id/news_headline_text"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="7dp"
             android:layout_marginRight="20dp"
             android:layout_weight="8.6"
             android:layout_width="match_parent"
@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
+        android:paddingBottom="10dp"
         android:visibility="gone"
         android:orientation="vertical"
         >

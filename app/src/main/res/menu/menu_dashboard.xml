@@ -5,22 +5,18 @@
     tools:context="com.gsatechworld.gugrify.view.dashboard.DashboardActivity">
     <group
         android:id="@+id/main_menu_group">
-        <item
-            android:id="@+id/action_avatar"
-            android:orderInCategory="1"
-            android:title="notification"
-            android:icon="@drawable/ic_user"
-            app:actionLayout="@layout/custom_action_item_layout"
-            app:showAsAction="always" />
+
         <item
             android:id="@+id/action_search"
             android:enabled="true"
-            android:orderInCategory="2"
+            android:orderInCategory="1"
             android:icon="@drawable/ic_search"
             android:title="search"
             android:visible="true"
             app:showAsAction="ifRoom"
             />
+
+
         <!--appcompat:actionViewClass="android.support.v7.widget.SearchView"-->
 
         <!--Ashish-->
@@ -34,6 +30,12 @@
             app:actionViewClass="android.support.v7.widget.SearchView"/>
         <!--android:icon="@android:drawable/ic_menu_search"
          app:actionViewClass="android.support.v7.widget.SearchView"-->
-
+        <item
+            android:id="@+id/action_avatar"
+            android:orderInCategory="2"
+            android:title="notification"
+            android:icon="@drawable/ic_user"
+            app:actionLayout="@layout/custom_action_item_layout"
+            app:showAsAction="always" />
     </group>
 </menu>

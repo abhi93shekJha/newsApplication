@@ -312,6 +312,16 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
 
         } else if (position >= 3) {
 
+            if(position == 3){
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(0, 35, 0, 0);
+                holder.frame1.setLayoutParams(params);
+            }
+
+
             if (activePosts.getResult() != null) {
                 holder.itemTitle.setText(activePosts.getResult().get(position - 3).getNewsHeadline());
                 holder.tv_location.setText(activePosts.getResult().get(position - 3).getReporterLocation());

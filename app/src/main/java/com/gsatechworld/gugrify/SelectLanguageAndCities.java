@@ -117,7 +117,7 @@ public class SelectLanguageAndCities extends AppCompatActivity implements Adapte
 
         // finally change the color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.lang_ststusbar_color));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         }
 
         grid = findViewById(R.id.select_language_grid_view);

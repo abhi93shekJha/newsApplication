@@ -40,8 +40,4 @@
                 android:textSize="18sp" />
         </LinearLayout>
     </FrameLayout>
-    <View
-        android:background="@color/colorWhite"
-        android:layout_height="25dp"
-        android:layout_width="match_parent"/>
 </LinearLayout>

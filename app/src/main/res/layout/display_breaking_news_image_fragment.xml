@@ -114,6 +114,7 @@
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="25dp"
             android:gravity="end|bottom"
+            android:visibility="gone"
             android:orientation="horizontal" />
 
         <LinearLayout

@@ -167,7 +167,7 @@ public class FragmentLayout extends Fragment {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     comment = input.getText().toString();
-                                    CommentsPostPojo postPojo = new CommentsPostPojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("user_id"), comment);
+                                    CommentsPostPojo postPojo = new CommentsPostPojo(DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId(), sharedPreferences.getSharedPrefValue("name"), comment);
                                     makeCommentPostRequest(postPojo);
                                 }
                             });

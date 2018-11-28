@@ -96,7 +96,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     List<CityWiseAdvertisement.Result> results;
     TextView textView;
     ApiInterface apiService;
-    ArrayList<String> s;
+    ArrayList<String> sList;
     private int dotscount;
     BreakingNewsViewPagerAdapter b;
     private LinearLayout linearLayout, pausePlayLayout1, breaking_ll1;
@@ -121,9 +121,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     TopNewsPojo topNews;
     int flag = 0;
     List<String> topNewsString;
-    TextView tv_top_news, scroll_line;
+    TextView scroll_line;
     Animation anim;
     RelativeLayout main_layout;
+    String s = "";
+    TextView scrolling_line;
+    Typewriter tv_top_news;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +140,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         setContentView(R.layout.activity_display_breaking_news);
         scrollHandler = new Handler();
         scroll_line = findViewById(R.id.scrolling_line);
+        scrolling_line = findViewById(R.id.scrolling_line);
 
         //if the screen is in portrait mode, make status bar black
         // clear FLAG_TRANSLUCENT_STATUS flag:
@@ -147,9 +151,13 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             if (scrollNews == null) {
                 getLandscapeItems();
+            } else {
+                scrolling_line.setText(s);
+                scrolling_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                scrolling_line.setSingleLine(true);
+                scrolling_line.setSelected(true);
             }
-            tv_top_news = findViewById(R.id.tv_top_news);
-
+            tv_top_news = (Typewriter) findViewById(R.id.tv_top_news);
 
             if (topNews == null) {
                 getTopNews();
@@ -172,7 +180,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             Calendar calendar = Calendar.getInstance();
             int hours = calendar.get(Calendar.HOUR_OF_DAY);
             int minutes = calendar.get(Calendar.MINUTE);
-            tv_time.setText(""+hours+":"+minutes);
+            tv_time.setText("" + hours + ":" + minutes);
 
             new CountDownTimer(6000000, 60000) {
 
@@ -180,7 +188,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     Calendar calendar = Calendar.getInstance();
                     int hours = calendar.get(Calendar.HOUR_OF_DAY);
                     int minutes = calendar.get(Calendar.MINUTE);
-                    tv_time.setText(""+hours+":"+minutes);
+                    tv_time.setText("" + hours + ":" + minutes);
                 }
 
                 public void onFinish() {
@@ -999,7 +1007,6 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                 if (response.isSuccessful()) {
                     scrollNews = response.body();
-                    String s = "";
                     if (scrollNews.getResult().getScrollNews() != null) {
                         for (int i = 0; i < scrollNews.getResult().getScrollNews().size(); i++) {
                             s = s + scrollNews.getResult().getScrollNews().get(i).getText1();
@@ -1037,11 +1044,10 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
-                    TextView scrolling_line = findViewById(R.id.scrolling_line);
                     scrolling_line.setText(s);
                     scrolling_line.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                    scrolling_line.setSelected(true);
                     scrolling_line.setSingleLine(true);
+                    scrolling_line.setSelected(true);
 
                 } else {
                     main_layout.setVisibility(View.VISIBLE);
@@ -1106,59 +1112,61 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                 if (response.isSuccessful()) {
                     topNews = response.body();
-                    s = new ArrayList<>();
+                    sList = new ArrayList<>();
                     if (topNews.getResult().getTopNews() != null) {
                         for (int i = 0; i < topNews.getResult().getTopNews().size(); i++) {
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText1());
-                            s.add(topNews.getResult().getTopNews().get(i).getText2());
-                            s.add(topNews.getResult().getTopNews().get(i).getText3());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText4());
-                            s.add(topNews.getResult().getTopNews().get(i).getText5());
-                            s.add(topNews.getResult().getTopNews().get(i).getText6());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText7());
-                            s.add(topNews.getResult().getTopNews().get(i).getText8());
-                            s.add(topNews.getResult().getTopNews().get(i).getText9());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText10());
-                            s.add(topNews.getResult().getTopNews().get(i).getText11());
-                            s.add(topNews.getResult().getTopNews().get(i).getText12());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText13());
-                            s.add(topNews.getResult().getTopNews().get(i).getText14());
-                            s.add(topNews.getResult().getTopNews().get(i).getText15());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText16());
-                            s.add(topNews.getResult().getTopNews().get(i).getText17());
-                            s.add(topNews.getResult().getTopNews().get(i).getText18());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText19());
-                            s.add(topNews.getResult().getTopNews().get(i).getText20());
-                            s.add(topNews.getResult().getTopNews().get(i).getText21());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText22());
-                            s.add(topNews.getResult().getTopNews().get(i).getText23());
-                            s.add(topNews.getResult().getTopNews().get(i).getText24());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText25());
-                            s.add(topNews.getResult().getTopNews().get(i).getText26());
-                            s.add(topNews.getResult().getTopNews().get(i).getText27());
-                            s.add("Top News");
-                            s.add(topNews.getResult().getTopNews().get(i).getText28());
-                            s.add(topNews.getResult().getTopNews().get(i).getText29());
-                            s.add(topNews.getResult().getTopNews().get(i).getText30());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText1());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText2());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText3());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText4());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText5());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText6());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText7());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText8());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText9());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText10());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText11());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText12());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText13());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText14());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText15());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText16());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText17());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText18());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText19());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText20());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText21());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText22());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText23());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText24());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText25());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText26());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText27());
+                            sList.add("Top News");
+                            sList.add(topNews.getResult().getTopNews().get(i).getText28());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText29());
+                            sList.add(topNews.getResult().getTopNews().get(i).getText30());
                         }
                     }
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
 
-                    tv_top_news = findViewById(R.id.tv_top_news);
                     anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-
-                    tv_top_news.setText(s.get(flag++));
                     tv_top_news.startAnimation(anim);
+                    tv_top_news.setCharacterDelay(100);
+                    tv_top_news.animateText(sList.get(flag++));
+
+//                    tv_top_news.setText(sList.get(flag++));
+//                    tv_top_news.startAnimation(anim);
 
                     anim.setAnimationListener(new Animation.AnimationListener() {
                         @Override
@@ -1172,12 +1180,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                             scrollHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (flag == s.size())
+                                    if (flag == sList.size())
                                         flag = 0;
-                                    tv_top_news.setText(s.get(flag++));
+                                    tv_top_news.animateText(sList.get(flag++));
                                     tv_top_news.startAnimation(anim);
                                 }
-                            }, 2000L);
+                            }, 3000L);
                         }
 
                         @Override

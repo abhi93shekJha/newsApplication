@@ -108,8 +108,18 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                 holder.cardView.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
         }
 
-        else if(position == getItemCount()-1){
-            holder.tv_commentsTitle.performClick();
+        else if(position == getItemCount()-1){List<PostDetailPojo.Comment> comments = DisplayBreakingNewsActivity.postDetails.getResult().get(0).getComments();
+            if(comments.size() == 0){
+                holder.recycler_comments.setVisibility(View.GONE);
+                holder.tv_noCommentsTitle.setVisibility(View.VISIBLE);
+            }else{
+                holder.recycler_comments.setVisibility(View.VISIBLE);
+                holder.tv_noCommentsTitle.setVisibility(View.GONE);
+                CommentsAdapter adapter = new CommentsAdapter(comments);
+                holder.recycler_comments.setLayoutManager(new LinearLayoutManager(context));
+                holder.recycler_comments.setAdapter(adapter);
+            }
+          /*  holder.tv_commentsTitle.performClick();
             holder.tv_commentsTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -133,7 +143,7 @@ public class BreakingNewsRecyclerAdapter extends RecyclerView.Adapter<BreakingNe
                         }
                     }
                 }
-            });
+            });*/
         }
 
         else {
