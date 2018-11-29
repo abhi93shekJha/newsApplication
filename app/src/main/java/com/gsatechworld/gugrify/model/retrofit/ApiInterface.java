@@ -100,4 +100,7 @@ public interface ApiInterface {
 
     @GET("gugrify_news/API/get_youtube.php")
     Call<YoutubeResponsePojo> makeYoutubeVideoRequest();
+
+    @GET("gugrify_news/API/get_reporter_ads.php")
+    Call<GetReporterAdsPojo> getReporterAds(@Query("post_id") String post_id);
 }

@@ -43,6 +43,7 @@ import com.gsatechworld.gugrify.R;
 import com.gsatechworld.gugrify.model.PostsByCategory;
 import com.gsatechworld.gugrify.model.retrofit.ApiClient;
 import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
+import com.gsatechworld.gugrify.model.retrofit.GetReporterAdsPojo;
 import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
 import com.gsatechworld.gugrify.model.retrofit.ReporterPostById;
 import com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter;
@@ -70,7 +71,7 @@ public class ReporterProfile extends AppCompatActivity {
     private MenuItem item_search;
     private ArrayList<PostsByCategory> posts;
     private ReporterProfileRecyclerAdapter adapter;
-    private LinearLayout linearLayoutProfile, linearLayoutPost;
+    private LinearLayout linearLayoutProfile, linearLayoutPost, ll_total_ads;
     private CardView reporter_below_layout;
     private FloatingActionButton languageAndCityFloating;
     private SearchView searchView;
@@ -91,6 +92,7 @@ public class ReporterProfile extends AppCompatActivity {
         main_layout = findViewById(R.id.main_layout);
         progressBar = findViewById(R.id.progressBar);
         iv_contactUs = findViewById(R.id.iv_contactUs);
+        ll_total_ads = findViewById(R.id.ll_total_ads);
 
         iv_contactUs.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +116,20 @@ public class ReporterProfile extends AppCompatActivity {
         languageAndCityFloating =(FloatingActionButton) findViewById(R.id.languageAndCityFloating);
 
         makePostRequest(sharedPreferences.getSharedPrefValue("reporterId"));
+
+        linearLayoutPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePostRequest(sharedPreferences.getSharedPrefValue("reporterId"));
+            }
+        });
+
+        ll_total_ads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeAdsRequest();
+            }
+        });
 
         CircleImageView reporterImage = findViewById(R.id.reporterImage);
         TextView reporterName = findViewById(R.id.reporterName);
@@ -428,5 +444,44 @@ public class ReporterProfile extends AppCompatActivity {
         if(requestCode == RESULT_OK){
             this.recreate();
         }
+    }
+
+    public void makeAdsRequest(){
+        main_layout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<GetReporterAdsPojo> call = apiService.getReporterAds(sharedPreferences.getSharedPrefValue("reporterId"));
+
+        call.enqueue(new Callback<GetReporterAdsPojo>() {
+            @Override
+            public void onResponse(Call<GetReporterAdsPojo> call, Response<GetReporterAdsPojo> response) {
+                GetReporterAdsPojo reporterAds = null;
+                if (response.isSuccessful()) {
+                    reporterAds = response.body();
+                    Log.d("Reached here", "to getting posts");
+                    RecyclerView recyclerView = findViewById(R.id.reporter_profile_recycler);
+                    adapter = new ReporterProfileRecyclerAdapter(ReporterProfile.this, results);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(ReporterProfile.this, LinearLayoutManager.VERTICAL, false));
+                    recyclerView.setAdapter(adapter);
+
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
+                    main_layout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetReporterAdsPojo> call, Throwable t) {
+                // Log error here since request failed
+                Toast.makeText(ReporterProfile.this, "Server error!! Try again.", Toast.LENGTH_LONG).show();
+                main_layout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 }

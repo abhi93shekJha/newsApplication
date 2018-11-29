@@ -112,6 +112,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
         <LinearLayout
+            android:id="@+id/ll_total_ads"
             android:layout_weight="0.499"
             android:gravity="center"
             android:layout_width="0dp"
