@@ -12,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -164,12 +165,12 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }
 
             //setting post date and tiem in landscape mode
-            Typeface fontRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+            Typeface fontMedium = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Medium.ttf");
 
             tv_date = findViewById(R.id.tv_date);
             tv_time = findViewById(R.id.tv_time);
-            tv_date.setTypeface(fontRegular);
-            tv_time.setTypeface(fontRegular);
+            tv_date.setTypeface(fontMedium);
+            tv_time.setTypeface(fontMedium);
 
             Date todayDate = Calendar.getInstance().getTime();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -566,7 +567,29 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }//end of getting ads
         }
 
+        // ATTENTION: This was auto-generated to handle app links.
+//        Intent appLinkIntent = getIntent();
+        /*String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();*/
+
     }
+
+
+   /* protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        String appLinkAction = intent.getAction();
+        Uri appLinkData = intent.getData();
+        if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null){
+            String postId = appLinkData.getLastPathSegment();
+            *//*Uri appData = Uri.parse("content://com.recipe_app/recipe/").buildUpon()
+                    .appendPath(recipeId).build();*//*
+            Log.d("Post id is", postId);
+        }
+    }*/
 
     public void loadFragment(Fragment fragment1, Fragment fragment2, String postId) {
 
@@ -811,7 +834,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     }
                 }
             }
-        }, 28000);
+        }, 26000);
 
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -854,7 +877,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
 
                         }
                     }
-                }, 30000);
+                }, 26000);
             }
         }); // end of ads dialog in every 30 seconds
     }

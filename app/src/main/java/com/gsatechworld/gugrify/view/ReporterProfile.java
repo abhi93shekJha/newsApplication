@@ -46,6 +46,7 @@ import com.gsatechworld.gugrify.model.retrofit.ApiInterface;
 import com.gsatechworld.gugrify.model.retrofit.GetReporterAdsPojo;
 import com.gsatechworld.gugrify.model.retrofit.ReporterLogin;
 import com.gsatechworld.gugrify.model.retrofit.ReporterPostById;
+import com.gsatechworld.gugrify.view.adapters.ReporterProfileAdsRecyclerAdapter;
 import com.gsatechworld.gugrify.view.adapters.ReporterProfileRecyclerAdapter;
 import com.gsatechworld.gugrify.view.authentication.ReporterLoginActivity;
 import com.gsatechworld.gugrify.view.dashboard.DashboardActivity;
@@ -80,6 +81,7 @@ public class ReporterProfile extends AppCompatActivity {
     List<ReporterPostById.Result> results;
     RelativeLayout main_layout;
     ProgressBar progressBar;
+    ReporterProfileAdsRecyclerAdapter adsAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -461,9 +463,9 @@ public class ReporterProfile extends AppCompatActivity {
                     reporterAds = response.body();
                     Log.d("Reached here", "to getting posts");
                     RecyclerView recyclerView = findViewById(R.id.reporter_profile_recycler);
-                    adapter = new ReporterProfileRecyclerAdapter(ReporterProfile.this, results);
+                    adsAdapter = new ReporterProfileAdsRecyclerAdapter(ReporterProfile.this, reporterAds);
                     recyclerView.setLayoutManager(new LinearLayoutManager(ReporterProfile.this, LinearLayoutManager.VERTICAL, false));
-                    recyclerView.setAdapter(adapter);
+                    recyclerView.setAdapter(adsAdapter);
 
                     main_layout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
