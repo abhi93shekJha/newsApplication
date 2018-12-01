@@ -128,6 +128,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
     String s = "";
     TextView scrolling_line;
     Typewriter tv_top_news;
+    String appLinkAction;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,13 +252,30 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         frameLayoutTextAnimation = findViewById(R.id.animated_text_frame);
         frameLayoutViewPager = findViewById(R.id.view_pager_frame_layout);
 
-        //load data for the first time
-        FragmentImage fragmentImage = new FragmentImage();
-        FragmentLayout frameLayout = new FragmentLayout();
-        if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            loadData(fragmentImage, frameLayout, postId);
-        } else
-            active = false;
+        // ATTENTION: This was auto-generated to handle app links.
+        //this portion is checking if the intent i
+        Intent appLinkIntent = getIntent();
+
+        appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
+        if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null){
+            String postId = appLinkData.getLastPathSegment();
+            FragmentImage fragmentImage = new FragmentImage();
+            FragmentLayout frameLayout = new FragmentLayout();
+            if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                loadData(fragmentImage, frameLayout, postId);
+            } else
+                active = false;
+        }
+
+        else {
+            FragmentImage fragmentImage = new FragmentImage();
+            FragmentLayout frameLayout = new FragmentLayout();
+            if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                loadData(fragmentImage, frameLayout, postId);
+            } else
+                active = false;
+        }
 
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         sharedPreferences = NewsSharedPreferences.getInstance(DisplayBreakingNewsActivity.this);
@@ -488,7 +506,7 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
                     view.setVisibility(View.GONE);
                     pauseView.setVisibility(View.VISIBLE);
 
-                    linearLayout.setVisibility(View.VISIBLE);
+                    linearLayout.setVisibility(View.GONE);
                     viewPager.startAutoScroll();
 
                     pausePlayLayout1.startAnimation(animFadeOut);
@@ -567,29 +585,8 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }//end of getting ads
         }
 
-        // ATTENTION: This was auto-generated to handle app links.
-//        Intent appLinkIntent = getIntent();
-        /*String appLinkAction = appLinkIntent.getAction();
-        Uri appLinkData = appLinkIntent.getData();*/
 
     }
-
-
-   /* protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        String appLinkAction = intent.getAction();
-        Uri appLinkData = intent.getData();
-        if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null){
-            String postId = appLinkData.getLastPathSegment();
-            *//*Uri appData = Uri.parse("content://com.recipe_app/recipe/").buildUpon()
-                    .appendPath(recipeId).build();*//*
-            Log.d("Post id is", postId);
-        }
-    }*/
 
     public void loadFragment(Fragment fragment1, Fragment fragment2, String postId) {
 
@@ -723,6 +720,9 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         // code here to show dialog
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        else if(appLinkAction != null){
+            finish();
+        }
         else {
             Intent intent = new Intent(DisplayBreakingNewsActivity.this, DashboardActivity.class);
             startActivity(intent);
@@ -1240,6 +1240,5 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
             }
         });
     }
-
 
 }

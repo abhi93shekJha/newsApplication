@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -41,6 +42,7 @@ public class ActivityShowWebView extends AppCompatActivity implements SwipeRefre
         progressBar = findViewById(R.id.webPBar);
         swipe.setOnRefreshListener(this);
         currentURL = getIntent().getStringExtra("url");
+        Log.d("loading url is", currentURL);
         w.loadUrl(currentURL);
         w.getSettings().setLoadsImagesAutomatically(true);
         w.getSettings().setJavaScriptEnabled(true);

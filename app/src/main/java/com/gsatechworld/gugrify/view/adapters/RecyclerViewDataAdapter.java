@@ -382,7 +382,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                         shareIntent.setType("text/plain");
                         shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
                         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, "http://www.gugrify.com/posts/"+activePosts.getResult().get(position - 3).getPostId());
                         mContext.startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
                     }
                 });
@@ -541,7 +541,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                     et_playlistName.setFocusable(true);
                 } else {
                     CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
-                    makeCommentPost(post);
+                    makeCommentPost(post, dialog);
                 }
             }
         });
@@ -554,7 +554,7 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
         });
     }
 
-    public void makeCommentPost(CreatePlayListPojo pojo) {
+    public void makeCommentPost(CreatePlayListPojo pojo, final Dialog dialog) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CreatePlayListPojo> call = apiService.createPlaylist(pojo);
 
@@ -566,7 +566,10 @@ public class RecyclerViewDataAdapter extends RecyclerView.Adapter<RecyclerViewDa
                     Log.d("Reached here", "true");
                     playlistResponse = response.body();
                     Toast.makeText(mContext, "Playlist saved!!", Toast.LENGTH_SHORT).show();
-
+                    dialog.cancel();
+                    if (mContext instanceof DashboardActivity){
+                        ((DashboardActivity) mContext).recreate();
+                    }
                 } else {
                     Toast.makeText(mContext, "Server error!!", Toast.LENGTH_SHORT).show();
                 }

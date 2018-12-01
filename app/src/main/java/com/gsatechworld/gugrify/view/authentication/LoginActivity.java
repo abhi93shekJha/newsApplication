@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, ActivityShowWebView.class);
-                intent.putExtra("url", "www.gugrify.com/terms.php");
+                intent.putExtra("url", "https://www.gugrify.com/terms.php");
                 startActivity(intent);
             }
         });

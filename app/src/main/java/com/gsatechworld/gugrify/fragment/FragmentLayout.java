@@ -118,7 +118,7 @@ public class FragmentLayout extends Fragment {
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, title);
                 shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, imageToShare);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "http://www.gugrify.com/posts/"+DisplayBreakingNewsActivity.postDetails.getResult().get(0).getPostId());
                 startActivity(Intent.createChooser(shareIntent, "Select App to Share Text and Image"));
             }
         });

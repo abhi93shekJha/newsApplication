@@ -246,7 +246,7 @@ public class RecyclerViewNavAdapter extends RecyclerView.Adapter<RecyclerViewNav
                             ((DashboardActivity) mContext).recreate();
                     } else {
                         Intent intent = new Intent(mContext, ActivityShowWebView.class);
-                        intent.putExtra("url", "www.gugrify.com/about-us.php");
+                        intent.putExtra("url", "https://www.gugrify.com/about-us.php");
                         mContext.startActivity(intent);
                     }
                 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class ViewPagerAdapter extends PagerAdapter {
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ActivityShowWebView.class);
                     intent.putExtra("url", frontUrl);
+                    Log.d("url is", frontUrl);
                     context.startActivity(intent);
                 }
             });

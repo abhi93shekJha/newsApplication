@@ -57,6 +57,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
         this.playlists = playlists;
         this.context = context;
         results = new ArrayList<>();
+        sharedPreferences = NewsSharedPreferences.getInstance(context);
         for (int i = 0; i < playlists.getResult().size(); i++) {
             playlistNames.add(playlists.getResult().get(i).getPlaylist_name());
         }
@@ -184,7 +185,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
                     et_playlistName.setFocusable(true);
                 } else {
                     CreatePlayListPojo post = new CreatePlayListPojo(et_playlistName.getText().toString().trim(), sharedPreferences.getSharedPrefValue("user_id"));
-                    makeCommentPost(post);
+                    makeCommentPost(post, dialog);
                 }
             }
         });
@@ -197,7 +198,7 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
         });
     }
 
-    public void makeCommentPost(CreatePlayListPojo pojo) {
+    public void makeCommentPost(CreatePlayListPojo pojo, final Dialog dialog) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<CreatePlayListPojo> call = apiService.createPlaylist(pojo);
 
@@ -209,9 +210,13 @@ public class PlaylistDataAdapter extends RecyclerView.Adapter<PlaylistDataAdapte
                     Log.d("Reached here", "true");
                     playlistResponse = response.body();
                     Toast.makeText(context, "Playlist saved!!", Toast.LENGTH_SHORT).show();
-
+                    dialog.cancel();
+                    if (context instanceof DashboardActivity){
+                        ((DashboardActivity) context).recreate();
+                    }
                 } else {
                     Toast.makeText(context, "Server error!!", Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
                 }
             }
 

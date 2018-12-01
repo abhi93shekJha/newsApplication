@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.gsatechworld.gugrify">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
@@ -97,6 +98,7 @@
             android:name=".view.ShowPlaylistActivtiy"
             android:screenOrientation="portrait" />
         <activity android:name=".view.DisplayBreakingNewsActivity">
+            <tools:validation testUrl="http://www.gugrify.com/posts" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -106,7 +108,7 @@
                 <data
                     android:scheme="http"
                     android:host="www.gugrify.com"
-                    android:pathPattern="/posts" />
+                    android:pathPrefix="/posts" />
             </intent-filter>
         </activity>
         <activity
