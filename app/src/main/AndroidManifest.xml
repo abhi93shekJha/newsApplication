@@ -97,7 +97,7 @@
         <activity
             android:name=".view.ShowPlaylistActivtiy"
             android:screenOrientation="portrait" />
-        <activity android:name=".view.DisplayBreakingNewsActivity">
+        <activity android:name=".view.DisplaySharedPosts">
             <tools:validation testUrl="http://www.gugrify.com/posts" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -111,6 +111,7 @@
                     android:pathPrefix="/posts" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.DisplayBreakingNewsActivity"/>
         <activity
             android:name=".view.ReporterProfile"
             android:screenOrientation="portrait" />

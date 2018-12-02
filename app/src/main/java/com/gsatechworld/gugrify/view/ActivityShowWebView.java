@@ -16,7 +16,7 @@ import com.gsatechworld.gugrify.R;
 
 public class ActivityShowWebView extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
-    private WebView w;
+    private WebView webView;
     private SwipeRefreshLayout swipe;
     private String currentURL = "";
     private ProgressBar progressBar;
@@ -37,39 +37,39 @@ public class ActivityShowWebView extends AppCompatActivity implements SwipeRefre
             View view = getSupportActionBar().getCustomView();
         }
 
-        w = findViewById(R.id.webView);
+        webView = findViewById(R.id.webView);
         swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
         progressBar = findViewById(R.id.webPBar);
         swipe.setOnRefreshListener(this);
         currentURL = getIntent().getStringExtra("url");
         Log.d("loading url is", currentURL);
-        w.loadUrl(currentURL);
-        w.getSettings().setLoadsImagesAutomatically(true);
-        w.getSettings().setJavaScriptEnabled(true);
-        w.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        w.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                swipe.setRefreshing(false);
-                progressBar.setVisibility(View.GONE);
-            }
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.setWebViewClient(new WebViewClient(){
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                progressBar.setVisibility(View.VISIBLE);
+                view.loadUrl(url);
                 return true;
             }
+            @Override
+            public void onPageFinished(WebView view, final String url) {
+                progressBar.setVisibility(View.GONE);
+                swipe.setRefreshing(false);
+            }
         });
+
+        webView.loadUrl(currentURL);
     }
 
-    private void ReLoadWebView(String currentURL) {
-        w.loadUrl(currentURL);
-    }
 
     @Override
     public void onRefresh() {
         swipe.setRefreshing(true);
         progressBar.setVisibility(View.VISIBLE);
-        ReLoadWebView(currentURL);
+        webView.reload();
     }
 
     @Override

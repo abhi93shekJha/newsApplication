@@ -255,9 +255,11 @@ public class DisplayBreakingNewsActivity extends AppCompatActivity implements Me
         // ATTENTION: This was auto-generated to handle app links.
         //this portion is checking if the intent i
         Intent appLinkIntent = getIntent();
-
-        appLinkAction = appLinkIntent.getAction();
-        Uri appLinkData = appLinkIntent.getData();
+        Uri appLinkData = null;
+        if(appLinkIntent != null) {
+            appLinkAction = appLinkIntent.getAction();
+            appLinkData = appLinkIntent.getData();
+        }
         if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null){
             String postId = appLinkData.getLastPathSegment();
             FragmentImage fragmentImage = new FragmentImage();
