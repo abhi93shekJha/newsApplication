@@ -4,7 +4,7 @@
 
 <b>Advertisement support.</b>
 
-<b>News posting.</b>
+<b>News posting through app.</b>
 
 <b>Completely different view in portrait mode.</b>
 
